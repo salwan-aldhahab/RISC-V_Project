@@ -137,6 +137,11 @@ In addition to the above debugging utilities, it is also important to pay **clos
 
 We also provide a comprehensive collection of [benchmarks](rv32-bmarks) that you can use to stress your design. The benchmarks are of 2 flavors: (1) full program benchmarks and (2) synthetic benchmarks that stress individual functions. For each benchmark, there are 4 files: (1) `*.bin`: the program binary, (2) `*.c`: the C source file, (3) `*.elf`: the corresponding ELF file, (4) `*.objdump`: the object dump listing the sections and RISC-V instructions and location, (5) `*.raw`: instruction data organized in 128-bit lines (4 32-bit instructions per line), (6) `*.s`: Similar to `*.objdump` but lists only the RISC-V instructions, (7) `*.x`: lists only the instruction data where each line corresponds to one 32-bit instruction data. The `*.x` should be consumed by your design when initializing your instruction memory.
 
+In addition to the provided debugging utilities, the following online tools may be useful:
+- [RISC-V instruction encoder/decoder](https://luplab.gitlab.io/rvcodecjs/)
+- [RISC-V interpreter](https://www.cs.cornell.edu/courses/cs3410/2019sp/riscv/interpreter/)
+
+
 ### Step 5: Submitting your design
 ------------------------------------
 Once you have validated your design against the tests in `pd*/verif/data/test*.x`, you are ready to submit your design. 
@@ -157,8 +162,8 @@ For each PD, you will be evaluated on the following components:
 
 |Component|Weight|
 |---------|------|
-|Code quality|35%|
-|Correctness| 65%|
+|Code quality|25%|
+|Correctness| 75%|
 
 For code quality, please adhere to the programming styles and guidelines described [here](https://www.systemverilog.io/verification/styleguide/)
 
