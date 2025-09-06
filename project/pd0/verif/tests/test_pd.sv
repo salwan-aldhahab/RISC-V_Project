@@ -74,9 +74,9 @@ module top;
      assign_xor_res <= dut.core.`PROBE_ASSIGN_XOR_RES;
  end
 
-`ifdef PROBE_ALU_OP1 `ifdef PROBE_ALU_OP2 `ifdef PROBE_ALU_RES
+`ifdef PROBE_ALU_OP1 `ifdef PROBE_ALU_OP2 `ifdef PROBE_ALU_SEL `ifdef PROBE_ALU_RES
     `define PROBE_ALU_OK
-`endif  `endif `endif
+`endif  `endif `endif `endif
 `ifdef PROBE_ALU_OK
  // alu
  logic [1:0] alu_sel;
@@ -92,10 +92,10 @@ module top;
       if (reset_done) begin
           $display("[ALU] inp1=%b, inp2=%b, alusel=%b, res=%b", alu_op1, alu_op2, alu_sel, alu_res);
       end
-      alu_sel  <= dut.core.`ALU_SEL;
-      alu_op1 <= dut.core.`ALU_OP1;
-      alu_op2 <= dut.core.`ALU_OP2;
-      alu_res  <= dut.core.`ALU_RES;
+      alu_sel  <= dut.core.`PROBE_ALU_SEL;
+      alu_op1 <= dut.core.`PROBE_ALU_OP1;
+      alu_op2 <= dut.core.`PROBE_ALU_OP2;
+      alu_res  <= dut.core.`PROBE_ALU_RES;
   end
  `else
     always_ff @(posedge clock) begin: alu_test
@@ -104,7 +104,7 @@ module top;
 `endif
 
 
-`ifdef PROBE_REG_IN, `ifdef PROBE_REG_OUT
+`ifdef PROBE_REG_IN `ifdef PROBE_REG_OUT
 `define PROBE_REG_OK
 `endif `endif
 `ifdef PROBE_REG_OK
@@ -112,18 +112,18 @@ module top;
   logic [31:0] reg_rst_out;
 
   always_comb begin: reg_rst_input
-      dut.core.`PROBE_REG_RST_INP = counter[31:0];
+      dut.core.`PROBE_REG_INP = counter[31:0];
   end
   always_ff @(posedge clock) begin: reg_rst_test
       if (reset_done) begin
-        $display("[REG_RST] inp=%b, out=%b", reg_rst_inp, reg_rst_out);
+        $display("[REG] inp=%b, out=%b", reg_rst_inp, reg_rst_out);
       end
-      reg_rst_inp <= dut.core.`PROBE_REG_RST_INP;
-      reg_rst_out <= dut.core.`PROBE_REG_RST_OUT;
+      reg_rst_inp <= dut.core.`PROBE_REG_INP;
+      reg_rst_out <= dut.core.`PROBE_REG_OUT;
   end
   `else
     always_ff @(posedge clock) begin: reg_rst_test
-        $fatal(1, "[REG_RST] Probe signals not defined");
+        $fatal(1, "[REG] Probe signals not defined");
     end
 `endif
 
@@ -146,7 +146,7 @@ module top;
       end
       tsp_op1 <= dut.core.`PROBE_TSP_OP1;
       tsp_op2 <= dut.core.`PROBE_TSP_OP2;
-      tsp_out <= dut.core.`PROBE_TSP_OUT;
+      tsp_out <= dut.core.`PROBE_TSP_RES;
   end
     `else
     always_ff @(posedge clock) begin: tsp_test
