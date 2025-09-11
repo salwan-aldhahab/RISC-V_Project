@@ -84,9 +84,9 @@ module top;
  logic [31:0] alu_op2;
  logic [31:0] alu_res;
  always_comb begin: alu_input
-      dut.core.`ALU_SEL  = counter[1:0];
-      dut.core.`ALU_OP1  = counter[31:0];
-      dut.core.`ALU_OP2  = {counter[2], counter[3], counter[0], counter[1], counter[31:4]};
+      dut.core.`PROBE_ALU_SEL  = counter[1:0];
+      dut.core.`PROBE_ALU_OP1  = counter[31:0];
+      dut.core.`PROBE_ALU_OP2  = {counter[2], counter[3], counter[0], counter[1], counter[31:4]};
   end
   always_ff @(posedge clock) begin: alu_test
       if (reset_done) begin
