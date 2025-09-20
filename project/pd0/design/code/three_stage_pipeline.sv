@@ -26,6 +26,9 @@
  * 1) DWIDTH-wide result res_o
  */
 
+import constants_pkg::*;
+
+
 module three_stage_pipeline #(
 parameter int DWIDTH = 8)(
         input logic clk,
@@ -42,5 +45,64 @@ parameter int DWIDTH = 8)(
      * and set up the necessary connections
      *
      */
+
+    // Stage 1: ALU add
+
+    logic [DWIDTH-1:0] add_res; // results of the ALU add
+    logic z_add, n_add;
+
+    alu #(.DWIDTH(DWIDTH)) unit_alu_add (
+        .sel_i  (ADD),
+        .op1_i  (op1_i),
+        .op2_i  (op2_i),
+        .res_o  (add_res),
+        .zero_o (z_add),
+        .neg_o  (n_add)
+    );
+
+    // Stage 2: pipeline registers + ALU sub
+    // Register the results from ALU add
+    // Register op1_i to align with the registered ALU add results
+    
+    logic [DWIDTH-1:0] add_res_reg;
+    logic [DWIDTH-1:0] op1_fwd_reg;
+
+    // Register ADD result
+    reg_rst #(.DWIDTH(DWIDTH)) unit_add_res_reg (
+        .clk   (clk),
+        .rst   (rst),
+        .in_i  (add_res),
+        .out_o (add_res_reg)
+    );
+
+    // Forward aligned op1 register
+    reg_rst #(.DWIDTH(DWIDTH)) unit_op1_fwd_reg (
+        .clk   (clk),
+        .rst   (rst),
+        .in_i  (op1_i),
+        .out_o (op1_fwd_reg)
+    );
+
+    logic [DWIDTH-1:0] sub_res;
+    logic z_sub, n_sub;
+
+    alu #(.DWIDTH(DWIDTH)) unit_alu_sub (
+        .sel_i  (SUB),
+        .op1_i  (add_res_reg), 
+        .op2_i  (op1_fwd_reg),
+        .res_o  (sub_res),
+        .zero_o (z_sub),
+        .neg_o  (n_sub)
+    );
+
+    // Stage 3: Final output register
+    // Registers the SUB result so res_o appears two cycles after inputs
+    
+    reg_rst #(.DWIDTH(DWIDTH)) unit_res_reg (
+        .clk   (clk),
+        .rst   (rst),
+        .in_i  (sub_res),
+        .out_o (res_o)
+    );
 
 endmodule: three_stage_pipeline

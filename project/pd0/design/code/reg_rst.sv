@@ -26,4 +26,11 @@ module reg_rst #(
      * student below...
      */
 
+    always_ff @(posedge clk) begin
+        if (rst)
+            out_o <= '0;      // synchronous reset
+        else
+            out_o <= in_i;    // input captured on the rising edge of the clock
+    end
+
 endmodule: reg_rst

@@ -34,5 +34,21 @@ module alu #(
      * Process definitions to be filled by
      * student below...
      */
+    
+     logic [DWIDTH-1:0] result;
+
+     always_comb begin
+        case (aluSel_e'(sel_i))
+            ADD: result = op1_i + op2_i;
+            SUB: result = op1_i - op2_i;
+            AND: result = op1_i & op2_i;
+            OR: result = op1_i | op2_i;
+            default: result = '0;
+        endcase
+    end
+
+    assign res_o = result;
+    assign zero_o = (res_o == '0);
+    assign neg_o = res_o[DWIDTH-1];
 
 endmodule: alu
