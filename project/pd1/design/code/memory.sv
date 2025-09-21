@@ -57,4 +57,29 @@ module memory #(
    *
    */
 
+  // combinational read operation to read data from memory
+  always_comb begin: read_operation
+    if (read_en_i) begin      // if read enable is high read data from memory
+      data_o = {main_memory[address + 3], 
+                main_memory[address + 2], 
+                main_memory[address + 1], 
+                main_memory[address]}; // little endian format
+    end else begin
+      data_o = '0; // if read enable is low output zero
+    end
+  end
+
+  // sequential write operation to write data to memory
+  always_ff @(posedge clk) begin: write_operation
+    if (rst) begin
+      // Do nothing on reset
+    end else if (write_en_i) begin // if write enable is high write data to memory
+      main_memory[address]     <= data_i[7:0];
+      main_memory[address + 1] <= data_i[15:8];
+      main_memory[address + 2] <= data_i[23:16];
+      main_memory[address + 3] <= data_i[31:24];
+    end
+  end
+
+
 endmodule : memory
