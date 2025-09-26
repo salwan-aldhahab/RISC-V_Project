@@ -97,20 +97,25 @@ module pd0_testbench;
     // Check initial state after reset
     $display("Initial register value: %0d", reg_data_out);
     
-    // Set input and wait for clock
+    // Set input, wait for clock, then check output
     reg_data_in = 42;
     @(posedge clk);
+    #1; // Small delay after clock edge
     $display("After storing 42: %0d", reg_data_out);
     
     reg_data_in = 123;
-    @(posedge clk); 
+    @(posedge clk);
+    #1; 
     $display("After storing 123: %0d", reg_data_out);
     
-    // Test reset functionality
+    // Test reset functionality - reset should take effect immediately on clock edge
+    reg_data_in = 99; // Set some value
     rst = 1;
     @(posedge clk);
+    #1;
     $display("After reset: %0d (should be 0)", reg_data_out);
     rst = 0;
+    @(posedge clk);
 
     // Test the pipeline - results come out 2 cycles later
     $display("\n--- Testing Pipeline ---");
@@ -125,13 +130,17 @@ module pd0_testbench;
     $display("Cycle 2 - Input: op1=%0d, op2=%0d, Output: %0d", pipe_in1, pipe_in2, pipe_out);
     @(posedge clk);
     
-    // Check first result (from 2 cycles ago)
+    // Third cycle - first result should appear
     pipe_in1 = 0; pipe_in2 = 0;
     $display("Cycle 3 - Output: %0d (should be 25)", pipe_out);
     @(posedge clk);
     
-    // Check second result
+    // Fourth cycle - second result should appear
     $display("Cycle 4 - Output: %0d (should be 30)", pipe_out);
+    @(posedge clk);
+    
+    // Fifth cycle - should see 0 now
+    $display("Cycle 5 - Output: %0d (should be 0)", pipe_out);
     
     // All done
     $display("\nTests finished!");
