@@ -93,38 +93,45 @@ module pd0_testbench;
 
     // Test the register - just store and read back some values
     $display("\n--- Testing Register ---");
+    
+    // Check initial state after reset
+    $display("Initial register value: %0d", reg_data_out);
+    
+    // Set input and wait for clock
     reg_data_in = 42;
     @(posedge clk);
-    $display("Stored %0d, read back %0d", reg_data_in, reg_data_out);
+    $display("After storing 42: %0d", reg_data_out);
     
     reg_data_in = 123;
     @(posedge clk); 
-    $display("Stored %0d, read back %0d", reg_data_in, reg_data_out);
+    $display("After storing 123: %0d", reg_data_out);
     
     // Test reset functionality
     rst = 1;
     @(posedge clk);
     $display("After reset: %0d (should be 0)", reg_data_out);
     rst = 0;
-    @(posedge clk); // Wait one more cycle after reset
 
     // Test the pipeline - results come out 2 cycles later
     $display("\n--- Testing Pipeline ---");
+    
+    // Apply first input
     pipe_in1 = 100; pipe_in2 = 25;
-    $display("Input: op1=%0d, op2=%0d", pipe_in1, pipe_in2);
+    $display("Cycle 1 - Input: op1=%0d, op2=%0d", pipe_in1, pipe_in2);
     @(posedge clk);
     
+    // Apply second input  
     pipe_in1 = 50; pipe_in2 = 30; 
-    $display("Input: op1=%0d, op2=%0d", pipe_in1, pipe_in2);
+    $display("Cycle 2 - Input: op1=%0d, op2=%0d, Output: %0d", pipe_in1, pipe_in2, pipe_out);
     @(posedge clk);
     
-    // Now check outputs - should see first result
+    // Check first result (from 2 cycles ago)
     pipe_in1 = 0; pipe_in2 = 0;
-    $display("Pipeline output: %0d (should be 25)", pipe_out);
+    $display("Cycle 3 - Output: %0d (should be 25)", pipe_out);
     @(posedge clk);
     
-    $display("Pipeline output: %0d (should be 30)", pipe_out);
-    @(posedge clk);
+    // Check second result
+    $display("Cycle 4 - Output: %0d (should be 30)", pipe_out);
     
     // All done
     $display("\nTests finished!");
