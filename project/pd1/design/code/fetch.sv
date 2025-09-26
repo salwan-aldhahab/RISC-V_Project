@@ -40,7 +40,7 @@ module fetch #(
     
     // Program Counter logic
     always_ff @(posedge clk or negedge rst) begin
-        if (rst) begin
+        if (!rst) begin
             pc_reg <= BASEADDR;  // Reset PC to base address
         end else begin
             pc_reg <= pc_reg + 4;  // Increment PC by 4 (word size)
