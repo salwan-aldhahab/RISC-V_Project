@@ -22,8 +22,8 @@ module pd1 #(
   */
 
 // probes institiation for fetch stage
-logic [AWIDTH-1:0] f_pc
-logic [DWIDTH-1:0] f_insn
+logic [AWIDTH-1:0] f_pc;
+logic [DWIDTH-1:0] f_insn;
 
 // probes instantiation for memory interface
 logic [AWIDTH-1:0] addr;
