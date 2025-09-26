@@ -1,8 +1,3 @@
-// Define the macros needed by memory.
-`define MEM_DEPTH 1023
-`define MEM_PATH "memory.hex"
-`define LINE_COUNT 256
-
 module memory_tb;
     // clock period
     localparam int CLK_PERIOD = 10;
