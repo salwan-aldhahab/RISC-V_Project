@@ -7,8 +7,8 @@ SRC = memory.sv memory_tb.sv
 HEX = init.hex
 
 # Macros (adjust as needed)
-DEFINES = +define+MEM_DEPTH=128 \
-          +define+LINE_COUNT=128 \
+DEFINES = +define+MEM_DEPTH=127 \
+          +define+LINE_COUNT=127 \
           +define+MEM_PATH=\"$(HEX)\"
 
 VLOG_FLAGS = -suppress 7061
