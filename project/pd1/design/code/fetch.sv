@@ -29,6 +29,8 @@ module fetch #(
      * student below...
      */
     
+    localparam int WORD_BYTE = (DWIDTH / 8); // Number of bytes in a word
+
     // Program Counter register
     logic [AWIDTH-1:0] pc_reg;
     
@@ -38,20 +40,12 @@ module fetch #(
     logic [DWIDTH-1:0] mem_data_in;
     logic [DWIDTH-1:0] mem_data_out;
     
-
-    logic first;
     // Program Counter logic
-    always_ff @(posedge clk or negedge rst) begin
-        if (!rst) begin
-            first <= 1'b1;
-            pc_reg <= BASEADDR;  // Reset PC to base address
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            pc_reg <= AWIDTH'(BASEADDR);  // Reset PC to base address
         end else begin
-            if (first) begin
-                first <= 1'b0;
-                pc_reg <= BASEADDR;  // Ensure PC is set to base address on first clock after reset
-            end else begin
-                pc_reg <= pc_reg + 4;  // Increment PC by 4 (word size)
-            end
+            pc_reg <= pc_reg + AWIDTH'(WORD_BYTE); // Increment PC by 4 to point to next instruction
         end
     end
     

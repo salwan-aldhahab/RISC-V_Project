@@ -74,7 +74,7 @@ module memory #(
     if (rst) begin
       // Do nothing on reset
     end else if (write_en_i) begin // if write enable is high write data to memory
-      main_memory[address]     <= data_i[7:0];
+      main_memory[address + 0] <= data_i[7:0];
       main_memory[address + 1] <= data_i[15:8];
       main_memory[address + 2] <= data_i[23:16];
       main_memory[address + 3] <= data_i[31:24];
