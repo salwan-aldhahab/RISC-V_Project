@@ -39,7 +39,7 @@ module fetch #(
     logic [DWIDTH-1:0] mem_data_out;
     
     // Program Counter logic
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk or negedge rst) begin
         if (rst) begin
             pc_reg <= BASEADDR;  // Reset PC to base address
         end else begin
