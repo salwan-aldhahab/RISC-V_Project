@@ -41,8 +41,8 @@ module fetch #(
     logic [DWIDTH-1:0] mem_data_out;
     
     // Program Counter logic
-    always_ff @(posedge clk) begin
-        if (rst) begin
+    always_ff @(posedge clk or negedge rst) begin
+        if (!rst) begin
             pc_reg <= AWIDTH'(BASEADDR);  // Reset PC to base address
         end else begin
             pc_reg <= pc_reg + AWIDTH'(WORD_BYTE); // Increment PC by 4 to point to next instruction
