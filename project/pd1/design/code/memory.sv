@@ -63,7 +63,7 @@ module memory #(
       data_o = {main_memory[address + 3], 
                 main_memory[address + 2], 
                 main_memory[address + 1], 
-                main_memory[address]}; // little endian format
+                main_memory[address + 0]}; // little endian format
     end else begin
       data_o = '0; // if read enable is low output zero
     end

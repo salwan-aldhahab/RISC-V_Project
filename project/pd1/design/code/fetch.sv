@@ -38,12 +38,20 @@ module fetch #(
     logic [DWIDTH-1:0] mem_data_in;
     logic [DWIDTH-1:0] mem_data_out;
     
+
+    logic first;
     // Program Counter logic
     always_ff @(posedge clk or negedge rst) begin
         if (!rst) begin
+            first <= 1'b1;
             pc_reg <= BASEADDR;  // Reset PC to base address
         end else begin
-            pc_reg <= pc_reg + 4;  // Increment PC by 4 (word size)
+            if (first) begin
+                first <= 1'b0;
+                pc_reg <= BASEADDR;  // Ensure PC is set to base address on first clock after reset
+            end else begin
+                pc_reg <= pc_reg + 4;  // Increment PC by 4 (word size)
+            end
         end
     end
     
