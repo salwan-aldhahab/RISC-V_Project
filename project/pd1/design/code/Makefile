@@ -11,6 +11,8 @@ DEFINES = +define+MEM_DEPTH=128 \
           +define+LINE_COUNT=128 \
           +define+MEM_PATH=\"$(HEX)\"
 
+VLOG_FLAGS = -suppress 7061
+
 all: run
 
 # Compile only
