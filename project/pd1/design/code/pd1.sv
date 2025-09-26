@@ -35,7 +35,8 @@ logic write_en;
 // fetch module instantiation
 fetch #(
     .AWIDTH(AWIDTH),
-    .DWIDTH(DWIDTH)
+    .DWIDTH(DWIDTH),
+    .BASEADDR(32'h01000000)
 ) f (
     .clk(clk),
     .rst(reset),
