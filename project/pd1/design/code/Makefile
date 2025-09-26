@@ -22,11 +22,12 @@ compile:
 
 # Run in console (no GUI)
 run: compile
-	vsim -c work.memory_tb -do "run -all; quit"
+	vsim -c -quiet work.memory_tb -do 'run -all; quit -f'
 
 # Run in GUI with waveform viewer
 gui: compile
-	vsim work.memory_tb -do "run -all"
+	vsim -quiet work.memory_tb -do 'add wave -r /*; run -all'
+	# close manually or add: ; quit -f
 
 # Clean generated files
 clean:
