@@ -18,7 +18,7 @@ all: run
 # Compile only
 compile:
 	vlib work
-	vlog $(VLOG_FLAGS)$(DEFINES) $(SRC)
+	vlog $(VLOG_FLAGS) $(DEFINES) $(SRC)
 
 # Run in console (no GUI)
 run: compile
