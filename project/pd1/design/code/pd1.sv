@@ -44,13 +44,27 @@ fetch #(
     .insn_o(f_insn)
 );
 
-// connect fetch outputs to memory inputs
-assign addr = f_pc;
-assign data_out = f_insn;
+// // connect fetch outputs to memory inputs
+// assign addr = f_pc;
+// assign data_out = f_insn;
 
-assign data_in = '0;  // no data to write from fetch
-assign read_en = 1'b1; // fetch always reads instructions
-assign write_en = 1'b0; // fetch never writes
+// assign data_in = '0;  // no data to write from fetch
+// assign read_en = 1'b1; // fetch always reads instructions
+// assign write_en = 1'b0; // fetch never writes
 
+// memory module instantiation
+memory #(
+    .AWIDTH(AWIDTH),
+    .DWIDTH(DWIDTH),
+    .BASE_ADDR(32'h01000000)
+) imem (
+    .clk(clk),
+    .rst(reset),
+    .addr_i(addr),
+    .data_i(data_in), // no data to write from fetch
+    .read_en_i(read_en), // fetch always reads instructions
+    .write_en_i(write_en), // fetch never writes
+    .data_o(data_out)
+);
 
 endmodule : pd1

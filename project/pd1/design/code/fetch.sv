@@ -28,8 +28,6 @@ module fetch #(
      * Process definitions to be filled by
      * student below...
      */
-    
-    localparam int WORD_BYTE = (DWIDTH / 8); // Number of bytes in a word
 
     // Program Counter register
     logic [AWIDTH-1:0] pc_reg;
@@ -43,9 +41,9 @@ module fetch #(
     // Program Counter logic
     always_ff @(posedge clk or negedge rst) begin
         if (!rst) begin
-            pc_reg <= AWIDTH'(BASEADDR);  // Reset PC to base address
+            pc_reg <= BASEADDR;  // Reset PC to base address
         end else begin
-            pc_reg <= pc_reg + AWIDTH'(WORD_BYTE); // Increment PC by 4 to point to next instruction
+            pc_reg <= pc_reg + 4; // Increment PC by 4 to point to next instruction
         end
     end
     
