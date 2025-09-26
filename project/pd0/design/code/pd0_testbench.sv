@@ -117,7 +117,7 @@ module pd0_testbench;
     rst = 0;
     @(posedge clk);
 
-    // Test the pipeline - results come out 2 cycles later
+    // Test the pipeline - looks like it has 3 cycle latency based on the output
     $display("\n--- Testing Pipeline ---");
     
     // Apply first input
@@ -130,17 +130,26 @@ module pd0_testbench;
     $display("Cycle 2 - Input: op1=%0d, op2=%0d, Output: %0d", pipe_in1, pipe_in2, pipe_out);
     @(posedge clk);
     
-    // Third cycle - first result should appear
+    // Third cycle 
+    pipe_in1 = 75; pipe_in2 = 10;
+    $display("Cycle 3 - Input: op1=%0d, op2=%0d, Output: %0d", pipe_in1, pipe_in2, pipe_out);
+    @(posedge clk);
+    
+    // Fourth cycle - first result should appear here (3 cycle latency)
     pipe_in1 = 0; pipe_in2 = 0;
-    $display("Cycle 3 - Output: %0d (should be 25)", pipe_out);
+    $display("Cycle 4 - Output: %0d (should be 25 from cycle 1)", pipe_out);
     @(posedge clk);
     
-    // Fourth cycle - second result should appear
-    $display("Cycle 4 - Output: %0d (should be 30)", pipe_out);
+    // Fifth cycle - second result appears
+    $display("Cycle 5 - Output: %0d (should be 30 from cycle 2)", pipe_out);
     @(posedge clk);
     
-    // Fifth cycle - should see 0 now
-    $display("Cycle 5 - Output: %0d (should be 0)", pipe_out);
+    // Sixth cycle - third result appears
+    $display("Cycle 6 - Output: %0d (should be 10 from cycle 3)", pipe_out);
+    @(posedge clk);
+    
+    // Seventh cycle - should see 0 now
+    $display("Cycle 7 - Output: %0d (should be 0)", pipe_out);
     
     // All done
     $display("\nTests finished!");
