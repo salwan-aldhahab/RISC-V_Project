@@ -21,13 +21,16 @@ compile:
 	vlog $(VLOG_FLAGS) $(DEFINES) $(SRC)
 
 # Run in console (no GUI)
-run: compile
-	vsim -c -quiet work.memory_tb -do 'run -all; quit -f'
+rrun: compile
+	vsim -c -quiet -voptargs="+acc" work.memory_tb \
+	     -do "run -all" \
+	     -do "quit -f"
 
 # Run in GUI with waveform viewer
 gui: compile
-	vsim -quiet work.memory_tb -do 'add wave -r /*; run -all'
-	# close manually or add: ; quit -f
+	vsim -quiet -voptargs="+acc" work.memory_tb \
+	     -do "add wave -r /*" \
+	     -do "run -all"
 
 # Clean generated files
 clean:
