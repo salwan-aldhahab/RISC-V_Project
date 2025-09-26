@@ -104,21 +104,21 @@ module pd0_tb;
 
   // For the 3-stage pipeline, the expected function is: res_o = (op1 + op2) - op1 = op2,
   // but it appears TWO cycles later due to the registers.
-  typedef struct packed {logic [DWIDTH-1:0] expect;} exp_t;
+  typedef struct packed {logic [DWIDTH-1:0] expected;} exp_t;
   exp_t exp_q[$];
 
-  task automatic push_expect(input logic [DWIDTH-1:0] expect);
-    exp_t e; e.expect = expect; exp_q.push_back(e);
+  task automatic push_expect(input logic [DWIDTH-1:0] expected_val);
+    exp_t e; e.expected = expected_val; exp_q.push_back(e);
   endtask
 
   // Pop/compare after the two-cycle latency has elapsed (we'll manage timing in the stimulus)
   task automatic check_tsp(input string tag);
     if (exp_q.size() != 0) begin
       exp_t e = exp_q.pop_front();
-      if (tsp_res !== e.expect) begin
-        $error("[%0t] TSP %s: expected %0d, got %0d", $time, tag, e.expect, tsp_res);
+      if (tsp_res !== e.expected) begin
+        $error("[%0t] TSP %s: expected %0d, got %0d", $time, tag, e.expected, tsp_res);
       end else begin
-        $display("[%0t] TSP %s: PASS expect=%0d got=%0d", $time, tag, e.expect, tsp_res);
+        $display("[%0t] TSP %s: PASS expect=%0d got=%0d", $time, tag, e.expected, tsp_res);
       end
     end
   endtask
