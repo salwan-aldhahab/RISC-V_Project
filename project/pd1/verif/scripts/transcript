@@ -1,0 +1,17 @@
+# vsim -suppress 3839 -c -do "/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd1/verif/scripts/run.macro" /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd1/work.top 
+# Start time: 17:10:56 on Sep 26,2025
+# Loading sv_std.std
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd1/work.top
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd1/work.clockgen
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd1/work.design_wrapper
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd1/work.pd1
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd1/work.fetch
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd1/work.memory
+# do /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd1/verif/scripts/run.macro
+# IMEMORY: Loaded 39 32-bit words from /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd1/verif/data/test2.x
+# IMEMORY: Loaded 39 32-bit words from /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd1/verif/data/test2.x
+# ************* CHECK PASSED **************
+# ** Note: $finish    : /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd1/verif/tests/pattern_check.h(53)
+#    Time: 240 ps  Iteration: 1  Region: /top/genblk3
+# End time: 17:10:56 on Sep 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0

@@ -1,0 +1,3 @@
+vcd file "test2.vcd"
+vcd add -r /top/* 
+run -all
