@@ -1,11 +1,11 @@
+# To Run The Testbenches Follow These Instructions
+## Terminal: start vsim UI first
+```vsim -gui```
 
-# Terminal: start vsim UI first
-`vsim -gui`
+## Create work library
+```vlib work```
 
-# Create work library
-`vlib work`
-
-# Compile design files
+## Compile design files
 ```
 vlog -suppress 7061 \
      +define+MEM_DEPTH=127 \
@@ -14,11 +14,11 @@ vlog -suppress 7061 \
      memory.sv memory_tb.sv fetch.sv fetch_tb.sv
 ```
 
-# Start simulation
-`vsim -voptargs=+acc memory_tb`
+## Start simulation
+```vsim -voptargs=+acc "testbench file name"```
 
-# Add waves
-`add wave -r /*`
+## Add waves
+```add wave -r /*```
 
-# Run simulation
-`run -all`
+## Run simulation
+```run -all```
