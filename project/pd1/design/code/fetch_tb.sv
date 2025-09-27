@@ -54,14 +54,17 @@ module fetch_tb;
     initial begin
         // Initialize inputs
         reset_dut();
-        // Wait for a few clock cycles to allow instruction fetch
-        //repeat (5) @(posedge clk);
+        
         // Check outputs against expected values
         // Assuming mem_init.hex has been initialized with known values
         check_output(BASEADDR, 32'hA3B2C1D0); // NOP instruction at BASEADDR
+        @(posedge clk);
         check_output(BASEADDR + 4, 32'hF8E7D6C5); // NOP instruction at BASEADDR + 4
+        @(posedge clk);
         check_output(BASEADDR + 8, 32'h12345678); // NOP instruction at BASEADDR + 8
+        @(posedge clk);
         check_output(BASEADDR + 12, 32'h9ABCDEF0); // NOP instruction at BASEADDR + 12
+        @(posedge clk);
         $display("Fetch module test completed.");
         $finish;
     end
