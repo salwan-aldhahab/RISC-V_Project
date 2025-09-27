@@ -1,13 +1,7 @@
-`timescale 1ns/1ps
-
-// Simple testbench for ALU, register, and 3-stage pipeline
-// Just runs some basic tests and dumps waveforms
-
 import constants_pkg::*;
 
 module pd0_testbench;
 
-  // Basic stuff
   parameter DWIDTH = 8;
   
   logic clk = 0;
@@ -49,7 +43,7 @@ module pd0_testbench;
     .res_o(pipe_out)
   );
 
-  // Clock - just toggle every 5ns
+  // Clock just toggle every 5ns
   always #5 clk = ~clk;
 
   // Dump waveforms
@@ -73,7 +67,7 @@ module pd0_testbench;
     
     $display("Starting tests...");
     
-    // Test the ALU with some simple operations
+    // Test the ALU 
     $display("\n--- Testing ALU ---");
     alu_a = 15; alu_b = 10; alu_op = ADD;
     #1;  // Small delay for combinational logic to settle
@@ -91,7 +85,7 @@ module pd0_testbench;
     #1;
     $display("OR:  0x%h | 0x%h = 0x%h", alu_a, alu_b, alu_result);
 
-    // Test the register - just store and read back some values
+    // Test the register just store and read back some values
     $display("\n--- Testing Register ---");
     
     // Check initial state after reset
@@ -108,7 +102,7 @@ module pd0_testbench;
     #1; 
     $display("After storing 123: %0d", reg_data_out);
     
-    // Test reset functionality - reset should take effect immediately on clock edge
+    // Test reset functionality, reset should take effect immediately on clock edge
     reg_data_in = 99; // Set some value
     rst = 1;
     @(posedge clk);
@@ -117,7 +111,7 @@ module pd0_testbench;
     rst = 0;
     @(posedge clk);
 
-    // Test the pipeline - looks like it has 3 cycle latency based on the output
+    // Test the pipeline
     $display("\n--- Testing Pipeline ---");
     
     // Apply first input
@@ -135,7 +129,7 @@ module pd0_testbench;
     $display("Cycle 3 - Input: op1=%0d, op2=%0d, Output: %0d", pipe_in1, pipe_in2, pipe_out);
     @(posedge clk);
     
-    // Fourth cycle - first result should appear here (3 cycle latency)
+    // Fourth cycle - first result should appear here
     pipe_in1 = 0; pipe_in2 = 0;
     $display("Cycle 4 - Output: %0d (should be 25 from cycle 1)", pipe_out);
     @(posedge clk);
