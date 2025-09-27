@@ -1,0 +1,237 @@
+vlib work
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/alu.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:53:32 on Sep 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/alu.sv 
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/alu.sv(21): (vlog-13006) Could not find the package (constants_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/alu.sv(41): (vlog-2730) Undefined variable: 'aluSel_e'.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/alu.sv(42): (vlog-2730) Undefined variable: 'ADD'.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/alu.sv(43): (vlog-2730) Undefined variable: 'SUB'.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/alu.sv(44): (vlog-2730) Undefined variable: 'AND'.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/alu.sv(45): (vlog-2730) Undefined variable: 'OR'.
+# End time: 22:53:32 on Sep 26,2025, Elapsed time: 0:00:00
+# Errors: 6, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/assign_xor.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:53:32 on Sep 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/assign_xor.sv 
+# -- Compiling module assign_xor
+# 
+# Top level modules:
+# 	assign_xor
+# End time: 22:53:32 on Sep 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/constants_pkg.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:53:32 on Sep 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/constants_pkg.sv 
+# -- Compiling package constants_pkg
+# 
+# Top level modules:
+# 	--none--
+# End time: 22:53:32 on Sep 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:53:32 on Sep 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv 
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(15): Cannot open `include file "probes.svh".
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(43): (vlog-2163) Macro `PROBE_ALU_OP1 is undefined.
+# ** Error: (vlog-13069) /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(43): near ";": syntax error, unexpected ';', expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER or '='.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(44): (vlog-2163) Macro `PROBE_ALU_OP2 is undefined.
+# ** Error: (vlog-13069) /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(44): near ";": syntax error, unexpected ';', expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER or '='.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(45): (vlog-2163) Macro `PROBE_ALU_RES is undefined.
+# ** Error: (vlog-13069) /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(45): near ";": syntax error, unexpected ';', expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER or '='.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(46): (vlog-2163) Macro `PROBE_ALU_SEL is undefined.
+# ** Error: (vlog-13069) /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(46): near ";": syntax error, unexpected ';', expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER or '='.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(49): (vlog-2163) Macro `PROBE_REG_IN is undefined.
+# ** Error: (vlog-13069) /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(49): near ";": syntax error, unexpected ';', expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER or '='.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(50): (vlog-2163) Macro `PROBE_REG_OUT is undefined.
+# ** Error: (vlog-13069) /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(50): near ";": syntax error, unexpected ';', expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER or '='.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(53): (vlog-2163) Macro `PROBE_TSP_OP1 is undefined.
+# ** Error: (vlog-13069) /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(53): near ";": syntax error, unexpected ';', expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER or '='.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(54): (vlog-2163) Macro `PROBE_TSP_OP2 is undefined.
+# ** Error: (vlog-13069) /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(54): near ";": syntax error, unexpected ';', expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER or '='.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(55): (vlog-2163) Macro `PROBE_TSP_RES is undefined.
+# ** Error: (vlog-13069) /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(55): near ";": syntax error, unexpected ';', expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER or '='.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(61): (vlog-2163) Macro `PROBE_ALU_SEL is undefined.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(62): (vlog-2163) Macro `PROBE_ALU_OP1 is undefined.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(63): (vlog-2163) Macro `PROBE_ALU_OP2 is undefined.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(64): (vlog-2163) Macro `PROBE_ALU_RES is undefined.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(72): (vlog-2163) Macro `PROBE_REG_IN is undefined.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(73): (vlog-2163) Macro `PROBE_REG_OUT is undefined.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(79): (vlog-2163) Macro `PROBE_TSP_OP1 is undefined.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(80): (vlog-2163) Macro `PROBE_TSP_OP2 is undefined.
+# ** Error: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0.sv(81): (vlog-2163) Macro `PROBE_TSP_RES is undefined.
+# End time: 22:53:33 on Sep 26,2025, Elapsed time: 0:00:01
+# Errors: 28, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0_testbench.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:53:33 on Sep 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0_testbench.sv 
+# -- Compiling package pd0_testbench_sv_unit
+# -- Importing package constants_pkg
+# -- Compiling module pd0_testbench
+# 
+# Top level modules:
+# 	pd0_testbench
+# End time: 22:53:33 on Sep 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/reg_rst.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:53:33 on Sep 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/reg_rst.sv 
+# -- Compiling module reg_rst
+# 
+# Top level modules:
+# 	reg_rst
+# End time: 22:53:33 on Sep 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/three_stage_pipeline.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:53:33 on Sep 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/three_stage_pipeline.sv 
+# -- Compiling package three_stage_pipeline_sv_unit
+# -- Importing package constants_pkg
+# -- Compiling module three_stage_pipeline
+# 
+# Top level modules:
+# 	three_stage_pipeline
+# End time: 22:53:33 on Sep 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vsim work.pd0_testbench
+# vsim work.pd0_testbench 
+# Start time: 22:55:30 on Sep 26,2025
+# Loading sv_std.std
+# Loading work.constants_pkg
+# Loading work.pd0_testbench_sv_unit
+# Loading work.pd0_testbench
+# ** Error: (vsim-3033) Instantiation of 'alu' failed. The design unit was not found.
+#    Time: 0 ps  Iteration: 0  Instance: /pd0_testbench File: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0_testbench.sv Line: 22
+#         Searched libraries:
+#             /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/work
+# Loading work.reg_rst
+# Loading work.three_stage_pipeline_sv_unit
+# Loading work.three_stage_pipeline
+# ** Error: (vsim-3033) Instantiation of 'alu' failed. The design unit was not found.
+#    Time: 0 ps  Iteration: 0  Instance: /pd0_testbench/my_pipeline File: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/three_stage_pipeline.sv Line: 54
+#         Searched libraries:
+#             /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/work
+# ** Error: (vsim-3033) Instantiation of 'alu' failed. The design unit was not found.
+#    Time: 0 ps  Iteration: 0  Instance: /pd0_testbench/my_pipeline File: /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/three_stage_pipeline.sv Line: 89
+#         Searched libraries:
+#             /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/work
+# Error loading design
+# End time: 22:55:30 on Sep 26,2025, Elapsed time: 0:00:00
+# Errors: 3, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/assign_xor.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:56:14 on Sep 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/assign_xor.sv 
+# -- Compiling module assign_xor
+# 
+# Top level modules:
+# 	assign_xor
+# End time: 22:56:14 on Sep 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/constants_pkg.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:56:14 on Sep 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/constants_pkg.sv 
+# -- Compiling package constants_pkg
+# 
+# Top level modules:
+# 	--none--
+# End time: 22:56:14 on Sep 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/alu.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:56:14 on Sep 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/alu.sv 
+# -- Compiling package alu_sv_unit
+# -- Importing package constants_pkg
+# -- Compiling module alu
+# 
+# Top level modules:
+# 	alu
+# End time: 22:56:14 on Sep 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/reg_rst.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:56:14 on Sep 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/reg_rst.sv 
+# -- Compiling module reg_rst
+# 
+# Top level modules:
+# 	reg_rst
+# End time: 22:56:14 on Sep 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/three_stage_pipeline.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:56:14 on Sep 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/three_stage_pipeline.sv 
+# -- Compiling package three_stage_pipeline_sv_unit
+# -- Importing package constants_pkg
+# -- Compiling module three_stage_pipeline
+# 
+# Top level modules:
+# 	three_stage_pipeline
+# End time: 22:56:14 on Sep 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0_testbench.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:56:14 on Sep 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0_testbench.sv 
+# -- Compiling package pd0_testbench_sv_unit
+# -- Importing package constants_pkg
+# -- Compiling module pd0_testbench
+# 
+# Top level modules:
+# 	pd0_testbench
+# End time: 22:56:14 on Sep 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vsim work.pd0_testbench
+# vsim work.pd0_testbench 
+# Start time: 22:56:31 on Sep 26,2025
+# Loading sv_std.std
+# Loading work.constants_pkg
+# Loading work.pd0_testbench_sv_unit
+# Loading work.pd0_testbench
+# Loading work.alu_sv_unit
+# Loading work.alu
+# Loading work.reg_rst
+# Loading work.three_stage_pipeline_sv_unit
+# Loading work.three_stage_pipeline
+add wave sim:/pd0_testbench/*
+# Load canceled
+run -all
+# Starting tests...
+# 
+# --- Testing ALU ---
+# ADD: 15 + 10 = 25 (zero=0, neg=0)
+# SUB: 20 - 5 = 15 (zero=0, neg=0)
+# AND: 0xaa & 0x55 = 0x00
+# OR:  0xa0 | 0x05 = 0xa5
+# 
+# --- Testing Register ---
+# Initial register value: 0
+# After storing 42: 42
+# After storing 123: 123
+# After reset: 0 (should be 0)
+# 
+# --- Testing Pipeline ---
+# Cycle 1 - Input: op1=100, op2=25
+# Cycle 2 - Input: op1=50, op2=30, Output: 0
+# Cycle 3 - Input: op1=75, op2=10, Output: 0
+# Cycle 4 - Output: 25 (should be 25 from cycle 1)
+# Cycle 5 - Output: 30 (should be 30 from cycle 2)
+# Cycle 6 - Output: 10 (should be 10 from cycle 3)
+# Cycle 7 - Output: 0 (should be 0)
+# 
+# Tests finished!
+# ** Note: $finish    : /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0_testbench.sv(150)
+#    Time: 135 ps  Iteration: 1  Instance: /pd0_testbench
+# 1
+# Break in Module pd0_testbench at /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0_testbench.sv line 150
+# End time: 23:00:30 on Sep 26,2025, Elapsed time: 0:03:59
+# Errors: 0, Warnings: 0

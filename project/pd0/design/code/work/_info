@@ -1,0 +1,245 @@
+m255
+K4
+z2
+!s11f vlog 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/cs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code
+valu
+Z1 DXx6 sv_std 3 std 0 22 VYECXdT12H8WgbUP_5Y6:3
+Z2 DXx4 work 13 constants_pkg 0 22 iEP47=26HA6D11T_8^95^0
+DXx4 work 11 alu_sv_unit 0 22 12k:J@0B^@n<7hRlIfIaF2
+Z3 !s110 1758941774
+Z4 VDg1SIo80bB@j0V0VzS_@n1
+r1
+!s85 0
+!i10b 1
+!s100 SlGCgWL4U2CRPK]dIo`>T3
+IP0^9V5OiTU5JRe59WWl5?2
+!s105 alu_sv_unit
+S1
+R0
+Z5 w1758941085
+Z6 8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/alu.sv
+Z7 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/alu.sv
+!i122 7
+L0 23 32
+Z8 OV;L;2020.1;71
+31
+Z9 !s108 1758941774.000000
+Z10 !s107 /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/alu.sv|
+Z11 !s90 -reportprogress|300|-work|work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/alu.sv|
+!i113 1
+Z12 o-work work
+Z13 tCvgOpt 0
+Xalu_sv_unit
+R1
+R2
+R3
+V12k:J@0B^@n<7hRlIfIaF2
+r1
+!s85 0
+!i10b 1
+!s100 I3Od1Gn2Zd>g:7IYaA8a@2
+I12k:J@0B^@n<7hRlIfIaF2
+!i103 1
+S1
+R0
+R5
+R6
+R7
+!i122 7
+L0 21 0
+R8
+31
+R9
+R10
+R11
+!i113 1
+R12
+R13
+vassign_xor
+R1
+R3
+!i10b 1
+!s100 gbf;NBLhTCLVKXBJ>1dUa3
+Z14 !s11b Dg1SIo80bB@j0V0VzS_@n1
+IFPS_dja6IYTnmYVTPE4^W1
+R4
+S1
+R0
+Z15 w1757514497
+8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/assign_xor.sv
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/assign_xor.sv
+!i122 5
+L0 15 9
+R8
+r1
+!s85 0
+31
+R9
+!s107 /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/assign_xor.sv|
+!s90 -reportprogress|300|-work|work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/assign_xor.sv|
+!i113 1
+R12
+R13
+Xconstants_pkg
+R1
+R3
+!i10b 1
+!s100 l^C5bQ9g_L6;;bJz^BdQk0
+R14
+IiEP47=26HA6D11T_8^95^0
+ViEP47=26HA6D11T_8^95^0
+S1
+R0
+R15
+8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/constants_pkg.sv
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/constants_pkg.sv
+!i122 6
+Z16 L0 1 0
+R8
+r1
+!s85 0
+31
+R9
+!s107 /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/constants_pkg.sv|
+!s90 -reportprogress|300|-work|work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/constants_pkg.sv|
+!i113 1
+R12
+R13
+vpd0_testbench
+R1
+R2
+DXx4 work 21 pd0_testbench_sv_unit 0 22 c>i<G=fk04KnMUa62Yak?1
+R3
+R4
+r1
+!s85 0
+!i10b 1
+!s100 n`:Z;kN6P8[@2KK>_[f`Y2
+Ia5Nc:k0n21LD^M7hF05692
+!s105 pd0_testbench_sv_unit
+S1
+R0
+Z17 w1758941572
+Z18 8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0_testbench.sv
+Z19 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0_testbench.sv
+!i122 10
+L0 3 151
+R8
+31
+R9
+!s107 /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0_testbench.sv|
+Z20 !s90 -reportprogress|300|-work|work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0_testbench.sv|
+!i113 1
+R12
+R13
+Xpd0_testbench_sv_unit
+R1
+R2
+R3
+Vc>i<G=fk04KnMUa62Yak?1
+r1
+!s85 0
+!i10b 1
+!s100 1XQjOKhk`KXU4Oann[E]30
+Ic>i<G=fk04KnMUa62Yak?1
+!i103 1
+S1
+R0
+R17
+R18
+R19
+!i122 10
+R16
+R8
+31
+R9
+Z21 !s107 /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/pd0_testbench.sv|
+R20
+!i113 1
+R12
+R13
+vreg_rst
+R1
+R3
+!i10b 1
+!s100 BMMWFnHRBXlYSjFg13=hH2
+R14
+I?KRRQh4C5n8VK=37XSRL;1
+R4
+S1
+R0
+R5
+8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/reg_rst.sv
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/reg_rst.sv
+!i122 8
+L0 17 20
+R8
+r1
+!s85 0
+31
+R9
+!s107 /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/reg_rst.sv|
+!s90 -reportprogress|300|-work|work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/reg_rst.sv|
+!i113 1
+R12
+R13
+vthree_stage_pipeline
+R1
+R2
+DXx4 work 28 three_stage_pipeline_sv_unit 0 22 1RG9J[@3;nVIa:C2aa=mm3
+R3
+R4
+r1
+!s85 0
+!i10b 1
+!s100 ]8bB5_j<MnU>L5YoYUSVh2
+IH7ZGEZYBX<oLO>hUEmSWd3
+!s105 three_stage_pipeline_sv_unit
+S1
+R0
+R5
+Z22 8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/three_stage_pipeline.sv
+Z23 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/three_stage_pipeline.sv
+!i122 9
+L0 32 77
+R8
+31
+R9
+Z24 !s107 /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/three_stage_pipeline.sv|
+Z25 !s90 -reportprogress|300|-work|work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd0/design/code/three_stage_pipeline.sv|
+!i113 1
+R12
+R13
+Xthree_stage_pipeline_sv_unit
+R1
+R2
+R3
+V1RG9J[@3;nVIa:C2aa=mm3
+r1
+!s85 0
+!i10b 1
+!s100 9I>b21Wjl>QiG28:kzVUb0
+I1RG9J[@3;nVIa:C2aa=mm3
+!i103 1
+S1
+R0
+R5
+R22
+R23
+!i122 9
+L0 29 0
+R8
+31
+R9
+R24
+R25
+!i113 1
+R12
+R13
