@@ -1,9 +1,13 @@
 # To Run The Testbenches Follow These Instructions
 1- Terminal: start vsim UI first
-```vsim -gui```
+```
+vsim -gui
+```
 
 2- Create work library
-```vlib work```
+```
+vlib work
+```
 
 3- Compile design files
 ```
@@ -15,10 +19,16 @@ vlog -suppress 7061 \
 ```
 
 4- Start simulation
-```vsim -voptargs=+acc "testbench file name"```
+```
+vsim -voptargs=+acc "testbench file name"
+```
 
 5- Add waves
-```add wave -r /*```
+```
+add wave -r /*
+```
 
 6- Run simulation
-```run -all```
+```
+run -all
+```
