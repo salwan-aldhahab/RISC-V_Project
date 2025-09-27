@@ -55,7 +55,7 @@ module fetch_tb;
         // Initialize inputs
         reset_dut();
         // Wait for a few clock cycles to allow instruction fetch
-        repeat (5) @(posedge clk);
+        //repeat (5) @(posedge clk);
         // Check outputs against expected values
         // Assuming mem_init.hex has been initialized with known values
         check_output(BASEADDR, 32'hA3B2C1D0); // NOP instruction at BASEADDR
