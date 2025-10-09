@@ -4,3 +4,4 @@ control.sv
 decode.sv
 igen.sv
 pd2.sv
+constants.svh
