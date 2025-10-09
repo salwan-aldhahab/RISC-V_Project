@@ -51,4 +51,151 @@ module control #(
      * student below...
      */
 
+    always_comb begin
+        // Default values for control signals
+        pcsel_o = 1'b0;
+        immsel_o = 1'b0;
+        regwren_o = 1'b0;
+        rs1sel_o = 1'b0;
+        rs2sel_o = 1'b0;
+        memren_o = 1'b0;
+        memwren_o = 1'b0;
+        wbsel_o = 2'b00; // Default to ALU result
+        alusel_o = ALU_ADD; // Default ALU operation
+
+        case (opcode_i)
+            OPCODE_RTYPE: begin
+                regwren_o = 1'b1;
+                rs1sel_o = 1'b0;
+                rs2sel_o = 1'b0;
+                immsel_o = 1'b0;
+                wbsel_o = 2'b00; // Write back ALU result
+
+                case (funct3_i)
+                    FUNCT3_ADD_SUB: begin
+                        if (funct7_i == FUNCT7_SUB) begin
+                            alusel_o = ALU_SUB; // SUB operation
+                        end else begin
+                            alusel_o = ALU_ADD; // ADD operation
+                        end
+                    end
+                    FUNCT3_AND: alusel_o = ALU_AND; // AND operation
+                    FUNCT3_OR: alusel_o = ALU_OR;   // OR operation
+                    FUNCT3_XOR: alusel_o = ALU_XOR; // XOR operation
+                    FUNCT3_SLL: alusel_o = ALU_SLL; // SLL operation
+                    FUNCT3_SRL_SRA: begin
+                        if (funct7_i == FUNCT7_SRA) begin
+                            alusel_o = ALU_SRA; // SRA operation
+                        end else begin
+                            alusel_o = ALU_SRL; // SRL operation
+                        end
+                    end
+                    FUNCT3_SLT: alusel_o = ALU_SLT; // SLT operation
+                    FUNCT3_SLTU: alusel_o = ALU_SLTU; // SLTU operation
+                    default: alusel_o = ALU_ADD; // Default to ADD for safety
+                endcase
+            end
+
+            OPCODE_ITYPE: begin
+                regwren_o = 1'b1;
+                rs1sel_o = 1'b0;
+                rs2sel_o = 1'b1; // Use immediate
+                immsel_o = 1'b1; // Immediate selected
+                wbsel_o = 2'b00; // Write back ALU result
+                case (funct3_i)
+                    FUNCT3_ADD_SUB: alusel_o = ALU_ADD; // ADDI operation
+                    FUNCT3_AND: alusel_o = ALU_AND; // ANDI operation
+                    FUNCT3_OR: alusel_o = ALU_OR;   // ORI operation
+                    FUNCT3_XOR: alusel_o = ALU_XOR; // XORI operation
+                    FUNCT3_SLL: alusel_o = ALU_SLL; // SLLI operation
+                    FUNCT3_SRL_SRA: begin
+                        if (funct7_i == FUNCT7_SRA) begin
+                            alusel_o = ALU_SRA; // SRAI operation
+                        end else begin
+                            alusel_o = ALU_SRL; // SRLI operation
+                        end
+                    end
+                    FUNCT3_SLT: alusel_o = ALU_SLT; // SLTI operation
+                    FUNCT3_SLTU: alusel_o = ALU_SLTU; // SLTIU operation
+                    default: alusel_o = ALU_ADD; // Default to ADD for safety
+                endcase
+            end
+
+            OPCODE_LOAD: begin
+                regwren_o = 1'b1;
+                rs1sel_o = 1'b0;
+                rs2sel_o = 1'b1; // Use immediate
+                immsel_o = 1'b1; // Immediate selected
+                memren_o = 1'b1; // Enable memory read
+                wbsel_o = 2'b01; // Write back memory data
+                alusel_o = ALU_ADD; // Address calculation
+            end
+
+            OPCODE_STORE: begin
+                regwren_o = 1'b0;
+                rs1sel_o = 1'b0;
+                rs2sel_o = 1'b0;
+                immsel_o = 1'b1; // Immediate selected
+                memwren_o = 1'b1; // Enable memory write
+                alusel_o = ALU_ADD; // Address calculation
+            end
+
+            OPCODE_BRANCH: begin
+                regwren_o = 1'b0;
+                rs1sel_o = 1'b0;
+                rs2sel_o = 1'b0;
+                immsel_o = 1'b1; // Immediate selected
+                pcsel_o = 1'b1; // Branch taken (for simplicity, actual implementation may vary)
+                alusel_o = ALU_SUB; // For comparison
+            end
+
+            OPCODE_JAL: begin
+                regwren_o = 1'b1;
+                rs1sel_o = 1'b1; // Not used
+                rs2sel_o = 1'b1; // Not used
+                immsel_o = 1'b1; // Immediate selected
+                pcsel_o = 1'b1; // Jump taken
+                wbsel_o = 2'b10; // Write back PC+4
+                alusel_o = ALU_ADD; // For address calculation
+            end
+            
+            OPCODE_JALR: begin
+                regwren_o = 1'b1;
+                rs1sel_o = 1'b0;
+                rs2sel_o = 1'b1; // Use immediate
+                immsel_o = 1'b1; // Immediate selected
+                pcsel_o = 1'b1; // Jump taken
+                wbsel_o = 2'b10; // Write back PC+4
+                alusel_o = ALU_ADD; // For address calculation
+            end
+            OPCODE_LUI: begin
+                regwren_o = 1'b1;
+                rs1sel_o = 1'b1; // Not used
+                rs2sel_o = 1'b1; // Not used
+                immsel_o = 1'b1; // Immediate selected
+                wbsel_o = 2'b00; // Write back ALU result
+                alusel_o = ALU_LUI; // LUI operation
+            end
+            OPCODE_AUIPC: begin
+                regwren_o = 1'b1;
+                rs1sel_o = 1'b1; // Not used
+                rs2sel_o = 1'b1; // Not used
+                immsel_o = 1'b1; // Immediate selected
+                wbsel_o = 2'b00; // Write back ALU result
+                alusel_o = ALU_AUIPC; // AUIPC operation
+            end
+            default: begin
+                // For unrecognized opcodes, disable all operations
+                regwren_o = 1'b0;
+                rs1sel_o = 1'b0;
+                rs2sel_o = 1'b0;
+                immsel_o = 1'b0;
+                memren_o = 1'b0;
+                memwren_o = 1'b0;
+                wbsel_o = 2'b00;
+                alusel_o = ALU_ADD; // Default ALU operation
+            end
+        endcase
+    end
+
 endmodule : control
