@@ -42,7 +42,7 @@ module decode #(
     output logic [4:0] rs2_o,
     output logic [6:0] funct7_o,
     output logic [2:0] funct3_o,
-    output logic [4:0] shamt_o,
+    output logic [4:0] shamt_o,  // shift amount
     output logic [DWIDTH-1:0] imm_o
 );	
 
@@ -50,5 +50,39 @@ module decode #(
      * Process definitions to be filled by
      * student below...
      */
+
+    logic [DWIDTH-1:0] imm_internal;
+
+    igen #( .DWIDTH(DWIDTH) ) imm_gen (
+        .opcode_i(insn_i[6:0]),
+        .insn_i(insn_i),
+        .imm_o(imm_internal)
+    );
+
+    always_ff @(posedge clk or negedge rst) begin
+        if (!rst) begin
+            pc_o <= '0;
+            insn_o <= '0;
+            opcode_o <= '0;
+            rd_o <= '0;
+            rs1_o <= '0;
+            rs2_o <= '0;
+            funct7_o <= '0;
+            funct3_o <= '0;
+            shamt_o <= '0;
+            imm_o <= '0;
+        end else begin
+            pc_o <= pc_i;
+            insn_o <= insn_i;
+            opcode_o <= insn_i[6:0];
+            rd_o <= insn_i[11:7];
+            rs1_o <= insn_i[19:15];
+            rs2_o <= insn_i[24:20];
+            funct7_o <= insn_i[31:25];
+            funct3_o <= insn_i[14:12];
+            shamt_o <= insn_i[24:20]; // For shift instructions, shamt is in rs2 field
+            imm_o <= imm_internal;
+        end
+    end
 
 endmodule : decode
