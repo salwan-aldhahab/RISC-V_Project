@@ -83,26 +83,26 @@ module pd2 #(
   // Connect fetched instruction to fetch stage output
   assign f_insn = imem_insn_f;
 
-  // Fetch / Decode pipeline register
-  logic [AWIDTH-1:0] fd_pc;
-  logic [DWIDTH-1:0] fd_insn;
+  // // Fetch / Decode pipeline register
+  // logic [AWIDTH-1:0] fd_pc;
+  // logic [DWIDTH-1:0] fd_insn;
 
-  always_ff @(posedge clk) begin
-      if (reset) begin
-          fd_pc <= '0;
-          fd_insn <= '0;
-      end else begin
-          fd_pc <= f_pc;
-          fd_insn <= f_insn;
-      end
-  end
+  // always_ff @(posedge clk) begin
+  //     if (reset) begin
+  //         fd_pc <= '0;
+  //         fd_insn <= '0;
+  //     end else begin
+  //         fd_pc <= f_pc;
+  //         fd_insn <= f_insn;
+  //     end
+  // end
 
   // Decode stage
   decode #( .AWIDTH(AWIDTH), .DWIDTH(DWIDTH) ) decode_stage (
       .clk(clk),
       .rst(reset),
-      .insn_i(fd_insn),
-      .pc_i(fd_pc),
+      .insn_i(f_insn),
+      .pc_i(f_pc),
       .pc_o(d_pc),
       .insn_o(d_insn),
       .opcode_o(d_opcode),
