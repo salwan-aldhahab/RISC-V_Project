@@ -38,28 +38,28 @@ module pd2 #(
   // -- Probes Instantiation --
 
 
-  // imemory signals
-  logic [DWIDTH - 1:0] addr_i;
-  logic [DWIDTH - 1:0] data_i;
-  logic write_en;
-  logic read_en;
+  // // imemory signals
+  // logic [DWIDTH - 1:0] addr_i;
+  // logic [DWIDTH - 1:0] data_i;
+  // logic write_en;
+  // logic read_en;
   
-  memory #(
-      .AWIDTH(32),
-      .DWIDTH(32),
-      .BASE_ADDR(32'h01000000)
-  ) memory1 (
-      .clk(clk),
-      .rst(reset),
-      .addr_i(f_pc),
-      .data_i(data_i),
-      .read_en_i(read_en),
-      .write_en_i(write_en),
-      .data_o(f_insn)
-  );
+  // memory #(
+  //     .AWIDTH(32),
+  //     .DWIDTH(32),
+  //     .BASE_ADDR(32'h01000000)
+  // ) memory1 (
+  //     .clk(clk),
+  //     .rst(reset),
+  //     .addr_i(f_pc),
+  //     .data_i(data_i),
+  //     .read_en_i(read_en),
+  //     .write_en_i(write_en),
+  //     .data_o(f_insn)
+  // );
 
-  assign read_en = 1'b1;
-  assign write_en = 1'b0;
+  // assign read_en = 1'b1;
+  // assign write_en = 1'b0;
 
   // Fetch
   fetch #(
