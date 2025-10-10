@@ -59,8 +59,8 @@ module decode #(
         .imm_o(imm_internal)
     );
 
-    always_ff @(posedge clk or negedge rst) begin
-        if (!rst) begin
+    always_ff @(posedge clk) begin
+        if (rst) begin
             pc_o <= '0;
             insn_o <= '0;
             opcode_o <= '0;
