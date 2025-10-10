@@ -44,6 +44,9 @@ module pd2 #(
   logic write_en;
   logic read_en;
   
+  assign read_en = 1'b1;
+  assign write_en = 1'b0;
+
   memory #(
       .AWIDTH(32),
       .DWIDTH(32),
@@ -57,9 +60,6 @@ module pd2 #(
       .write_en_i(write_en),
       .data_o(f_insn)
   );
-
-  assign read_en = 1'b1;
-  assign write_en = 1'b0;
 
   // Fetch
   fetch #(
