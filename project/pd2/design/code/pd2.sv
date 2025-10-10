@@ -24,10 +24,12 @@ module pd2 #(
   // -- Probes Instantiation --
 
   // Fetch stage signals
-  logic [DWIDTH-1:0] f_pc, f_insn;
+  logic [DWIDTH-1:0] f_insn;
+  logic [AWIDTH-1:0] f_pc;
 
   // Decode stage signals
-  logic [DWIDTH-1:0] d_pc, d_insn;
+  logic [DWIDTH-1:0] d_insn;
+  logic [AWIDTH-1:0] d_pc;
   logic [6:0] d_opcode;
   logic [4:0] d_rd, d_rs1, d_rs2;
   logic [6:0] d_funct7;
@@ -39,11 +41,28 @@ module pd2 #(
 
 
   // imemory signals
-  logic [DWIDTH - 1:0] addr_i;
+  logic [AWIDTH - 1:0] addr_i;
   logic [DWIDTH - 1:0] data_i;
   logic write_en;
   logic read_en;
+  logic [DWIDTH - 1:0] imem_insn_f; // instruction from imemory
   
+
+  // Fetch stage
+  fetch #(
+      .AWIDTH(32),
+      .DWIDTH(32),
+      .BASEADDR(32'h01000000)
+  ) fetch1 (
+      .clk(clk),
+      .rst(reset),
+      .pc_o(f_pc),            
+      .insn_o()         
+  );
+
+  // Instruction Memory (read-only for fetch stage)
+  assign addr_i = f_pc;
+  assign data_i = '0; // No data to write
   assign read_en = 1'b1;
   assign write_en = 1'b0;
 
@@ -54,32 +73,36 @@ module pd2 #(
   ) memory1 (
       .clk(clk),
       .rst(reset),
-      .addr_i(f_pc),
+      .addr_i(addr_i),
       .data_i(data_i),
       .read_en_i(read_en),
       .write_en_i(write_en),
-      .data_o(f_insn)
+      .data_o(imem_insn_f)
   );
 
-  // Fetch
-  fetch #(
-      .AWIDTH(32),
-      .DWIDTH(32),
-      .BASEADDR(32'h01000000)
-  ) fetch1 (
-      .clk(clk),
-      .rst(reset),
-      .pc_o(f_pc),            
-      .insn_o(f_insn)         
-  );
+  // Connect fetched instruction to fetch stage output
+  assign f_insn = imem_insn_f;
 
+  // Fetch / Decode pipeline register
+  logic [AWIDTH-1:0] fd_pc;
+  logic [DWIDTH-1:0] fd_insn;
 
-  // Decode
+  always_ff @(posedge clk) begin
+      if (reset) begin
+          fd_pc <= '0;
+          fd_insn <= '0;
+      end else begin
+          fd_pc <= f_pc;
+          fd_insn <= f_insn;
+      end
+  end
+
+  // Decode stage
   decode #( .AWIDTH(AWIDTH), .DWIDTH(DWIDTH) ) decode_stage (
       .clk(clk),
       .rst(reset),
-      .insn_i(f_insn),
-      .pc_i(f_pc),
+      .insn_i(fd_insn),
+      .pc_i(fd_pc),
       .pc_o(d_pc),
       .insn_o(d_insn),
       .opcode_o(d_opcode),
