@@ -132,64 +132,72 @@ module control #(
             end
 
             OPCODE_STORE: begin
-                regwren_o = 1'b0;
-                rs1sel_o = 1'b0;
-                rs2sel_o = 1'b0;
+                regwren_o = 1'b0; // Don't write to register
+                rs1sel_o = 1'b0; // Use rs1 for base address
+                rs2sel_o = 1'b1; // Use immediate for offset calculation
                 immsel_o = 1'b1; // Immediate selected
                 memwren_o = 1'b1; // Enable memory write
+                wbsel_o = 2'b00; // Don't care since regwren_o = 0
                 alusel_o = ALU_ADD; // Address calculation
             end
 
             OPCODE_BRANCH: begin
-                regwren_o = 1'b0;
-                rs1sel_o = 1'b0;
-                rs2sel_o = 1'b0;
-                immsel_o = 1'b1; // Immediate selected
-                pcsel_o = 1'b1; // Branch taken (for simplicity, actual implementation may vary)
-                alusel_o = ALU_SUB; // For comparison
+                regwren_o = 1'b0; // Don't write to register
+                rs1sel_o = 1'b0; // Use rs1 for comparison
+                rs2sel_o = 1'b0; // Use rs2 for comparison
+                immsel_o = 1'b1; // Immediate selected for PC calculation
+                // Note: pcsel_o should be controlled by branch unit based on comparison result
+                // Setting to 0 here - actual branch decision made elsewhere
+                pcsel_o = 1'b0; 
+                wbsel_o = 2'b00; // Don't care since regwren_o = 0
+                alusel_o = ALU_SUB; // For comparison (rs1 - rs2)
             end
 
             OPCODE_JAL: begin
-                regwren_o = 1'b1;
-                rs1sel_o = 1'b1; // Not used
-                rs2sel_o = 1'b1; // Not used
+                regwren_o = 1'b1; // Write PC+4 to rd
+                rs1sel_o = 1'b1; // Don't care - not used
+                rs2sel_o = 1'b1; // Don't care - not used
                 immsel_o = 1'b1; // Immediate selected
                 pcsel_o = 1'b1; // Jump taken
                 wbsel_o = 2'b10; // Write back PC+4
-                alusel_o = ALU_ADD; // For address calculation
+                alusel_o = ALU_ADD; // Don't care for this instruction
             end
             
             OPCODE_JALR: begin
-                regwren_o = 1'b1;
-                rs1sel_o = 1'b0;
+                regwren_o = 1'b1; // Write PC+4 to rd
+                rs1sel_o = 1'b0; // Use rs1 for base address
                 rs2sel_o = 1'b1; // Use immediate
                 immsel_o = 1'b1; // Immediate selected
                 pcsel_o = 1'b1; // Jump taken
                 wbsel_o = 2'b10; // Write back PC+4
-                alusel_o = ALU_ADD; // For address calculation
+                alusel_o = ALU_ADD; // For target address calculation (rs1 + imm)
             end
+
             OPCODE_LUI: begin
-                regwren_o = 1'b1;
-                rs1sel_o = 1'b1; // Not used
-                rs2sel_o = 1'b1; // Not used
+                regwren_o = 1'b1; // Write to rd
+                rs1sel_o = 1'b1; // Don't care - not used
+                rs2sel_o = 1'b1; // Don't care - not used
                 immsel_o = 1'b1; // Immediate selected
                 wbsel_o = 2'b00; // Write back ALU result
                 alusel_o = ALU_LUI; // LUI operation
             end
+
             OPCODE_AUIPC: begin
-                regwren_o = 1'b1;
-                rs1sel_o = 1'b1; // Not used
-                rs2sel_o = 1'b1; // Not used
+                regwren_o = 1'b1; // Write to rd
+                rs1sel_o = 1'b1; // Don't care - PC is used instead
+                rs2sel_o = 1'b1; // Don't care - not used
                 immsel_o = 1'b1; // Immediate selected
                 wbsel_o = 2'b00; // Write back ALU result
                 alusel_o = ALU_AUIPC; // AUIPC operation
             end
+
             default: begin
                 // For unrecognized opcodes, disable all operations
+                pcsel_o = 1'b0;
+                immsel_o = 1'b0;
                 regwren_o = 1'b0;
                 rs1sel_o = 1'b0;
                 rs2sel_o = 1'b0;
-                immsel_o = 1'b0;
                 memren_o = 1'b0;
                 memwren_o = 1'b0;
                 wbsel_o = 2'b00;
