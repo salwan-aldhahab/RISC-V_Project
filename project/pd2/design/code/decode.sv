@@ -94,8 +94,13 @@ module decode #(
                 funct3_o = insn_i[14:12];
                 rs1_o = insn_i[19:15];
                 rs2_o = 5'b0; // Not used in I-type
-                funct7_o = insn_i[31:25]; // For shift instructions
-                shamt_o = insn_i[24:20]; // For shift instructions (shamt field)
+                if (opcode_internal == OPCODE_ITYPE && (funct3_o == FUNCT3_SLL || funct3_o == FUNCT3_SRL_SRA)) begin
+                    // For shift instructions (SLLI, SRLI, SRAI), shamt is in rs2 field
+                    funct7_o = insn_i[31:25];
+                    shamt_o = insn_i[24:20];
+                end
+                funct7_o = 7'b0; // Default, unless it's a shift instruction
+                shamt_o = 5'b0; // Default, unless it's a shift instruction
             end
 
             // S-type instructions (stores)
