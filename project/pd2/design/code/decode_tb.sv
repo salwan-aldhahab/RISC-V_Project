@@ -40,15 +40,6 @@ module decode_tb;
     logic [31:0] tests_passed;
     logic [31:0] tests_failed;
 
-    // Display summary at the end of simulation
-    function void display_summary();
-        $display("======================================");
-        $display("Decode Module Test Summary:");
-        $display("Tests Passed: %0d", tests_passed);
-        $display("Tests Failed: %0d", tests_failed);
-        $display("======================================");
-    endfunction
-
     // Test sequence
     initial begin
         // Initialize inputs
@@ -205,7 +196,11 @@ module decode_tb;
         end
 
         // Display final summary
-        display_summary();
+        $display("======================================");
+        $display("Decode Module Test Summary:");
+        $display("Tests Passed: %0d", tests_passed);
+        $display("Tests Failed: %0d", tests_failed);
+        $display("======================================");
         $finish;
     end
 endmodule : decode_tb
