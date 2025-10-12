@@ -42,6 +42,11 @@ module decode_tb;
 
     // Test sequence
     initial begin
+
+        tests_passed = 0;
+        tests_failed = 0;
+        $display("Starting Decode Module Testbench...");
+        $display("======================================");
         // Initialize inputs
         insn_i = 32'b0;
         pc_i = 32'b0;
