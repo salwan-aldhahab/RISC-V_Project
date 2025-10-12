@@ -158,7 +158,7 @@ module decode_tb;
         end
 
         // Test case 5: R-type instruction (AND x5, x6, x7)
-        insn_i = 32'b0000000_00111_00110_111
+        insn_i = 32'b0000000_00111_00110_111_00101_0110011; // AND x5, x6, x7
         pc_i = 32'h00000010;
         #10; // Wait for a clock cycle
         $display("Test Case 5: R-type (AND x5, x6, x7)");
@@ -182,7 +182,7 @@ module decode_tb;
         #10;
 
         // Test case 6: R-type instruction (SLL x5, x6, x7)
-        insn_i = 32'b0000000_00111_00110_001
+        insn_i = 32'b0000000_00111_00110_001_00101_0110011; // SLL x5, x6, x7
         pc_i = 32'h00000014;
         #10; // Wait for a clock cycle
         $display("Test Case 6: R-type (SLL x5, x6, x7)");
