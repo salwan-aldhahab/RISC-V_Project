@@ -42,7 +42,7 @@ module igen #(
                 imm_o = {insn_i[31:12], 12'b0};
             end
             OPCODE_JAL: begin
-                // J-type immediate
+                // J-type immediate: imm[20|10:1|11|19:12]
                 imm_o = {{11{insn_i[31]}}, insn_i[31], insn_i[19:12], insn_i[20], insn_i[30:21], 1'b0};
             end
             default: begin
