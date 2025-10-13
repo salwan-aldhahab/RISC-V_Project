@@ -879,7 +879,7 @@ module decode_tb;
         pc_i = 32'h00000084;
         #10;
         $display("Test Case 34: J-type (JAL x5, +32)");
-        $display("Opcode: %b, rd: %d, rs1: %d, rs2: %d, funct3: %b, funct7: %b, shamt: %d, imm: %d", 
+        $display("Opcode: %b, rd: %d, rs1: %d, rs2: %d, funct3: %b, funct7: %b, shamt: %d, imm: %b", 
                  opcode_o, rd_o, rs1_o, rs2_o, funct3_o, funct7_o, shamt_o, imm_o);
         // Check outputs and increment test counters if correct or not
         if (opcode_o == 7'b1101111 && 
@@ -889,7 +889,7 @@ module decode_tb;
             rs1_o == 5'd0 && 
             rs2_o == 5'd0 && 
             shamt_o == 5'd0 &&
-            imm_o == 32'b00000000000000100000) begin
+            imm_o == 32'd32) begin
             tests_passed++;
             $display("Test Case 34 Passed");
         end else begin
