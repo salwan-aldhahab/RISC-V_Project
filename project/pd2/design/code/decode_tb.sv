@@ -416,7 +416,7 @@ module decode_tb;
             rd_o == 5'd5 && 
             rs1_o == 5'd6 && 
             rs2_o == 5'd0 &&
-            shamt_o == 5'd0 &&
+            shamt_o == 5'd3 &&
             imm_o == 32'd3) begin
             tests_passed++;
             $display("Test Case 15 Passed");
@@ -441,7 +441,7 @@ module decode_tb;
             rd_o == 5'd5 && 
             rs1_o == 5'd6 && 
             rs2_o == 5'd0 &&
-            shamt_o == 5'd0 &&
+            shamt_o == 5'd3 &&
             imm_o == 32'd3) begin
             tests_passed++;
             $display("Test Case 16 Passed");
@@ -466,7 +466,7 @@ module decode_tb;
             rd_o == 5'd5 && 
             rs1_o == 5'd6 && 
             rs2_o == 5'd0 &&
-            shamt_o == 5'd0 &&
+            shamt_o == 5'd3 &&
             imm_o == 32'd1027) begin  // imm[11:0] = 0100000_00011 = 1027
             tests_passed++;
             $display("Test Case 17 Passed");
