@@ -939,7 +939,7 @@ module decode_tb;
             rs1_o == 5'd0 && 
             rs2_o == 5'd0 && 
             shamt_o == 5'd0 &&
-            imm_o == 32'h00ABC000) begin
+            imm_o == 32'hABC00000) begin
             tests_passed++;
             $display("Test Case 36 Passed");
         end else begin
