@@ -4,24 +4,24 @@
 module control_tb;
     parameter int DWIDTH = 32;
 
-    // DUT inputs
+    // Inputs to the control unit we're testing
     logic [DWIDTH-1:0] insn_i;
     logic [6:0]        opcode_i;
     logic [6:0]        funct7_i;
     logic [2:0]        funct3_i;
 
-    // DUT outputs
-    logic pcsel_o;
-    logic immsel_o;
-    logic regwren_o;
-    logic rs1sel_o;
-    logic rs2sel_o;
-    logic memren_o;
-    logic memwren_o;
-    logic [1:0] wbsel_o;
-    logic [3:0] alusel_o;
+    // Control signals that come out of our unit
+    logic pcsel_o;      // Decides if we use ALU result or PC+4 for next PC
+    logic immsel_o;     // Choose between register or immediate value
+    logic regwren_o;    // Enable writing to the register file
+    logic rs1sel_o;     // Select source 1 (register vs PC)
+    logic rs2sel_o;     // Select source 2 (register vs immediate)
+    logic memren_o;     // Enable memory reads
+    logic memwren_o;    // Enable memory writes
+    logic [1:0] wbsel_o; // What to write back: ALU result, memory, or PC+4
+    logic [3:0] alusel_o; // Which ALU operation to perform
 
-    // Instantiate the control module
+    // Create an instance of our control module to test
     control #( .DWIDTH(DWIDTH) ) dut (
         .insn_i   (insn_i),
         .opcode_i (opcode_i),
@@ -38,17 +38,17 @@ module control_tb;
         .alusel_o (alusel_o)
     );
 
-    // Book-keeping
+    // Keep track of how we're doing
     logic [31:0] tests_passed;
     logic [31:0] tests_failed;
 
-    // Helper to drive inputs
+    // Simple helper to set up test inputs and wait a bit
     task drive(input [6:0] opc, input [2:0] f3, input [6:0] f7);
         opcode_i = opc;
         funct3_i = f3;
         funct7_i = f7;
-        insn_i   = '0;   // not used by control; keep zero
-        #1;
+        insn_i   = '0;   // Our control unit doesn't need the full instruction
+        #1;              // Give the logic time to settle
     endtask
 
     initial begin
@@ -58,280 +58,274 @@ module control_tb;
         $display("Starting Control Module Testbench...");
         $display("======================================");
 
-        // -------------------------------------------------------
-        // Default / Unknown opcode
-        // -------------------------------------------------------
+        // Let's see what happens with garbage input
         drive(7'b1111111, 3'b000, 7'b0000000);
-        $display("Test Case 0: DEFAULT/UNKNOWN");
+        $display("Test Case 0: What happens with unknown opcodes?");
         $display("pcsel=%0b immsel=%0b regwren=%0b rs1sel=%0b rs2sel=%0b memren=%0b memwren=%0b wbsel=%02b alusel=%0h",
                  pcsel_o, immsel_o, regwren_o, rs1sel_o, rs2sel_o, memren_o, memwren_o, wbsel_o, alusel_o);
         if (pcsel_o==0 && immsel_o==0 && regwren_o==0 && rs1sel_o==0 && rs2sel_o==0 &&
             memren_o==0 && memwren_o==0 && wbsel_o==2'b00 && alusel_o==ALU_ADD) begin
-            tests_passed++; $display("Test Case 0 Passed\n");
+            tests_passed++; $display("✓ Unknown opcodes default to safe values\n");
         end else begin
-            tests_failed++; $display("Test Case 0 Failed\n");
+            tests_failed++; $display("✗ Unexpected behavior for unknown opcodes\n");
         end
         #5;
 
-        // -------------------------------------------------------
-        // R-type: ADD/SUB/AND/OR/XOR/SLL/SRL/SRA/SLT/SLTU
-        // -------------------------------------------------------
-        drive(OPCODE_RTYPE, FUNCT3_ADD_SUB, FUNCT7_ADD);   // ADD
-        $display("Test Case 1: R-type ADD");
+        // Test all the basic arithmetic operations (register-to-register)
+        drive(OPCODE_RTYPE, FUNCT3_ADD_SUB, FUNCT7_ADD);
+        $display("Test Case 1: Simple addition (ADD rd, rs1, rs2)");
         $display("pcsel=%0b immsel=%0b regwren=%0b rs1sel=%0b rs2sel=%0b wbsel=%02b alusel=%0h",
                  pcsel_o, immsel_o, regwren_o, rs1sel_o, rs2sel_o, wbsel_o, alusel_o);
         if (regwren_o==1 && rs1sel_o==0 && rs2sel_o==0 && immsel_o==0 && wbsel_o==2'b00 && alusel_o==ALU_ADD) begin
-            tests_passed++; $display("Test Case 1 Passed\n");
+            tests_passed++; $display("✓ ADD configured correctly\n");
         end else begin
-            tests_failed++; $display("Test Case 1 Failed\n");
+            tests_failed++; $display("✗ ADD not working as expected\n");
         end
         #5;
 
-        drive(OPCODE_RTYPE, FUNCT3_ADD_SUB, FUNCT7_SUB);   // SUB
-        $display("Test Case 2: R-type SUB");
+        drive(OPCODE_RTYPE, FUNCT3_ADD_SUB, FUNCT7_SUB);
+        $display("Test Case 2: Subtraction (SUB rd, rs1, rs2)");
         if (regwren_o==1 && rs1sel_o==0 && rs2sel_o==0 && immsel_o==0 && wbsel_o==2'b00 && alusel_o==ALU_SUB) begin
-            tests_passed++; $display("Test Case 2 Passed\n");
+            tests_passed++; $display("✓ SUB configured correctly\n");
         end else begin
-            tests_failed++; $display("Test Case 2 Failed\n");
+            tests_failed++; $display("✗ SUB not working as expected\n");
         end
         #5;
 
+        // Test the bitwise operations
         drive(OPCODE_RTYPE, FUNCT3_AND, FUNCT7_AND);
-        $display("Test Case 3: R-type AND");
+        $display("Test Case 3: Bitwise AND");
         if (regwren_o==1 && alusel_o==ALU_AND && wbsel_o==2'b00) begin
-            tests_passed++; $display("Test Case 3 Passed\n");
+            tests_passed++; $display("✓ AND working fine\n");
         end else begin
-            tests_failed++; $display("Test Case 3 Failed\n");
+            tests_failed++; $display("✗ AND has issues\n");
         end
         #5;
 
         drive(OPCODE_RTYPE, FUNCT3_OR, FUNCT7_OR);
-        $display("Test Case 4: R-type OR");
+        $display("Test Case 4: Bitwise OR");
         if (regwren_o==1 && alusel_o==ALU_OR && wbsel_o==2'b00) begin
-            tests_passed++; $display("Test Case 4 Passed\n");
+            tests_passed++; $display("✓ OR working fine\n");
         end else begin
-            tests_failed++; $display("Test Case 4 Failed\n");
+            tests_failed++; $display("✗ OR has issues\n");
         end
         #5;
 
         drive(OPCODE_RTYPE, FUNCT3_XOR, FUNCT7_XOR);
-        $display("Test Case 5: R-type XOR");
+        $display("Test Case 5: Bitwise XOR");
         if (regwren_o==1 && alusel_o==ALU_XOR && wbsel_o==2'b00) begin
-            tests_passed++; $display("Test Case 5 Passed\n");
+            tests_passed++; $display("✓ XOR working fine\n");
         end else begin
-            tests_failed++; $display("Test Case 5 Failed\n");
+            tests_failed++; $display("✗ XOR has issues\n");
         end
         #5;
 
+        // Test the shift operations
         drive(OPCODE_RTYPE, FUNCT3_SLL, FUNCT7_SLL);
-        $display("Test Case 6: R-type SLL");
+        $display("Test Case 6: Shift left logical");
         if (regwren_o==1 && alusel_o==ALU_SLL && wbsel_o==2'b00) begin
-            tests_passed++; $display("Test Case 6 Passed\n");
+            tests_passed++; $display("✓ Left shift working\n");
         end else begin
-            tests_failed++; $display("Test Case 6 Failed\n");
+            tests_failed++; $display("✗ Left shift problems\n");
         end
         #5;
 
         drive(OPCODE_RTYPE, FUNCT3_SRL_SRA, FUNCT7_SRL);
-        $display("Test Case 7: R-type SRL");
+        $display("Test Case 7: Shift right logical");
         if (regwren_o==1 && alusel_o==ALU_SRL && wbsel_o==2'b00) begin
-            tests_passed++; $display("Test Case 7 Passed\n");
+            tests_passed++; $display("✓ Right logical shift working\n");
         end else begin
-            tests_failed++; $display("Test Case 7 Failed\n");
+            tests_failed++; $display("✗ Right logical shift problems\n");
         end
         #5;
 
         drive(OPCODE_RTYPE, FUNCT3_SRL_SRA, FUNCT7_SRA);
-        $display("Test Case 8: R-type SRA");
+        $display("Test Case 8: Shift right arithmetic (preserves sign)");
         if (regwren_o==1 && alusel_o==ALU_SRA && wbsel_o==2'b00) begin
-            tests_passed++; $display("Test Case 8 Passed\n");
+            tests_passed++; $display("✓ Arithmetic right shift working\n");
         end else begin
-            tests_failed++; $display("Test Case 8 Failed\n");
+            tests_failed++; $display("✗ Arithmetic right shift problems\n");
         end
         #5;
 
+        // Test comparison operations
         drive(OPCODE_RTYPE, FUNCT3_SLT, FUNCT7_SLT);
-        $display("Test Case 9: R-type SLT");
+        $display("Test Case 9: Set if less than (signed)");
         if (regwren_o==1 && alusel_o==ALU_SLT && wbsel_o==2'b00) begin
-            tests_passed++; $display("Test Case 9 Passed\n");
+            tests_passed++; $display("✓ Signed comparison working\n");
         end else begin
-            tests_failed++; $display("Test Case 9 Failed\n");
+            tests_failed++; $display("✗ Signed comparison issues\n");
         end
         #5;
 
         drive(OPCODE_RTYPE, FUNCT3_SLTU, FUNCT7_SLTU);
-        $display("Test Case 10: R-type SLTU");
+        $display("Test Case 10: Set if less than (unsigned)");
         if (regwren_o==1 && alusel_o==ALU_SLTU && wbsel_o==2'b00) begin
-            tests_passed++; $display("Test Case 10 Passed\n");
+            tests_passed++; $display("✓ Unsigned comparison working\n");
         end else begin
-            tests_failed++; $display("Test Case 10 Failed\n");
+            tests_failed++; $display("✗ Unsigned comparison issues\n");
         end
         #10;
 
-        // -------------------------------------------------------
-        // I-type (OP-IMM): ADDI/ANDI/ORI/XORI/SLLI/SRLI/SRAI/SLTI/SLTIU
-        // -------------------------------------------------------
-        drive(OPCODE_ITYPE, FUNCT3_ADD_SUB, 7'b0000000);   // ADDI
-        $display("Test Case 11: I-type ADDI");
+        // Now test immediate operations (same operations but with constants)
+        drive(OPCODE_ITYPE, FUNCT3_ADD_SUB, 7'b0000000);
+        $display("Test Case 11: Add immediate (ADDI rd, rs1, imm)");
         if (regwren_o==1 && rs2sel_o==1 && immsel_o==1 && wbsel_o==2'b00 && alusel_o==ALU_ADD) begin
-            tests_passed++; $display("Test Case 11 Passed\n");
+            tests_passed++; $display("✓ Add immediate working (using immediate instead of rs2)\n");
         end else begin
-            tests_failed++; $display("Test Case 11 Failed\n");
+            tests_failed++; $display("✗ Add immediate not configured right\n");
         end
         #5;
 
-        drive(OPCODE_ITYPE, FUNCT3_AND, 7'b0000000);       // ANDI
-        $display("Test Case 12: I-type ANDI");
+        drive(OPCODE_ITYPE, FUNCT3_AND, 7'b0000000);
+        $display("Test Case 12: AND with immediate");
         if (regwren_o==1 && rs2sel_o==1 && immsel_o==1 && alusel_o==ALU_AND) begin
-            tests_passed++; $display("Test Case 12 Passed\n");
+            tests_passed++; $display("✓ AND immediate working\n");
         end else begin
-            tests_failed++; $display("Test Case 12 Failed\n");
+            tests_failed++; $display("✗ AND immediate problems\n");
         end
         #5;
 
-        drive(OPCODE_ITYPE, FUNCT3_OR, 7'b0000000);        // ORI
-        $display("Test Case 13: I-type ORI");
+        drive(OPCODE_ITYPE, FUNCT3_OR, 7'b0000000);
+        $display("Test Case 13: OR with immediate");
         if (regwren_o==1 && rs2sel_o==1 && immsel_o==1 && alusel_o==ALU_OR) begin
-            tests_passed++; $display("Test Case 13 Passed\n");
+            tests_passed++; $display("✓ OR immediate working\n");
         end else begin
-            tests_failed++; $display("Test Case 13 Failed\n");
+            tests_failed++; $display("✗ OR immediate problems\n");
         end
         #5;
 
-        drive(OPCODE_ITYPE, FUNCT3_XOR, 7'b0000000);       // XORI
-        $display("Test Case 14: I-type XORI");
+        drive(OPCODE_ITYPE, FUNCT3_XOR, 7'b0000000);
+        $display("Test Case 14: XOR with immediate");
         if (regwren_o==1 && rs2sel_o==1 && immsel_o==1 && alusel_o==ALU_XOR) begin
-            tests_passed++; $display("Test Case 14 Passed\n");
+            tests_passed++; $display("✓ XOR immediate working\n");
         end else begin
-            tests_failed++; $display("Test Case 14 Failed\n");
+            tests_failed++; $display("✗ XOR immediate problems\n");
         end
         #5;
 
-        drive(OPCODE_ITYPE, FUNCT3_SLL, 7'b0000000);       // SLLI
-        $display("Test Case 15: I-type SLLI");
+        drive(OPCODE_ITYPE, FUNCT3_SLL, 7'b0000000);
+        $display("Test Case 15: Shift left by immediate amount");
         if (regwren_o==1 && rs2sel_o==1 && immsel_o==1 && alusel_o==ALU_SLL) begin
-            tests_passed++; $display("Test Case 15 Passed\n");
+            tests_passed++; $display("✓ Shift left immediate working\n");
         end else begin
-            tests_failed++; $display("Test Case 15 Failed\n");
+            tests_failed++; $display("✗ Shift left immediate problems\n");
         end
         #5;
 
-        drive(OPCODE_ITYPE, FUNCT3_SRL_SRA, 7'b0000000);   // SRLI
-        $display("Test Case 16: I-type SRLI");
+        drive(OPCODE_ITYPE, FUNCT3_SRL_SRA, 7'b0000000);
+        $display("Test Case 16: Shift right logical by immediate");
         if (regwren_o==1 && rs2sel_o==1 && immsel_o==1 && alusel_o==ALU_SRL) begin
-            tests_passed++; $display("Test Case 16 Passed\n");
+            tests_passed++; $display("✓ Shift right logical immediate working\n");
         end else begin
-            tests_failed++; $display("Test Case 16 Failed\n");
+            tests_failed++; $display("✗ Shift right logical immediate problems\n");
         end
         #5;
 
-        drive(OPCODE_ITYPE, FUNCT3_SRL_SRA, 7'b0100000);   // SRAI
-        $display("Test Case 17: I-type SRAI");
+        drive(OPCODE_ITYPE, FUNCT3_SRL_SRA, 7'b0100000);
+        $display("Test Case 17: Shift right arithmetic by immediate");
         if (regwren_o==1 && rs2sel_o==1 && immsel_o==1 && alusel_o==ALU_SRA) begin
-            tests_passed++; $display("Test Case 17 Passed\n");
+            tests_passed++; $display("✓ Shift right arithmetic immediate working\n");
         end else begin
-            tests_failed++; $display("Test Case 17 Failed\n");
+            tests_failed++; $display("✗ Shift right arithmetic immediate problems\n");
         end
         #5;
 
-        drive(OPCODE_ITYPE, FUNCT3_SLT, 7'b0000000);       // SLTI
-        $display("Test Case 18: I-type SLTI");
+        drive(OPCODE_ITYPE, FUNCT3_SLT, 7'b0000000);
+        $display("Test Case 18: Compare with immediate (signed)");
         if (regwren_o==1 && rs2sel_o==1 && immsel_o==1 && alusel_o==ALU_SLT) begin
-            tests_passed++; $display("Test Case 18 Passed\n");
+            tests_passed++; $display("✓ Signed immediate comparison working\n");
         end else begin
-            tests_failed++; $display("Test Case 18 Failed\n");
+            tests_failed++; $display("✗ Signed immediate comparison problems\n");
         end
         #5;
 
-        drive(OPCODE_ITYPE, FUNCT3_SLTU, 7'b0000000);      // SLTIU
-        $display("Test Case 19: I-type SLTIU");
+        drive(OPCODE_ITYPE, FUNCT3_SLTU, 7'b0000000);
+        $display("Test Case 19: Compare with immediate (unsigned)");
         if (regwren_o==1 && rs2sel_o==1 && immsel_o==1 && alusel_o==ALU_SLTU) begin
-            tests_passed++; $display("Test Case 19 Passed\n");
+            tests_passed++; $display("✓ Unsigned immediate comparison working\n");
         end else begin
-            tests_failed++; $display("Test Case 19 Failed\n");
+            tests_failed++; $display("✗ Unsigned immediate comparison problems\n");
         end
         #10;
 
-        // -------------------------------------------------------
-        // LOAD / STORE
-        // -------------------------------------------------------
+        // Test memory operations
         drive(OPCODE_LOAD, FUNCT3_LW, 7'b0000000);
-        $display("Test Case 20: LOAD (LW)");
+        $display("Test Case 20: Load word from memory");
         if (regwren_o==1 && rs2sel_o==1 && immsel_o==1 && memren_o==1 && wbsel_o==2'b01 && alusel_o==ALU_ADD) begin
-            tests_passed++; $display("Test Case 20 Passed\n");
+            tests_passed++; $display("✓ Load instruction setup correctly (address = rs1 + offset)\n");
         end else begin
-            tests_failed++; $display("Test Case 20 Failed\n");
+            tests_failed++; $display("✗ Load instruction not configured right\n");
         end
         #5;
 
         drive(OPCODE_STORE, FUNCT3_SW, 7'b0000000);
-        $display("Test Case 21: STORE (SW)");
+        $display("Test Case 21: Store word to memory");
         if (regwren_o==0 && rs2sel_o==1 && immsel_o==1 && memwren_o==1 && alusel_o==ALU_ADD) begin
-            tests_passed++; $display("Test Case 21 Passed\n");
+            tests_passed++; $display("✓ Store instruction setup correctly (don't write to register)\n");
         end else begin
-            tests_failed++; $display("Test Case 21 Failed\n");
+            tests_failed++; $display("✗ Store instruction not configured right\n");
         end
         #10;
 
-        // -------------------------------------------------------
-        // BRANCH
-        // -------------------------------------------------------
+        // Test branch operations
         drive(OPCODE_BRANCH, FUNCT3_BEQ, 7'b0000000);
-        $display("Test Case 22: BRANCH (BEQ)");
+        $display("Test Case 22: Branch if equal");
         if (regwren_o==0 && rs1sel_o==0 && rs2sel_o==0 && immsel_o==1 && pcsel_o==0 && alusel_o==ALU_SUB) begin
-            tests_passed++; $display("Test Case 22 Passed\n");
+            tests_passed++; $display("✓ Branch setup correctly (compare rs1 and rs2)\n");
         end else begin
-            tests_failed++; $display("Test Case 22 Failed\n");
+            tests_failed++; $display("✗ Branch not configured right\n");
         end
         #10;
 
-        // -------------------------------------------------------
-        // JAL / JALR
-        // -------------------------------------------------------
+        // Test jump operations
         drive(OPCODE_JAL, 3'b000, 7'b0000000);
-        $display("Test Case 23: JAL");
+        $display("Test Case 23: Jump and link (save return address)");
         if (pcsel_o==1 && regwren_o==1 && immsel_o==1 && wbsel_o==2'b10 && alusel_o==ALU_ADD) begin
-            tests_passed++; $display("Test Case 23 Passed\n");
+            tests_passed++; $display("✓ JAL working (jump to PC + offset, save PC+4)\n");
         end else begin
-            tests_failed++; $display("Test Case 23 Failed\n");
+            tests_failed++; $display("✗ JAL not working right\n");
         end
         #5;
 
         drive(OPCODE_JALR, 3'b000, 7'b0000000);
-        $display("Test Case 24: JALR");
+        $display("Test Case 24: Jump to register address and link");
         if (pcsel_o==1 && regwren_o==1 && rs1sel_o==0 && rs2sel_o==1 && immsel_o==1 && wbsel_o==2'b10 && alusel_o==ALU_ADD) begin
-            tests_passed++; $display("Test Case 24 Passed\n");
+            tests_passed++; $display("✓ JALR working (jump to rs1 + offset, save PC+4)\n");
         end else begin
-            tests_failed++; $display("Test Case 24 Failed\n");
+            tests_failed++; $display("✗ JALR not working right\n");
         end
         #10;
 
-        // -------------------------------------------------------
-        // U-type: LUI / AUIPC
-        // -------------------------------------------------------
+        // Test upper immediate operations
         drive(OPCODE_LUI, 3'b000, 7'b0000000);
-        $display("Test Case 25: LUI");
+        $display("Test Case 25: Load upper immediate (set high 20 bits)");
         if (regwren_o==1 && immsel_o==1 && wbsel_o==2'b00 && alusel_o==ALU_LUI) begin
-            tests_passed++; $display("Test Case 25 Passed\n");
+            tests_passed++; $display("✓ LUI working (load 20-bit constant to upper bits)\n");
         end else begin
-            tests_failed++; $display("Test Case 25 Failed\n");
+            tests_failed++; $display("✗ LUI not working\n");
         end
         #5;
 
         drive(OPCODE_AUIPC, 3'b000, 7'b0000000);
-        $display("Test Case 26: AUIPC");
+        $display("Test Case 26: Add upper immediate to PC");
         if (regwren_o==1 && immsel_o==1 && wbsel_o==2'b00 && alusel_o==ALU_AUIPC) begin
-            tests_passed++; $display("Test Case 26 Passed\n");
+            tests_passed++; $display("✓ AUIPC working (PC + 20-bit constant)\n");
         end else begin
-            tests_failed++; $display("Test Case 26 Failed\n");
+            tests_failed++; $display("✗ AUIPC not working\n");
         end
         #10;
 
-        // Final summary
+        // Show the final results
         $display("======================================");
         $display("Control Module Test Summary:");
         $display("Tests Passed: %0d", tests_passed);
         $display("Tests Failed: %0d", tests_failed);
+        if (tests_failed == 0) begin
+            $display("🎉 All tests passed! Your control unit looks good!");
+        end else begin
+            $display("⚠️  Some tests failed. Check the logic above.");
+        end
         $display("======================================");
         $finish;
     end
