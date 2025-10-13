@@ -23,6 +23,7 @@ module igen #(
      * Process definitions to be filled by
      * student below...
      */
+     
     always_comb begin
         case (opcode_i)
             OPCODE_ITYPE, OPCODE_LOAD, OPCODE_JALR: begin

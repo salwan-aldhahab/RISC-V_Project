@@ -52,156 +52,169 @@ module control #(
      */
 
     always_comb begin
-        // Default values for control signals
-        pcsel_o = 1'b0;
-        immsel_o = 1'b0;
-        regwren_o = 1'b0;
-        rs1sel_o = 1'b0;
-        rs2sel_o = 1'b0;
-        memren_o = 1'b0;
-        memwren_o = 1'b0;
-        wbsel_o = 2'b00; // Default to ALU result
-        alusel_o = ALU_ADD; // Default ALU operation
+        // Start with safe defaults - nothing happens unless we explicitly enable it
+        pcsel_o = 1'b0;      // Stay on current PC path
+        immsel_o = 1'b0;     // Use register data, not immediate
+        regwren_o = 1'b0;    // Don't write to registers
+        rs1sel_o = 1'b0;     // Select rs1 register
+        rs2sel_o = 1'b0;     // Select rs2 register
+        memren_o = 1'b0;     // No memory reads
+        memwren_o = 1'b0;    // No memory writes
+        wbsel_o = 2'b00;     // Default writeback source is ALU
+        alusel_o = ALU_ADD;  // Default ALU operation is addition
 
+        // Decode the instruction based on its opcode
         case (opcode_i)
+            // R-type instructions: register-to-register operations (add, sub, and, or, etc.)
             OPCODE_RTYPE: begin
-                regwren_o = 1'b1;
-                rs1sel_o = 1'b0;
-                rs2sel_o = 1'b0;
-                immsel_o = 1'b0;
-                wbsel_o = 2'b00; // Write back ALU result
+                regwren_o = 1'b1;    // We'll write the result back to rd
+                rs1sel_o = 1'b0;     // Use rs1 register value
+                rs2sel_o = 1'b0;     // Use rs2 register value
+                immsel_o = 1'b0;     // No immediate needed
+                wbsel_o = 2'b00;     // Write back the ALU result
 
+                // Figure out which ALU operation to perform
                 case (funct3_i)
                     FUNCT3_ADD_SUB: begin
+                        // Could be ADD or SUB - check funct7 to decide
                         if (funct7_i == FUNCT7_SUB) begin
-                            alusel_o = ALU_SUB; // SUB operation
+                            alusel_o = ALU_SUB;  // It's a subtraction
                         end else begin
-                            alusel_o = ALU_ADD; // ADD operation
+                            alusel_o = ALU_ADD;  // It's an addition
                         end
                     end
-                    FUNCT3_AND: alusel_o = ALU_AND; // AND operation
-                    FUNCT3_OR: alusel_o = ALU_OR;   // OR operation
-                    FUNCT3_XOR: alusel_o = ALU_XOR; // XOR operation
-                    FUNCT3_SLL: alusel_o = ALU_SLL; // SLL operation
+                    FUNCT3_AND: alusel_o = ALU_AND;    // Bitwise AND
+                    FUNCT3_OR: alusel_o = ALU_OR;      // Bitwise OR
+                    FUNCT3_XOR: alusel_o = ALU_XOR;    // Bitwise XOR
+                    FUNCT3_SLL: alusel_o = ALU_SLL;    // Shift left logical
                     FUNCT3_SRL_SRA: begin
+                        // Could be logical or arithmetic right shift
                         if (funct7_i == FUNCT7_SRA) begin
-                            alusel_o = ALU_SRA; // SRA operation
+                            alusel_o = ALU_SRA;  // Shift right arithmetic
                         end else begin
-                            alusel_o = ALU_SRL; // SRL operation
+                            alusel_o = ALU_SRL;  // Shift right logical
                         end
                     end
-                    FUNCT3_SLT: alusel_o = ALU_SLT; // SLT operation
-                    FUNCT3_SLTU: alusel_o = ALU_SLTU; // SLTU operation
-                    default: alusel_o = ALU_ADD; // Default to ADD for safety
+                    FUNCT3_SLT: alusel_o = ALU_SLT;    // Set less than (signed)
+                    FUNCT3_SLTU: alusel_o = ALU_SLTU;  // Set less than (unsigned)
+                    default: alusel_o = ALU_ADD;       // Play it safe with ADD
                 endcase
             end
 
+            // I-type instructions: immediate operations (addi, andi, ori, etc.)
             OPCODE_ITYPE: begin
-                regwren_o = 1'b1;
-                rs1sel_o = 1'b0;
-                rs2sel_o = 1'b1; // Use immediate
-                immsel_o = 1'b1; // Immediate selected
-                wbsel_o = 2'b00; // Write back ALU result
+                regwren_o = 1'b1;    // Write result to rd
+                rs1sel_o = 1'b0;     // Use rs1 register value
+                rs2sel_o = 1'b1;     // Use immediate instead of rs2
+                immsel_o = 1'b1;     // Enable immediate value
+                wbsel_o = 2'b00;     // Write back ALU result
+                
                 case (funct3_i)
-                    FUNCT3_ADD_SUB: alusel_o = ALU_ADD; // ADDI operation
-                    FUNCT3_AND: alusel_o = ALU_AND; // ANDI operation
-                    FUNCT3_OR: alusel_o = ALU_OR;   // ORI operation
-                    FUNCT3_XOR: alusel_o = ALU_XOR; // XORI operation
-                    FUNCT3_SLL: alusel_o = ALU_SLL; // SLLI operation
+                    FUNCT3_ADD_SUB: alusel_o = ALU_ADD;  // ADDI (no SUBI in RISC-V)
+                    FUNCT3_AND: alusel_o = ALU_AND;      // ANDI
+                    FUNCT3_OR: alusel_o = ALU_OR;        // ORI
+                    FUNCT3_XOR: alusel_o = ALU_XOR;      // XORI
+                    FUNCT3_SLL: alusel_o = ALU_SLL;      // SLLI
                     FUNCT3_SRL_SRA: begin
+                        // Immediate shift instructions
                         if (funct7_i == FUNCT7_SRA) begin
-                            alusel_o = ALU_SRA; // SRAI operation
+                            alusel_o = ALU_SRA;  // SRAI
                         end else begin
-                            alusel_o = ALU_SRL; // SRLI operation
+                            alusel_o = ALU_SRL;  // SRLI
                         end
                     end
-                    FUNCT3_SLT: alusel_o = ALU_SLT; // SLTI operation
-                    FUNCT3_SLTU: alusel_o = ALU_SLTU; // SLTIU operation
-                    default: alusel_o = ALU_ADD; // Default to ADD for safety
+                    FUNCT3_SLT: alusel_o = ALU_SLT;      // SLTI
+                    FUNCT3_SLTU: alusel_o = ALU_SLTU;    // SLTIU
+                    default: alusel_o = ALU_ADD;         // Default to ADD
                 endcase
             end
 
+            // Load instructions: read from memory
             OPCODE_LOAD: begin
-                regwren_o = 1'b1;
-                rs1sel_o = 1'b0;
-                rs2sel_o = 1'b1; // Use immediate
-                immsel_o = 1'b1; // Immediate selected
-                memren_o = 1'b1; // Enable memory read
-                wbsel_o = 2'b01; // Write back memory data
-                alusel_o = ALU_ADD; // Address calculation
+                regwren_o = 1'b1;    // Write loaded data to rd
+                rs1sel_o = 1'b0;     // Use rs1 as base address
+                rs2sel_o = 1'b1;     // Use immediate as offset
+                immsel_o = 1'b1;     // Enable immediate for offset
+                memren_o = 1'b1;     // Enable memory read
+                wbsel_o = 2'b01;     // Write back data from memory
+                alusel_o = ALU_ADD;  // Calculate address: rs1 + immediate
             end
 
+            // Store instructions: write to memory
             OPCODE_STORE: begin
-                regwren_o = 1'b0; // Don't write to register
-                rs1sel_o = 1'b0; // Use rs1 for base address
-                rs2sel_o = 1'b1; // Use immediate for offset calculation
-                immsel_o = 1'b1; // Immediate selected
-                memwren_o = 1'b1; // Enable memory write
-                wbsel_o = 2'b00; // Don't care since regwren_o = 0
-                alusel_o = ALU_ADD; // Address calculation
+                regwren_o = 1'b0;    // Don't write to any register
+                rs1sel_o = 1'b0;     // Use rs1 as base address
+                rs2sel_o = 1'b1;     // Use immediate as offset
+                immsel_o = 1'b1;     // Enable immediate for offset
+                memwren_o = 1'b1;    // Enable memory write
+                wbsel_o = 2'b00;     // Doesn't matter since we're not writing back
+                alusel_o = ALU_ADD;  // Calculate address: rs1 + immediate
             end
 
+            // Branch instructions: conditional jumps
             OPCODE_BRANCH: begin
-                regwren_o = 1'b0; // Don't write to register
-                rs1sel_o = 1'b0; // Use rs1 for comparison
-                rs2sel_o = 1'b0; // Use rs2 for comparison
-                immsel_o = 1'b1; // Immediate selected for PC calculation
-                // Note: pcsel_o should be controlled by branch unit based on comparison result
-                // Setting to 0 here - actual branch decision made elsewhere
-                pcsel_o = 1'b0; 
-                wbsel_o = 2'b00; // Don't care since regwren_o = 0
-                alusel_o = ALU_SUB; // For comparison (rs1 - rs2)
+                regwren_o = 1'b0;    // Branches don't write to registers
+                rs1sel_o = 1'b0;     // Use rs1 for comparison
+                rs2sel_o = 1'b0;     // Use rs2 for comparison
+                immsel_o = 1'b1;     // Immediate holds branch offset
+                pcsel_o = 1'b0;      // Branch unit will decide if we actually branch
+                wbsel_o = 2'b00;     // Doesn't matter since no writeback
+                alusel_o = ALU_SUB;  // Compare by subtracting: rs1 - rs2
             end
 
+            // JAL: Jump and link (unconditional jump, save return address)
             OPCODE_JAL: begin
-                regwren_o = 1'b1; // Write PC+4 to rd
-                rs1sel_o = 1'b1; // Don't care - not used
-                rs2sel_o = 1'b1; // Don't care - not used
-                immsel_o = 1'b1; // Immediate selected
-                pcsel_o = 1'b1; // Jump taken
-                wbsel_o = 2'b10; // Write back PC+4
-                alusel_o = ALU_ADD; // Don't care for this instruction
+                regwren_o = 1'b1;    // Save return address (PC+4) in rd
+                rs1sel_o = 1'b1;     // Don't need rs1
+                rs2sel_o = 1'b1;     // Don't need rs2
+                immsel_o = 1'b1;     // Jump offset is in immediate
+                pcsel_o = 1'b1;      // Take the jump
+                wbsel_o = 2'b10;     // Write back PC+4 (return address)
+                alusel_o = ALU_ADD;  // ALU not really used here
             end
             
+            // JALR: Jump and link register (jump to rs1+imm, save return address)
             OPCODE_JALR: begin
-                regwren_o = 1'b1; // Write PC+4 to rd
-                rs1sel_o = 1'b0; // Use rs1 for base address
-                rs2sel_o = 1'b1; // Use immediate
-                immsel_o = 1'b1; // Immediate selected
-                pcsel_o = 1'b1; // Jump taken
-                wbsel_o = 2'b10; // Write back PC+4
-                alusel_o = ALU_ADD; // For target address calculation (rs1 + imm)
+                regwren_o = 1'b1;    // Save return address (PC+4) in rd
+                rs1sel_o = 1'b0;     // Use rs1 as base for jump target
+                rs2sel_o = 1'b1;     // Use immediate as offset
+                immsel_o = 1'b1;     // Immediate is jump offset
+                pcsel_o = 1'b1;      // Take the jump
+                wbsel_o = 2'b10;     // Write back PC+4 (return address)
+                alusel_o = ALU_ADD;  // Calculate jump target: rs1 + immediate
             end
 
+            // LUI: Load upper immediate (load 20-bit immediate into upper bits of rd)
             OPCODE_LUI: begin
-                regwren_o = 1'b1; // Write to rd
-                rs1sel_o = 1'b1; // Don't care - not used
-                rs2sel_o = 1'b1; // Don't care - not used
-                immsel_o = 1'b1; // Immediate selected
-                wbsel_o = 2'b00; // Write back ALU result
-                alusel_o = ALU_LUI; // LUI operation
+                regwren_o = 1'b1;    // Write result to rd
+                rs1sel_o = 1'b1;     // Don't need rs1
+                rs2sel_o = 1'b1;     // Don't need rs2
+                immsel_o = 1'b1;     // Use the immediate value
+                wbsel_o = 2'b00;     // Write back ALU result
+                alusel_o = ALU_LUI;  // Special LUI operation
             end
 
+            // AUIPC: Add upper immediate to PC
             OPCODE_AUIPC: begin
-                regwren_o = 1'b1; // Write to rd
-                rs1sel_o = 1'b1; // Don't care - PC is used instead
-                rs2sel_o = 1'b1; // Don't care - not used
-                immsel_o = 1'b1; // Immediate selected
-                wbsel_o = 2'b00; // Write back ALU result
-                alusel_o = ALU_AUIPC; // AUIPC operation
+                regwren_o = 1'b1;    // Write result to rd
+                rs1sel_o = 1'b1;     // Don't use rs1 (PC is used instead)
+                rs2sel_o = 1'b1;     // Don't need rs2
+                immsel_o = 1'b1;     // Use immediate value
+                wbsel_o = 2'b00;     // Write back ALU result
+                alusel_o = ALU_AUIPC; // Special AUIPC operation
             end
 
+            // Safety net: if we see an opcode we don't recognize, do nothing
             default: begin
-                // For unrecognized opcodes, disable all operations
-                pcsel_o = 1'b0;
-                immsel_o = 1'b0;
-                regwren_o = 1'b0;
-                rs1sel_o = 1'b0;
-                rs2sel_o = 1'b0;
-                memren_o = 1'b0;
-                memwren_o = 1'b0;
-                wbsel_o = 2'b00;
-                alusel_o = ALU_ADD; // Default ALU operation
+                pcsel_o = 1'b0;      // Don't change PC
+                immsel_o = 1'b0;     // Don't use immediate
+                regwren_o = 1'b0;    // Don't write to registers
+                rs1sel_o = 1'b0;     // Default register selections
+                rs2sel_o = 1'b0;     
+                memren_o = 1'b0;     // No memory operations
+                memwren_o = 1'b0;    
+                wbsel_o = 2'b00;     // Default writeback
+                alusel_o = ALU_ADD;  // Safe ALU operation
             end
         endcase
     end
