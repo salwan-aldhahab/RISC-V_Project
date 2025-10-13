@@ -462,7 +462,7 @@ module decode_tb;
         // Check outputs and increment test counters if correct or not
         if (opcode_o == 7'b0010011 && 
             funct3_o == 3'b101 && 
-            funct7_o == 7'b0000000 &&
+            funct7_o == 7'b0100000 &&
             rd_o == 5'd5 && 
             rs1_o == 5'd6 && 
             rs2_o == 5'd0 &&
