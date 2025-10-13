@@ -65,10 +65,12 @@ module decode #(
     assign opcode_internal = insn_i[6:0];
 
     always_comb begin
-        // Default outputs
+        // Initialize all outputs with safe defaults
         pc_o = pc_i;
         insn_o = insn_i;
         opcode_o = opcode_internal;
+        
+        // Clear all decode fields initially
         rd_o = 5'b0;
         rs1_o = 5'b0;
         rs2_o = 5'b0;
@@ -77,80 +79,87 @@ module decode #(
         shamt_o = 5'b0;
         imm_o = imm_internal;
 
+        // Decode instruction based on opcode (determines instruction format)
         case (opcode_internal)
-            // R-type instructions (ALU operations)
-            OPCODE_RTYPE: begin  // 0110011
-                rd_o = insn_i[11:7];
-                funct3_o = insn_i[14:12];
-                rs1_o = insn_i[19:15];
-                rs2_o = insn_i[24:20];
-                funct7_o = insn_i[31:25];
-                shamt_o = 5'b0; // Not used in R-type
+            
+            // R-Type: Register-Register operations (ADD, SUB, AND, OR, etc.)
+            // Format: funct7[31:25] | rs2[24:20] | rs1[19:15] | funct3[14:12] | rd[11:7] | opcode[6:0]
+            OPCODE_RTYPE: begin
+                rd_o = insn_i[11:7];     // Destination register
+                funct3_o = insn_i[14:12]; // Function code (operation type)
+                rs1_o = insn_i[19:15];    // First source register
+                rs2_o = insn_i[24:20];    // Second source register
+                funct7_o = insn_i[31:25]; // Extended function code
+                // Note: shamt_o remains 0 as R-type doesn't use shift amounts
             end
 
-            // I-type instructions (immediate ALU, loads, JALR)
-            OPCODE_ITYPE, OPCODE_LOAD, OPCODE_JALR: begin  // 0010011, 0000011, 1100111
-                rd_o = insn_i[11:7];
-                funct3_o = insn_i[14:12];
-                rs1_o = insn_i[19:15];
-                rs2_o = 5'b0; // Not used in I-type
-                if (opcode_internal == OPCODE_ITYPE && (funct3_o == FUNCT3_SLL || funct3_o == FUNCT3_SRL_SRA)) begin
-                    // For shift instructions (SLLI, SRLI, SRAI), shamt is in rs2 field
-                    funct7_o = insn_i[31:25];
-                    shamt_o = insn_i[24:20];
+            // I-Type: Immediate operations, Loads, and JALR
+            // Format: imm[31:20] | rs1[19:15] | funct3[14:12] | rd[11:7] | opcode[6:0]
+            OPCODE_ITYPE, OPCODE_LOAD, OPCODE_JALR: begin
+                rd_o = insn_i[11:7];     // Destination register
+                funct3_o = insn_i[14:12]; // Function code (determines operation/load size)
+                rs1_o = insn_i[19:15];    // Source register (base for loads, operand for ALU)
+                // rs2_o remains 0 (I-type uses immediate, not second register)
+                
+                // Special handling for shift instructions within I-type
+                if (opcode_internal == OPCODE_ITYPE && 
+                   (funct3_o == FUNCT3_SLL || funct3_o == FUNCT3_SRL_SRA)) begin
+                    // Shift instructions encode shift amount in immediate field
+                    funct7_o = insn_i[31:25]; // Distinguishes logical vs arithmetic right shift
+                    shamt_o = insn_i[24:20];  // 5-bit shift amount (0-31)
                 end
-                funct7_o = 7'b0; // Default, unless it's a shift instruction
-                shamt_o = 5'b0; // Default, unless it's a shift instruction
+                // For non-shift I-type instructions, funct7 and shamt remain 0
             end
 
-            // S-type instructions (stores)
-            OPCODE_STORE: begin  // 0100011
-                rd_o = 5'b0; // Not used in S-type
-                funct3_o = insn_i[14:12];
-                rs1_o = insn_i[19:15]; // Base address
-                rs2_o = insn_i[24:20]; // Source data
-                funct7_o = 7'b0; // Not used in S-type
-                shamt_o = 5'b0; // Not used in S-type
+            // S-Type: Store instructions
+            // Format: imm[31:25] | rs2[24:20] | rs1[19:15] | funct3[14:12] | imm[11:7] | opcode[6:0]
+            OPCODE_STORE: begin
+                // rd_o remains 0 (stores don't write to registers)
+                funct3_o = insn_i[14:12]; // Store size (byte, half-word, word)
+                rs1_o = insn_i[19:15];    // Base address register
+                rs2_o = insn_i[24:20];    // Source data register
+                // funct7_o and shamt_o remain 0 (not used in S-type)
             end
 
-            // B-type instructions (branches)
-            OPCODE_BRANCH: begin  // 1100011
-                rd_o = 5'b0; // Not used in B-type
-                funct3_o = insn_i[14:12];
-                rs1_o = insn_i[19:15];
-                rs2_o = insn_i[24:20];
-                funct7_o = 7'b0; // Not used in B-type
-                shamt_o = 5'b0; // Not used in B-type
+            // B-Type: Branch instructions
+            // Format: imm[31:25] | rs2[24:20] | rs1[19:15] | funct3[14:12] | imm[11:7] | opcode[6:0]
+            OPCODE_BRANCH: begin
+                // rd_o remains 0 (branches don't write to registers)
+                funct3_o = insn_i[14:12]; // Branch condition (equal, less than, etc.)
+                rs1_o = insn_i[19:15];    // First comparison register
+                rs2_o = insn_i[24:20];    // Second comparison register
+                // funct7_o and shamt_o remain 0 (not used in B-type)
             end
 
-            // U-type instructions (LUI, AUIPC)
-            OPCODE_LUI, OPCODE_AUIPC: begin  // 0110111, 0010111
-                rd_o = insn_i[11:7];
-                funct3_o = 3'b0; // Not used in U-type
-                rs1_o = 5'b0; // Not used in U-type (except AUIPC uses PC)
-                rs2_o = 5'b0; // Not used in U-type
-                funct7_o = 7'b0; // Not used in U-type
-                shamt_o = 5'b0; // Not used in U-type
+            // U-Type: Upper immediate instructions (LUI, AUIPC)
+            // Format: imm[31:12] | rd[11:7] | opcode[6:0]
+            OPCODE_LUI, OPCODE_AUIPC: begin
+                rd_o = insn_i[11:7];      // Destination register
+                // All other register fields remain 0 (U-type only uses immediate and rd)
+                // Note: AUIPC implicitly uses PC, but no explicit rs1 encoding
             end
 
-            // J-type instructions (JAL)
-            OPCODE_JAL: begin  // 1101111
-                rd_o = insn_i[11:7];
-                funct3_o = 3'b0; // Not used in J-type
-                rs1_o = 5'b0; // Not used in J-type
-                rs2_o = 5'b0; // Not used in J-type
-                funct7_o = 7'b0; // Not used in J-type
-                shamt_o = 5'b0; // Not used in J-type
+            // J-Type: Jump and link (JAL)
+            // Format: imm[31:12] | rd[11:7] | opcode[6:0]
+            OPCODE_JAL: begin
+                rd_o = insn_i[11:7];      // Destination register (stores return address)
+                // All other register and function fields remain 0
+                // Jump target calculated from PC + immediate (handled by imm_o)
             end
 
+            // Handle unrecognized opcodes gracefully
             default: begin
-                // For unknown opcodes, extract all fields but don't assume their validity
-                rd_o = insn_i[11:7];
-                funct3_o = insn_i[14:12];
-                rs1_o = insn_i[19:15];
-                rs2_o = insn_i[24:20];
-                funct7_o = insn_i[31:25];
-                shamt_o = insn_i[24:20];
+                // Extract all possible fields for debugging/analysis purposes
+                // This helps identify malformed or unsupported instructions
+                rd_o = insn_i[11:7];      // Potential destination register
+                funct3_o = insn_i[14:12]; // Potential function code
+                rs1_o = insn_i[19:15];    // Potential first source register
+                rs2_o = insn_i[24:20];    // Potential second source register
+                funct7_o = insn_i[31:25]; // Potential extended function code
+                shamt_o = insn_i[24:20];  // Potential shift amount (same as rs2)
+                
+                // Note: These extractions may not be meaningful for unknown instructions
+                // but provide maximum information for error analysis
             end
         endcase
     end
