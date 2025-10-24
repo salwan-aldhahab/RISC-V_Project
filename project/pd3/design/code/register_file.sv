@@ -26,8 +26,8 @@
      input logic [4:0] rs1_i,
      input logic [4:0] rs2_i,
      input logic [4:0] rd_i,
-     input logic [DWIDTH-1:0] datawb_i,
-     input logic regwren_i,
+     input logic [DWIDTH-1:0] datawb_i,  // data to write back
+     input logic regwren_i, // register write enable
      // outputs
      output logic [DWIDTH-1:0] rs1data_o,
      output logic [DWIDTH-1:0] rs2data_o
@@ -37,5 +37,27 @@
      * Process definitions to be filled by
      * student below...
      */
+
+    // 32 registers of DWIDTH bits each
+    logic [DWIDTH-1:0] registers [31:0];
+
+    // Read data from registers
+    assign rs1data_o = registers[rs1_i];
+    assign rs2data_o = registers[rs2_i];
+
+    // Writeback logic
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst) begin
+            // Reset all registers
+            for (int i = 0; i < 32; i++) begin
+                registers[i] <= '0;
+            end
+        end else if (regwren_i) begin
+            registers[rd_i] <= datawb_i;
+        end
+    end
+
+
+
 
 endmodule : register_file
