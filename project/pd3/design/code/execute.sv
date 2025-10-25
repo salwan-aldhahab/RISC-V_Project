@@ -33,4 +33,73 @@ module alu #(
      * student below...
      */
 
+     // Instantiate branch control module
+    logic breq_o;
+    logic brlt_o;
+    branch_control br_ctrl (
+        .opcode_i (OPCODE_BRANCH),
+        .funct3_i (funct3_i),
+        .rs1_i   (rs1_i),
+        .rs2_i   (rs2_i),
+        .breq_o   (breq_o),
+        .brlt_o   (brlt_o)
+    );
+
+    // ALU operation
+    always_comb begin
+        // Default output
+        res_o = 32'd0;
+        brtaken_o = 1'b0;
+
+        case (funct3_i)
+            FUNCT3_ADD_SUB: begin // ADD/SUB
+                if (funct7_i == FUNCT7_SUB) begin
+                    res_o = rs1_i - rs2_i; // SUB
+                end else begin
+                    res_o = rs1_i + rs2_i; // ADD
+                end
+            end
+            FUNCT3_SLL: begin
+                res_o = rs1_i << rs2_i[4:0];
+            end
+            FUNCT3_SLT: begin // SLT
+                res_o = ($signed(rs1_i) < $signed(rs2_i)) ? 32'd1 : 32'd0;
+            end
+            FUNCT3_SLTU: begin // SLTU
+                res_o = (rs1_i < rs2_i) ? 32'd1 : 32'd0;
+            end
+            FUNCT3_XOR: begin // XOR
+                res_o = rs1_i ^ rs2_i;
+            end
+            FUNCT3_SRL_SRA: begin
+                if (funct7_i == FUNCT7_SRA) begin
+                    res_o = $signed(rs1_i) >>> rs2_i[4:0]; // SRA
+                end else begin
+                    res_o = rs1_i >> rs2_i[4:0]; // SRL
+                end
+            end
+            FUNCT3_OR: begin // OR
+                res_o = rs1_i | rs2_i;
+            end
+            FUNCT3_AND: begin // AND
+                res_o = rs1_i & rs2_i;
+            end
+            FUNCT3_BEQ: begin // BEQ
+                brtaken_o = breq_o;
+            end
+            FUNCT3_BNE: begin // BNE
+                brtaken_o = ~breq_o;
+            end
+            FUNCT3_BLT, FUNCT3_BLTU: begin // BLT, BLTU
+                brtaken_o = brlt_o;
+            end
+            FUNCT3_BGE, FUNCT3_BGEU: begin // BGE, BGEU
+                brtaken_o = ~brlt_o | breq_o; // greater than or equal
+            end
+            default: begin
+                res_o = 32'd0;
+                brtaken_o = 1'b0;
+            end
+        endcase
+
 endmodule : alu

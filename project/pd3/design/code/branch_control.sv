@@ -15,6 +15,8 @@
  * 2) 1-bit rs1 < rs2 signal brlt_o
  */
 
+`include "constants.svh"
+
  module branch_control #(
     parameter int DWIDTH=32
 )(
@@ -33,5 +35,25 @@
      * student below...
      */
 
+    always_comb begin
+        // Default outputs
+        breq_o = 1'b0;
+        brlt_o = 1'b0;
+
+        if (opcode_i == OPCODE_BRANCH) begin
+            breq_o = (rs1_i == rs2_i) ? 1'b1 : 1'b0;
+            case (funct3_i)
+                FUNCT3_BLT, FUNCT3_BGE: begin
+                    brlt_o = ($signed(rs1_i) < $signed(rs2_i)) ? 1'b1 : 1'b0;
+                end
+                FUNCT3_BLTU, FUNCT3_BGEU: begin
+                    brlt_o = (rs1_i < rs2_i) ? 1'b1 : 1'b0;
+                end
+                default: begin
+                    brlt_o = 1'b0;
+                end
+            endcase
+        end
+    end
 endmodule : branch_control
 

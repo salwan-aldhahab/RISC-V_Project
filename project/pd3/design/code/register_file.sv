@@ -17,6 +17,8 @@
  * 2) 32-bit rs2 data rs2data_o
  */
 
+`include "constants.svh"
+
  module register_file #(
      parameter int DWIDTH=32
  )(
@@ -38,22 +40,31 @@
      * student below...
      */
 
+    // Stack pointer initial value
+    logic [DWIDTH-1:0] stack_pointer = STACK_TOP;
+
     // 32 registers of DWIDTH bits each
     logic [DWIDTH-1:0] registers [31:0];
 
-    // Read data from registers
-    assign rs1data_o = registers[rs1_i];
-    assign rs2data_o = registers[rs2_i];
+    // Read logic with forwarding
+    logic [DWIDTH-1:0] rs1data_raw, rs2data_raw;
+    assign rs1data_raw = (rs1_i != 0) ? registers[rs1_i] : '0;
+    assign rs2data_raw = (rs2_i != 0) ? registers[rs2_i] : '0;
+    assign rs1data_o= (regwren_i && (rd_i == rs1_i) && (rd_i != 0)) ? datawb_i : rs1data_raw;
+    assign rs2data_o= (regwren_i && (rd_i == rs2_i) && (rd_i != 0)) ? datawb_i : rs2data_raw;
 
     // Writeback logic
-    always_ff @(posedge clk or posedge rst) begin
-        if (rst) begin
-            // Reset all registers
+    always_ff @(posedge clk or negedge rst) begin
+        if (!rst) begin
             for (int i = 0; i < 32; i++) begin
                 registers[i] <= '0;
             end
-        end else if (regwren_i) begin
-            registers[rd_i] <= datawb_i;
+            registers[2] <= stack_pointer; // Initialize stack pointer (x2) high -> stack grows down
+        end else begin
+            if (regwren_i && rd_i != 5'd0) begin
+                registers[rd_i] <= datawb_i;
+            end
+            registers[0] <= '0; // Ensure x0 is always zero
         end
     end
 

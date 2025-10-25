@@ -33,12 +33,12 @@ parameter logic [2:0] FUNCT3_XOR     = 3'b100;
 parameter logic [2:0] FUNCT3_OR      = 3'b110;
 parameter logic [2:0] FUNCT3_AND     = 3'b111;
 parameter logic [2:0] FUNCT3_SRL_SRA = 3'b101;
-parameter logic [2:0] FUNCT3_BEQ    = 3'b000;
-parameter logic [2:0] FUNCT3_BNE    = 3'b001;
-parameter logic [2:0] FUNCT3_BLT    = 3'b100;
-parameter logic [2:0] FUNCT3_BGE    = 3'b101;
-parameter logic [2:0] FUNCT3_BLTU   = 3'b110;
-parameter logic [2:0] FUNCT3_BGEU   = 3'b111;
+parameter logic [2:0] FUNCT3_BEQ    = 3'b000;  // branch equal
+parameter logic [2:0] FUNCT3_BNE    = 3'b001; // branch not equal
+parameter logic [2:0] FUNCT3_BLT    = 3'b100; // branch less than
+parameter logic [2:0] FUNCT3_BGE    = 3'b101; // branch greater than or equal
+parameter logic [2:0] FUNCT3_BLTU   = 3'b110; // branch less than unsigned
+parameter logic [2:0] FUNCT3_BGEU   = 3'b111; // branch greater than or equal unsigned
 parameter logic [2:0] FUNCT3_LB    = 3'b000;
 parameter logic [2:0] FUNCT3_LH    = 3'b001;
 parameter logic [2:0] FUNCT3_LW    = 3'b010;
@@ -74,4 +74,6 @@ parameter logic [3:0] ALU_SLTU = 4'b1001;
 parameter logic [3:0] ALU_LUI  = 4'b1010;
 parameter logic [3:0] ALU_AUIPC= 4'b1011;
 
+// Stack top address
+parameter logic [31:0] STACK_TOP = 32'h8000_0000;
 `endif
