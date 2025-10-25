@@ -103,5 +103,6 @@ module alu #(
                 brtaken_o = 1'b0;
             end
         endcase
+    end
 
 endmodule : alu
