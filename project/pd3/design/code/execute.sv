@@ -15,6 +15,8 @@
  * 2) 1-bit branch taken signal brtaken_o
  */
 
+`include "constants.svh"
+
 module alu #(
     parameter int DWIDTH=32,
     parameter int AWIDTH=32

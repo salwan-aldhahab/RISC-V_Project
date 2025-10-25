@@ -67,8 +67,4 @@
             registers[0] <= '0; // Ensure x0 is always zero
         end
     end
-
-
-
-
 endmodule : register_file
