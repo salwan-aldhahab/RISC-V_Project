@@ -63,9 +63,6 @@
         end else begin
             if (regwren_i && rd_i != 5'd0) begin
                 registers[rd_i] <= datawb_i;
-                if (rd_i == 5'd2) begin
-                    stack_pointer <= datawb_i; // Update stack pointer if x2 is written
-                end
             end
             // Ensure x0 is always zero
             registers[0] <= '0;
