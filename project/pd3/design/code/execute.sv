@@ -56,7 +56,7 @@ module alu #(
         brtaken_o = 1'b0;
 
         case (opcode_i)
-            OPCODE_R_TYPE: begin // R-type instructions
+            OPCODE_RTYPE: begin // R-type instructions
                 case (funct3_i)
                     FUNCT3_ADD_SUB: begin // ADD/SUB
                         if (funct7_i == FUNCT7_SUB)
@@ -80,7 +80,7 @@ module alu #(
                 endcase
             end
 
-            OPCODE_I_TYPE: begin // I-type arithmetic instructions
+            OPCODE_ITYPE: begin // I-type arithmetic instructions
                 case (funct3_i)
                     FUNCT3_ADD_SUB: res_o = rs1_i + rs2_i; // ADDI
                     FUNCT3_SLL: res_o = rs1_i << rs2_i[4:0]; // SLLI
