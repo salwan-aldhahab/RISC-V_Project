@@ -46,13 +46,6 @@
     // 32 registers of DWIDTH bits each
     logic [DWIDTH-1:0] registers [31:0];
 
-    // Read logic with forwarding
-    // logic [DWIDTH-1:0] rs1data_raw, rs2data_raw;
-    // assign rs1data_raw = (rs1_i != 0) ? registers[rs1_i] : '0;
-    // assign rs2data_raw = (rs2_i != 0) ? registers[rs2_i] : '0;
-    // assign rs1data_o= (regwren_i && (rd_i == rs1_i) && (rd_i != 0)) ? datawb_i : rs1data_raw;
-    // assign rs2data_o= (regwren_i && (rd_i == rs2_i) && (rd_i != 0)) ? datawb_i : rs2data_raw;
-
     assign rs1data_o = (rs1_i != 0) ? registers[rs1_i] : '0;
     assign rs2data_o = (rs2_i != 0) ? registers[rs2_i] : '0;
 
@@ -64,11 +57,10 @@
             end
             registers[2] <= stack_pointer; // Initialize stack pointer (x2) high -> stack grows down
         end else begin
-            if (regwren_i && rd_i != 5'd0) begin
+            if (regwren_i && rd_i != 5'd0) begin // Only write if rd is not x0
                 registers[rd_i] <= datawb_i;
             end
-            // Ensure x0 is always zero
-            registers[0] <= '0;
+            // x0 is hardwired to 0 - no need to explicitly set it since we prevent writes to it
         end
     end
 endmodule : register_file
