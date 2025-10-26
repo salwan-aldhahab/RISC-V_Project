@@ -132,12 +132,12 @@ module alu #(
 
             OPCODE_JAL: begin // JAL
                 res_o = pc_i + rs2_i; // Return address
-                brtaken_o = 1'b1;
+                //brtaken_o = 1'b1;
             end
 
             OPCODE_JALR: begin // JALR
                 res_o = pc_i + rs1_i + rs2_i; // Return address
-                brtaken_o = 1'b1;
+                //brtaken_o = 1'b0;
             end
 
             OPCODE_LUI: begin // LUI
