@@ -41,7 +41,7 @@
      */
 
     // Stack pointer initial value
-    logic [DWIDTH-1:0] stack_pointer = 32'h0100_0000;
+    logic [DWIDTH-1:0] stack_pointer = 32'h0100_0000 + ('LINE_COUNT' * 4); // Example stack top address
 
     // 32 registers of DWIDTH bits each
     logic [DWIDTH-1:0] registers [31:0];
