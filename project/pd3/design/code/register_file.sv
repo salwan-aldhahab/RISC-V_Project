@@ -41,7 +41,7 @@
      */
 
     // Stack pointer initial value
-    static logic [DWIDTH-1:0] stack_pointer = STACK_TOP;
+    logic [DWIDTH-1:0] stack_pointer = 32'h0100_0000;
 
     // 32 registers of DWIDTH bits each
     logic [DWIDTH-1:0] registers [31:0];
