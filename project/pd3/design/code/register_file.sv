@@ -59,7 +59,7 @@
             for (int i = 0; i < 32; i++) begin
                 registers[i] <= '0;
             end
-            registers[2] <= stack_pointer; // Initialize stack pointer (x2) high -> stack grows down
+            //registers[2] <= stack_pointer; // Initialize stack pointer (x2) high -> stack grows down
         end else begin
             if (regwren_i && rd_i != 5'd0) begin
                 registers[rd_i] <= datawb_i;
