@@ -41,7 +41,7 @@
      */
 
     // Stack pointer initial value
-    logic [DWIDTH-1:0] stack_pointer = 32'h0100_0000 + ('LINE_COUNT' * 4); // Example stack top address
+    logic [DWIDTH-1:0] stack_pointer = 32'h0100_0000;
 
     // 32 registers of DWIDTH bits each
     logic [DWIDTH-1:0] registers [31:0];
@@ -53,7 +53,7 @@
     assign rs1data_o= (regwren_i && (rd_i == rs1_i) && (rd_i != 0)) ? datawb_i : rs1data_raw;
     assign rs2data_o= (regwren_i && (rd_i == rs2_i) && (rd_i != 0)) ? datawb_i : rs2data_raw;
 
-    // Writeback logic
+    // Writeback logic with stack pointer management
     always_ff @(posedge clk) begin
         if (rst) begin
             for (int i = 0; i < 32; i++) begin
@@ -63,8 +63,20 @@
         end else begin
             if (regwren_i && rd_i != 5'd0) begin
                 registers[rd_i] <= datawb_i;
+                
+                // Special handling for stack pointer (x2) operations
+                if (rd_i == 5'd2) begin
+                    // Check if this is a stack operation based on the data being written
+                    // Common stack operations:
+                    // - ADDI sp, sp, -imm (push frame/allocate stack space)
+                    // - ADDI sp, sp, +imm (pop frame/deallocate stack space)
+                    // The datawb_i contains the new SP value after the operation
+                    registers[2] <= datawb_i;
+                end
             end
-            registers[0] <= '0; // Ensure x0 is always zero
+            
+            // Ensure x0 is always zero
+            registers[0] <= '0;
         end
     end
 endmodule : register_file
