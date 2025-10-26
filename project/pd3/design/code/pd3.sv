@@ -159,6 +159,7 @@ module pd3 #(
       .pc_i(e_pc),
       .rs1_i(alu_operand1),
       .rs2_i(alu_operand2),
+      .opcode_i(d_opcode),
       .funct3_i(d_funct3),
       .funct7_i(d_funct7),
       .res_o(e_alu_res),
