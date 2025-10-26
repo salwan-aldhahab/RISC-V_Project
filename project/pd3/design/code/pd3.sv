@@ -133,11 +133,6 @@ module pd3 #(
   );
 
   // Register File
-  assign r_read_rs1 = d_rs1;
-  assign r_read_rs2 = d_rs2;
-  assign r_write_enable = regwren;
-  assign r_write_destination = d_rd;
-  //assign r_write_data = e_alu_res; // write back ALU result directly
   register_file #( .DWIDTH(DWIDTH) ) reg_file (
       .clk(clk),
       .rst(reset),
@@ -159,6 +154,24 @@ module pd3 #(
   assign alu_operand1 = rs1sel ? d_pc : r_read_rs1_data;
   // rs2sel mux: 0 = use rs2 data, 1 = use immediate
   assign alu_operand2 = rs2sel ? d_imm : r_read_rs2_data;
+
+  // Add pipeline register for ALU result
+  logic [DWIDTH-1:0] wb_alu_res;
+  logic wb_regwren;
+  logic [4:0] wb_rd;
+  
+  always_ff @(posedge clk) begin
+    if (reset) begin
+      wb_alu_res <= '0;
+      wb_regwren <= 1'b0;
+      wb_rd <= 5'b0;
+    end else begin
+      wb_alu_res <= e_alu_res;
+      wb_regwren <= regwren;
+      wb_rd <= d_rd;
+    end
+  end
+
   alu #( .DWIDTH(DWIDTH), .AWIDTH(AWIDTH) ) alu_stage (
       .pc_i(e_pc),
       .rs1_i(alu_operand1),
@@ -169,4 +182,10 @@ module pd3 #(
       .brtaken_o(e_br_taken)
   );
 
+  // Writeback stage connections
+  assign r_read_rs1 = d_rs1;
+  assign r_read_rs2 = d_rs2;
+  assign r_write_enable = wb_regwren;
+  assign r_write_destination = wb_rd;
+  assign r_write_data = wb_alu_res; // write back ALU result directly
 endmodule : pd3
