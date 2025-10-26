@@ -25,7 +25,7 @@ module alu #(
     input logic [AWIDTH-1:0] pc_i,
     input logic [DWIDTH-1:0] rs1_i,
     input logic [DWIDTH-1:0] rs2_i,
-    input logic [6:0] imm_i,
+    input logic [DWIDTH-1:0] imm_i,
     input logic [6:0] opcode_i,
     input logic [2:0] funct3_i,
     input logic [6:0] funct7_i,
