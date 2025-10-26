@@ -152,10 +152,17 @@ module pd3 #(
 
   // Execute stage
   assign e_pc = d_pc;
+
+  // Multiplexers for ALU inputs based on control signals
+  logic [DWIDTH-1:0] alu_operand1, alu_operand2;
+  // rs1sel mux: 0 = use rs1 data, 1 = use PC
+  assign alu_operand1 = rs1sel ? d_pc : r_read_rs1_data;
+  // rs2sel mux: 0 = use rs2 data, 1 = use immediate
+  assign alu_operand2 = rs2sel ? d_imm : r_read_rs2_data;
   alu #( .DWIDTH(DWIDTH), .AWIDTH(AWIDTH) ) alu_stage (
       .pc_i(e_pc),
-      .rs1_i(r_read_rs1_data),
-      .rs2_i(r_read_rs2_data),
+      .rs1_i(alu_operand1),
+      .rs2_i(alu_operand2),
       .funct3_i(d_funct3),
       .funct7_i(d_funct7),
       .res_o(e_alu_res),
