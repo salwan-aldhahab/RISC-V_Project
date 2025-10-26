@@ -137,7 +137,7 @@ module pd3 #(
   assign r_read_rs2 = d_rs2;
   assign r_write_enable = regwren;
   assign r_write_destination = d_rd;
-  assign r_write_data = e_alu_res; // write back ALU result directly
+  //assign r_write_data = e_alu_res; // write back ALU result directly
   register_file #( .DWIDTH(DWIDTH) ) reg_file (
       .clk(clk),
       .rst(reset),
