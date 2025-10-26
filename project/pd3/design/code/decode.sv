@@ -70,13 +70,12 @@ module decode #(
         insn_o = insn_i;
         opcode_o = opcode_internal;
         
-        // Clear all decode fields initially
-        rd_o = 5'b0;
-        rs1_o = 5'b0;
-        rs2_o = 5'b0;
-        funct7_o = 7'b0;
-        funct3_o = 3'b0;
-        shamt_o = 5'b0;
+        rd_o = insn_i[11:7];
+        rs1_o = insn_i[19:15];
+        rs2_o = insn_i[24:20];
+        funct7_o = insn_i[31:25];
+        funct3_o = insn_i[14:12];
+        shamt_o = insn_i[24:20]; // Default shift amount from rs2 field
         imm_o = imm_internal;
 
         // Decode instruction based on opcode (determines instruction format)
