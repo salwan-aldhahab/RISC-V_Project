@@ -133,6 +133,11 @@ module pd3 #(
   );
 
   // Register File
+  assign r_read_rs1 = d_rs1;
+  assign r_read_rs2 = d_rs2;
+  assign r_write_enable = regwren;
+  assign r_write_destination = d_rd;
+  assign r_write_data = e_alu_res; // write back ALU result directly
   register_file #( .DWIDTH(DWIDTH) ) reg_file (
       .clk(clk),
       .rst(reset),
@@ -146,6 +151,7 @@ module pd3 #(
   );
 
   // Execute stage
+  assign e_pc = d_pc;
   alu #( .DWIDTH(DWIDTH), .AWIDTH(AWIDTH) ) alu_stage (
       .pc_i(e_pc),
       .rs1_i(r_read_rs1_data),
