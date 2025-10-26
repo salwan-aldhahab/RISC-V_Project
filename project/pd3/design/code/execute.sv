@@ -30,7 +30,12 @@ module alu #(
     output logic brtaken_o
 );
 
-    // Instantiate branch control module
+    /*
+     * Process definitions to be filled by
+     * student below...
+     */
+
+     // Instantiate branch control module
     logic breq_o;
     logic brlt_o;
     branch_control br_ctrl (
@@ -42,73 +47,62 @@ module alu #(
         .brlt_o   (brlt_o)
     );
 
-    // Check if this is a branch instruction based on funct3 values
-    logic is_branch;
-    always_comb begin
-        is_branch = (funct3_i == FUNCT3_BEQ) || 
-                   (funct3_i == FUNCT3_BNE) || 
-                   (funct3_i == FUNCT3_BLT) || 
-                   (funct3_i == FUNCT3_BGE) || 
-                   (funct3_i == FUNCT3_BLTU) || 
-                   (funct3_i == FUNCT3_BGEU);
-    end
-
     // ALU operation
     always_comb begin
         // Default output
         res_o = 32'd0;
         brtaken_o = 1'b0;
 
-        if (is_branch) begin
-            // Branch instructions - calculate branch target address
-            res_o = pc_i + rs2_i; // rs2_i should contain the branch offset
-            case (funct3_i)
-                FUNCT3_BEQ: brtaken_o = breq_o;
-                FUNCT3_BNE: brtaken_o = ~breq_o;
-                FUNCT3_BLT, FUNCT3_BLTU: brtaken_o = brlt_o;
-                FUNCT3_BGE, FUNCT3_BGEU: brtaken_o = ~brlt_o | breq_o;
-                default: brtaken_o = 1'b0;
-            endcase
-        end else begin
-            // Arithmetic/Logic instructions
-            case (funct3_i)
-                FUNCT3_ADD_SUB: begin // ADD/SUB/ADDI
-                    if (funct7_i == FUNCT7_SUB) begin
-                        res_o = rs1_i - rs2_i; // SUB
-                    end else begin
-                        res_o = rs1_i + rs2_i; // ADD/ADDI
-                    end
+        case (funct3_i)
+            FUNCT3_ADD_SUB: begin // ADD/SUB
+                if (funct7_i == FUNCT7_SUB) begin
+                    res_o = rs1_i - rs2_i; // SUB
+                end else begin
+                    res_o = rs1_i + rs2_i; // ADD
                 end
-                FUNCT3_SLL: begin // SLL/SLLI
-                    res_o = rs1_i << rs2_i[4:0];
+            end
+            FUNCT3_SLL: begin
+                res_o = rs1_i << rs2_i[4:0];
+            end
+            FUNCT3_SLT: begin // SLT
+                res_o = ($signed(rs1_i) < $signed(rs2_i)) ? 32'd1 : 32'd0;
+            end
+            FUNCT3_SLTU: begin // SLTU
+                res_o = (rs1_i < rs2_i) ? 32'd1 : 32'd0;
+            end
+            FUNCT3_XOR: begin // XOR
+                res_o = rs1_i ^ rs2_i;
+            end
+            FUNCT3_SRL_SRA: begin
+                if (funct7_i == FUNCT7_SRA) begin
+                    res_o = $signed(rs1_i) >>> rs2_i[4:0]; // SRA
+                end else begin
+                    res_o = rs1_i >> rs2_i[4:0]; // SRL
                 end
-                FUNCT3_SLT: begin // SLT/SLTI
-                    res_o = ($signed(rs1_i) < $signed(rs2_i)) ? 32'd1 : 32'd0;
-                end
-                FUNCT3_SLTU: begin // SLTU/SLTIU
-                    res_o = (rs1_i < rs2_i) ? 32'd1 : 32'd0;
-                end
-                FUNCT3_XOR: begin // XOR/XORI
-                    res_o = rs1_i ^ rs2_i;
-                end
-                FUNCT3_SRL_SRA: begin // SRL/SRA/SRLI/SRAI
-                    if (funct7_i == FUNCT7_SRA) begin
-                        res_o = $signed(rs1_i) >>> rs2_i[4:0]; // SRA/SRAI
-                    end else begin
-                        res_o = rs1_i >> rs2_i[4:0]; // SRL/SRLI
-                    end
-                end
-                FUNCT3_OR: begin // OR/ORI
-                    res_o = rs1_i | rs2_i;
-                end
-                FUNCT3_AND: begin // AND/ANDI
-                    res_o = rs1_i & rs2_i;
-                end
-                default: begin
-                    res_o = 32'd0;
-                end
-            endcase
-        end
+            end
+            FUNCT3_OR: begin // OR
+                res_o = rs1_i | rs2_i;
+            end
+            FUNCT3_AND: begin // AND
+                res_o = rs1_i & rs2_i;
+            end
+            FUNCT3_BEQ: begin // BEQ
+                brtaken_o = breq_o;
+            end
+            FUNCT3_BNE: begin // BNE
+                brtaken_o = ~breq_o;
+            end
+            FUNCT3_BLT, FUNCT3_BLTU: begin // BLT, BLTU
+                brtaken_o = brlt_o;
+            end
+            FUNCT3_BGE, FUNCT3_BGEU: begin // BGE, BGEU
+                brtaken_o = ~brlt_o | breq_o; // greater than or equal
+            end
+            default: begin
+                res_o = 32'd0;
+                brtaken_o = 1'b0;
+            end
+        endcase
     end
 
 endmodule : alu
