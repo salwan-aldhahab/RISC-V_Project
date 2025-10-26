@@ -25,6 +25,7 @@ module alu #(
     input logic [AWIDTH-1:0] pc_i,
     input logic [DWIDTH-1:0] rs1_i,
     input logic [DWIDTH-1:0] rs2_i,
+    input logic [6:0] imm_i,
     input logic [6:0] opcode_i,
     input logic [2:0] funct3_i,
     input logic [6:0] funct7_i,
@@ -82,19 +83,19 @@ module alu #(
 
             OPCODE_ITYPE: begin // I-type arithmetic instructions
                 case (funct3_i)
-                    FUNCT3_ADD_SUB: res_o = rs1_i + rs2_i; // ADDI
-                    FUNCT3_SLL: res_o = rs1_i << rs2_i[4:0]; // SLLI
-                    FUNCT3_SLT: res_o = ($signed(rs1_i) < $signed(rs2_i)) ? 32'd1 : ZERO; // SLTI
-                    FUNCT3_SLTU: res_o = (rs1_i < rs2_i) ? 32'd1 : ZERO; // SLTIU
-                    FUNCT3_XOR: res_o = rs1_i ^ rs2_i; // XORI
+                    FUNCT3_ADD_SUB: res_o = rs1_i + imm_i; // ADDI
+                    FUNCT3_SLL: res_o = rs1_i << imm_i[4:0]; // SLLI
+                    FUNCT3_SLT: res_o = ($signed(rs1_i) < $signed(imm_i)) ? 32'd1 : ZERO; // SLTI
+                    FUNCT3_SLTU: res_o = (rs1_i < imm_i) ? 32'd1 : ZERO; // SLTIU
+                    FUNCT3_XOR: res_o = rs1_i ^ imm_i; // XORI
                     FUNCT3_SRL_SRA: begin // SRLI/SRAI
-                        if (rs2_i[10] == 1'b1) // Check immediate bit 10 for SRAI
-                            res_o = $signed(rs1_i) >>> rs2_i[4:0]; // SRAI
+                        if (imm_i[10] == 1'b1) // Check immediate bit 10 for SRAI
+                            res_o = $signed(rs1_i) >>> imm_i[4:0]; // SRAI
                         else
-                            res_o = rs1_i >> rs2_i[4:0]; // SRLI
+                            res_o = rs1_i >> imm_i[4:0]; // SRLI
                     end
-                    FUNCT3_OR: res_o = rs1_i | rs2_i; // ORI
-                    FUNCT3_AND: res_o = rs1_i & rs2_i; // ANDI
+                    FUNCT3_OR: res_o = rs1_i | imm_i; // ORI
+                    FUNCT3_AND: res_o = rs1_i & imm_i; // ANDI
                     default: res_o = ZERO;
                 endcase
             end
@@ -102,7 +103,7 @@ module alu #(
             OPCODE_LOAD: begin // Load instructions
                 case (funct3_i)
                     FUNCT3_LB, FUNCT3_LBU, FUNCT3_LH, FUNCT3_LHU, FUNCT3_LW: begin
-                        res_o = rs1_i + rs2_i; // Calculate memory address
+                        res_o = rs1_i + imm_i; // Calculate memory address
                     end
                     default: res_o = ZERO;
                 endcase
@@ -111,14 +112,14 @@ module alu #(
             OPCODE_STORE: begin // Store instructions
                 case (funct3_i)
                     FUNCT3_SB, FUNCT3_SH, FUNCT3_SW: begin
-                        res_o = rs1_i + rs2_i; // Calculate memory address
+                        res_o = rs1_i + imm_i; // Calculate memory address
                     end
                     default: res_o = ZERO;
                 endcase
             end
 
             OPCODE_BRANCH: begin // Branch instructions
-                res_o = pc_i + rs2_i; // Branch target address
+                res_o = pc_i + imm_i; // Branch target address
                 case (funct3_i)
                     FUNCT3_BEQ: brtaken_o = breq_o; // BEQ
                     FUNCT3_BNE: brtaken_o = ~breq_o; // BNE
@@ -131,21 +132,21 @@ module alu #(
             end
 
             OPCODE_JAL: begin // JAL
-                res_o = pc_i + rs2_i; // Return address
+                res_o = pc_i + imm_i; // Return address
                 //brtaken_o = 1'b1;
             end
 
             OPCODE_JALR: begin // JALR
-                res_o = pc_i + rs1_i + rs2_i; // Return address
+                res_o = pc_i + rs1_i + imm_i; // Return address
                 //brtaken_o = 1'b0;
             end
 
             OPCODE_LUI: begin // LUI
-                res_o = rs2_i; // Load upper immediate (rs2_i contains imm[31:12] << 12)
+                res_o = imm_i; // Load upper immediate (rs2_i contains imm[31:12] << 12)
             end
 
             OPCODE_AUIPC: begin // AUIPC
-                res_o = pc_i + rs2_i; // Add upper immediate to PC
+                res_o = pc_i + imm_i; // Add upper immediate to PC
             end
 
             default: begin
