@@ -47,11 +47,14 @@
     logic [DWIDTH-1:0] registers [31:0];
 
     // Read logic with forwarding
-    logic [DWIDTH-1:0] rs1data_raw, rs2data_raw;
-    assign rs1data_raw = (rs1_i != 0) ? registers[rs1_i] : '0;
-    assign rs2data_raw = (rs2_i != 0) ? registers[rs2_i] : '0;
-    assign rs1data_o= (regwren_i && (rd_i == rs1_i) && (rd_i != 0)) ? datawb_i : rs1data_raw;
-    assign rs2data_o= (regwren_i && (rd_i == rs2_i) && (rd_i != 0)) ? datawb_i : rs2data_raw;
+    // logic [DWIDTH-1:0] rs1data_raw, rs2data_raw;
+    // assign rs1data_raw = (rs1_i != 0) ? registers[rs1_i] : '0;
+    // assign rs2data_raw = (rs2_i != 0) ? registers[rs2_i] : '0;
+    // assign rs1data_o= (regwren_i && (rd_i == rs1_i) && (rd_i != 0)) ? datawb_i : rs1data_raw;
+    // assign rs2data_o= (regwren_i && (rd_i == rs2_i) && (rd_i != 0)) ? datawb_i : rs2data_raw;
+
+    assign rs1data_o = (rs1_i != 0) ? registers[rs1_i] : '0;
+    assign rs2data_o = (rs2_i != 0) ? registers[rs2_i] : '0;
 
     // Writeback logic with stack pointer management
     always_ff @(posedge clk) begin
