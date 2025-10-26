@@ -63,18 +63,10 @@
         end else begin
             if (regwren_i && rd_i != 5'd0) begin
                 registers[rd_i] <= datawb_i;
-                
-                // Special handling for stack pointer (x2) operations
                 if (rd_i == 5'd2) begin
-                    // Check if this is a stack operation based on the data being written
-                    // Common stack operations:
-                    // - ADDI sp, sp, -imm (push frame/allocate stack space)
-                    // - ADDI sp, sp, +imm (pop frame/deallocate stack space)
-                    // The datawb_i contains the new SP value after the operation
-                    registers[2] <= datawb_i;
+                    stack_pointer <= datawb_i; // Update stack pointer if x2 is written
                 end
             end
-            
             // Ensure x0 is always zero
             registers[0] <= '0;
         end
