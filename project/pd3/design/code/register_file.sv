@@ -57,10 +57,11 @@
             end
             registers[2] <= stack_pointer; // Initialize stack pointer (x2) high -> stack grows down
         end else begin
-            if (regwren_i && rd_i != 5'd0) begin // Only write if rd is not x0
+            if (regwren_i && rd_i != 5'd0) begin
                 registers[rd_i] <= datawb_i;
             end
-            // x0 is hardwired to 0 - no need to explicitly set it since we prevent writes to it
+            // Ensure x0 is always zero
+            registers[0] <= '0;
         end
     end
 endmodule : register_file

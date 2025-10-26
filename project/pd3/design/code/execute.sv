@@ -137,7 +137,7 @@ module alu #(
             end
 
             OPCODE_JALR: begin // JALR
-                res_o = pc_i + rs1_i + imm_i; // Return address
+                res_o = rs1_i + imm_i; // Return address
                 //brtaken_o = 1'b0;
             end
 
