@@ -185,8 +185,7 @@ module pd3 #(
   // Writeback stage connections
   assign r_read_rs1 = d_rs1;
   assign r_read_rs2 = d_rs2;
-  assign r_write_enable = regwren;  // Use current cycle regwren, not pipelined
-  assign r_write_destination = d_rd;  // Use current cycle rd, not pipelined
-  assign r_write_data = e_alu_res;  // Use current cycle ALU result, not pipelined
-
+  assign r_write_enable = wb_regwren;
+  assign r_write_destination = wb_rd;
+  assign r_write_data = wb_alu_res; // write back ALU result directly
 endmodule : pd3
