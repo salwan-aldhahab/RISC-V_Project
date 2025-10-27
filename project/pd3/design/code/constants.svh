@@ -74,4 +74,6 @@ parameter logic [3:0] ALU_SLTU = 4'b1001;
 parameter logic [3:0] ALU_LUI  = 4'b1010;
 parameter logic [3:0] ALU_AUIPC= 4'b1011;
 
+// Stack top address
+//parameter logic [31:0] STACK_TOP = 32'h01000000;
 `endif

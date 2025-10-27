@@ -36,27 +36,20 @@
      */
 
     always_comb begin
-        // Start with "no branch" as default
+        // Default outputs
         breq_o = 1'b0;
         brlt_o = 1'b0;
 
-        // Only do branch logic if this is actually a branch instruction
         if (opcode_i == OPCODE_BRANCH) begin
-            // Check if the two values are equal simple comparison
             breq_o = (rs1_i == rs2_i) ? 1'b1 : 1'b0;
-            
-            // Figure out which kind of "less than" comparison we need
             case (funct3_i)
                 FUNCT3_BLT, FUNCT3_BGE: begin
-                    // Signed comparison treats numbers as positive/negative
                     brlt_o = ($signed(rs1_i) < $signed(rs2_i)) ? 1'b1 : 1'b0;
                 end
                 FUNCT3_BLTU, FUNCT3_BGEU: begin
-                    // Unsigned comparison treats all numbers as positive
                     brlt_o = (rs1_i < rs2_i) ? 1'b1 : 1'b0;
                 end
                 default: begin
-                    // Unknown branch type don't branch
                     brlt_o = 1'b0;
                 end
             endcase
