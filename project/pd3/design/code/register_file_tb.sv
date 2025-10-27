@@ -148,7 +148,7 @@ module register_file_tb;
         total_tests++;
         $display("Test 6: Write without enable (should not write)");
         rd_tb = 5'd5;
-        datawb_tb = 32'hBADDATA1;
+        datawb_tb = 32'hBADDA7A1;  // Changed from BADDAta1 to BADDA7A1
         regwren_tb = 0;  // Write enable is off
         #20;
         
