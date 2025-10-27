@@ -40,27 +40,30 @@
      * student below...
      */
 
-    // Stack pointer initial value
+    // Where the stack starts
     logic [DWIDTH-1:0] stack_pointer = 32'h0110_0000;
 
-    // 32 registers of DWIDTH bits each
+    // Our 32 register storage think of them as numbered boxes 0-31
     logic [DWIDTH-1:0] registers [31:0];
 
+    // Reading: x0 always gives zero, others give their actual value
     assign rs1data_o = (rs1_i != 0) ? registers[rs1_i] : '0;
     assign rs2data_o = (rs2_i != 0) ? registers[rs2_i] : '0;
 
-    // Writeback logic with stack pointer management
+    // Writing happens every clock tick
     always_ff @(posedge clk) begin
         if (rst) begin
+            //clear everything and set up stack pointer
             for (int i = 0; i < 32; i++) begin
                 registers[i] <= '0;
             end
-            registers[2] <= stack_pointer; // Initialize stack pointer (x2) high -> stack grows down
+            registers[2] <= stack_pointer; // x2 = stack pointer
         end else begin
+            // Normal write: save data but never to x0 (it's read-only)
             if (regwren_i && rd_i != 5'd0) begin
                 registers[rd_i] <= datawb_i;
             end
-            // Ensure x0 is always zero
+            // Force x0 to stay zero no matter what
             registers[0] <= '0;
         end
     end

@@ -50,106 +50,104 @@ module alu #(
         .brlt_o   (brlt_o)
     );
 
-    // ALU operation block based on opcode
+    // Main ALU logic does math and decides what to do
     always_comb begin
-        // Default output
+        // Start with safe defaults
         res_o = ZERO;
         brtaken_o = 1'b0;
 
         case (opcode_i)
-            OPCODE_RTYPE: begin // R-type instructions
+            OPCODE_RTYPE: begin // R-type: register to register operations
                 case (funct3_i)
-                    FUNCT3_ADD_SUB: begin // ADD/SUB
+                    FUNCT3_ADD_SUB: begin // Math: add or subtract
                         if (funct7_i == FUNCT7_SUB)
                             res_o = rs1_i - rs2_i; // SUB
                         else
                             res_o = rs1_i + rs2_i; // ADD
                     end
-                    FUNCT3_SLL: res_o = rs1_i << rs2_i[4:0]; // SLL
-                    FUNCT3_SLT: res_o = ($signed(rs1_i) < $signed(rs2_i)) ? 32'd1 : ZERO; // SLT
-                    FUNCT3_SLTU: res_o = (rs1_i < rs2_i) ? 32'd1 : ZERO; // SLTU
-                    FUNCT3_XOR: res_o = rs1_i ^ rs2_i; // XOR
-                    FUNCT3_SRL_SRA: begin // SRL/SRA
+                    FUNCT3_SLL: res_o = rs1_i << rs2_i[4:0]; // SLL - shift left
+                    FUNCT3_SLT: res_o = ($signed(rs1_i) < $signed(rs2_i)) ? 32'd1 : ZERO; // SLT - signed compare
+                    FUNCT3_SLTU: res_o = (rs1_i < rs2_i) ? 32'd1 : ZERO; // SLTU - unsigned compare
+                    FUNCT3_XOR: res_o = rs1_i ^ rs2_i; // XOR - flip bits
+                    FUNCT3_SRL_SRA: begin // Right shift operations
                         if (funct7_i == FUNCT7_SRA)
-                            res_o = $signed(rs1_i) >>> rs2_i[4:0]; // SRA
+                            res_o = $signed(rs1_i) >>> rs2_i[4:0]; // SRA - arithmetic (keeps sign)
                         else
-                            res_o = rs1_i >> rs2_i[4:0]; // SRL
+                            res_o = rs1_i >> rs2_i[4:0]; // SRL - logical (fills with zeros)
                     end
-                    FUNCT3_OR: res_o = rs1_i | rs2_i; // OR
-                    FUNCT3_AND: res_o = rs1_i & rs2_i; // AND
+                    FUNCT3_OR: res_o = rs1_i | rs2_i; // OR - combine bits
+                    FUNCT3_AND: res_o = rs1_i & rs2_i; // AND - mask bits
                     default: res_o = ZERO;
                 endcase
             end
 
-            OPCODE_ITYPE: begin // I-type arithmetic instructions
+            OPCODE_ITYPE: begin // I-type: register with immediate operations
                 case (funct3_i)
-                    FUNCT3_ADD_SUB: res_o = rs1_i + imm_i; // ADDI
-                    FUNCT3_SLL: res_o = rs1_i << imm_i[4:0]; // SLLI
-                    FUNCT3_SLT: res_o = ($signed(rs1_i) < $signed(imm_i)) ? 32'd1 : ZERO; // SLTI
-                    FUNCT3_SLTU: res_o = (rs1_i < imm_i) ? 32'd1 : ZERO; // SLTIU
-                    FUNCT3_XOR: res_o = rs1_i ^ imm_i; // XORI
-                    FUNCT3_SRL_SRA: begin // SRLI/SRAI
-                        if (imm_i[10] == 1'b1) // Check immediate bit 10 for SRAI
-                            res_o = $signed(rs1_i) >>> imm_i[4:0]; // SRAI
+                    FUNCT3_ADD_SUB: res_o = rs1_i + imm_i; // ADDI - add immediate
+                    FUNCT3_SLL: res_o = rs1_i << imm_i[4:0]; // SLLI - shift left immediate
+                    FUNCT3_SLT: res_o = ($signed(rs1_i) < $signed(imm_i)) ? 32'd1 : ZERO; // SLTI - signed compare immediate
+                    FUNCT3_SLTU: res_o = (rs1_i < imm_i) ? 32'd1 : ZERO; // SLTIU - unsigned compare immediate
+                    FUNCT3_XOR: res_o = rs1_i ^ imm_i; // XORI - XOR with immediate
+                    FUNCT3_SRL_SRA: begin // Shift right with immediate
+                        if (imm_i[10] == 1'b1) // Check bit 10 to know which type
+                            res_o = $signed(rs1_i) >>> imm_i[4:0]; // SRAI - arithmetic
                         else
-                            res_o = rs1_i >> imm_i[4:0]; // SRLI
+                            res_o = rs1_i >> imm_i[4:0]; // SRLI - logical
                     end
-                    FUNCT3_OR: res_o = rs1_i | imm_i; // ORI
-                    FUNCT3_AND: res_o = rs1_i & imm_i; // ANDI
+                    FUNCT3_OR: res_o = rs1_i | imm_i; // ORI - OR with immediate
+                    FUNCT3_AND: res_o = rs1_i & imm_i; // ANDI - AND with immediate
                     default: res_o = ZERO;
                 endcase
             end
 
-            OPCODE_LOAD: begin // Load instructions
+            OPCODE_LOAD: begin // Load: read from memory
                 case (funct3_i)
                     FUNCT3_LB, FUNCT3_LBU, FUNCT3_LH, FUNCT3_LHU, FUNCT3_LW: begin
-                        res_o = rs1_i + imm_i; // Calculate memory address
+                        res_o = rs1_i + imm_i; // Calculate where to read from
                     end
                     default: res_o = ZERO;
                 endcase
             end
 
-            OPCODE_STORE: begin // Store instructions
+            OPCODE_STORE: begin // Store: write to memory
                 case (funct3_i)
                     FUNCT3_SB, FUNCT3_SH, FUNCT3_SW: begin
-                        res_o = rs1_i + imm_i; // Calculate memory address
+                        res_o = rs1_i + imm_i; // Calculate where to write to
                     end
                     default: res_o = ZERO;
                 endcase
             end
 
-            OPCODE_BRANCH: begin // Branch instructions
-                res_o = pc_i + imm_i; // Branch target address
+            OPCODE_BRANCH: begin // Branch: maybe jump somewhere else
+                res_o = pc_i + imm_i; // Calculate jump target address
                 case (funct3_i)
-                    FUNCT3_BEQ: brtaken_o = breq_o; // BEQ
-                    FUNCT3_BNE: brtaken_o = ~breq_o; // BNE
-                    FUNCT3_BLT: brtaken_o = brlt_o; // BLT
-                    FUNCT3_BGE: brtaken_o = ~brlt_o | breq_o; // BGE
-                    FUNCT3_BLTU: brtaken_o = brlt_o; // BLTU
-                    FUNCT3_BGEU: brtaken_o = ~brlt_o | breq_o; // BGEU
+                    FUNCT3_BEQ: brtaken_o = breq_o; // BEQ - jump if equal
+                    FUNCT3_BNE: brtaken_o = ~breq_o; // BNE - jump if not equal
+                    FUNCT3_BLT: brtaken_o = brlt_o; // BLT - jump if less than
+                    FUNCT3_BGE: brtaken_o = ~brlt_o | breq_o; // BGE - jump if greater/equal
+                    FUNCT3_BLTU: brtaken_o = brlt_o; // BLTU - jump if less than (unsigned)
+                    FUNCT3_BGEU: brtaken_o = ~brlt_o | breq_o; // BGEU - jump if greater/equal (unsigned)
                     default: brtaken_o = 1'b0;
                 endcase
             end
 
-            OPCODE_JAL: begin // JAL
-                res_o = pc_i + imm_i; // Return address
-                //brtaken_o = 1'b1;
+            OPCODE_JAL: begin // JAL - unconditional jump
+                res_o = pc_i + imm_i; // Jump target address
             end
 
-            OPCODE_JALR: begin // JALR
-                res_o = rs1_i + imm_i; // Return address
-                //brtaken_o = 1'b0;
+            OPCODE_JALR: begin // JALR - jump to register + offset
+                res_o = rs1_i + imm_i; // Jump target from register
             end
 
-            OPCODE_LUI: begin // LUI
-                res_o = imm_i; // Load upper immediate (rs2_i contains imm[31:12] << 12)
+            OPCODE_LUI: begin // LUI - load big number into upper bits
+                res_o = imm_i; // Put immediate in upper 20 bits
             end
 
-            OPCODE_AUIPC: begin // AUIPC
-                res_o = pc_i + imm_i; // Add upper immediate to PC
+            OPCODE_AUIPC: begin // AUIPC - add big number to PC
+                res_o = pc_i + imm_i; // Add immediate to current address
             end
 
-            default: begin
+            default: begin // Unknown instruction - do nothing
                 res_o = ZERO;
                 brtaken_o = 1'b0;
             end
