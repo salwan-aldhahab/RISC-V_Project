@@ -1,0 +1,398 @@
+m255
+K4
+z2
+!s11f vlog 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/cs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code
+Xconstants_svh_unit
+Z1 DXx6 sv_std 3 std 0 22 VYECXdT12H8WgbUP_5Y6:3
+!s110 1760322496
+Ve3`UD9Y:oj0olJ;Z3o=YI1
+r1
+!s85 0
+!i10b 1
+!s100 ^DENhia92Y=^5YPcbna]g1
+Ie3`UD9Y:oj0olJ;Z3o=YI1
+!i103 1
+S1
+R0
+Z2 w1760320503
+8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/constants.svh
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/constants.svh
+!i122 76
+Z3 L0 10 0
+Z4 OV;L;2020.1;71
+31
+!s108 1760322496.000000
+!s107 /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/constants.svh|
+!s90 -reportprogress|300|-work|work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/constants.svh|
+!i113 1
+Z5 o-work work
+Z6 tCvgOpt 0
+vcontrol
+R1
+DXx4 work 15 control_sv_unit 0 22 lH0;W3N[LI:<[ZUe1AODO2
+Z7 !s110 1760322497
+Z8 VDg1SIo80bB@j0V0VzS_@n1
+r1
+!s85 0
+!i10b 1
+!s100 LNT<FC[bV^A;HeCUYJI<^0
+ISHKN]B@]XNFm^jFz<H`X93
+!s105 control_sv_unit
+S1
+R0
+R2
+Z9 8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/control.sv
+Z10 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/control.sv
+!i122 77
+L0 28 195
+R4
+31
+Z11 !s108 1760322497.000000
+Z12 !s107 constants.svh|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/control.sv|
+Z13 !s90 -reportprogress|300|-work|work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/control.sv|
+!i113 1
+R5
+R6
+Xcontrol_sv_unit
+R1
+R7
+VlH0;W3N[LI:<[ZUe1AODO2
+r1
+!s85 0
+!i10b 1
+!s100 B3ebcaJHHO[TZK]^zEjk41
+IlH0;W3N[LI:<[ZUe1AODO2
+!i103 1
+S1
+R0
+R2
+R9
+R10
+Z14 Fconstants.svh
+!i122 77
+R3
+R4
+31
+R11
+R12
+R13
+!i113 1
+R5
+R6
+vcontrol_tb
+R1
+DXx4 work 18 control_tb_sv_unit 0 22 Q2H[cXQoW2:WZ06Pm3>;A1
+R7
+R8
+r1
+!s85 0
+!i10b 1
+!s100 =:[L=Nk[GeIabL?@HcQhz2
+IaUP:en46<H6;a4U149VP70
+!s105 control_tb_sv_unit
+S1
+R0
+Z15 w1760321107
+Z16 8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/control_tb.sv
+Z17 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/control_tb.sv
+!i122 78
+L0 4 502
+R4
+31
+R11
+Z18 !s107 constants.svh|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/control_tb.sv|
+Z19 !s90 -reportprogress|300|-work|work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/control_tb.sv|
+!i113 1
+R5
+R6
+Xcontrol_tb_sv_unit
+R1
+R7
+VQ2H[cXQoW2:WZ06Pm3>;A1
+r1
+!s85 0
+!i10b 1
+!s100 ;>JREnQA`oLH>hT:h7kRb3
+IQ2H[cXQoW2:WZ06Pm3>;A1
+!i103 1
+S1
+R0
+R15
+R16
+R17
+R14
+!i122 78
+R3
+R4
+31
+R11
+R18
+R19
+!i113 1
+R5
+R6
+vdecode
+R1
+DXx4 work 14 decode_sv_unit 0 22 af[_d?0OIDmalfLNNgVe<2
+R7
+R8
+r1
+!s85 0
+!i10b 1
+!s100 C53^4zWmhGL_nFLgWP<G30
+I]3kUK<4KOJNaLHXae`R?^2
+!s105 decode_sv_unit
+S1
+R0
+Z20 w1760319377
+Z21 8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/decode.sv
+Z22 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/decode.sv
+!i122 79
+L0 26 142
+R4
+31
+R11
+Z23 !s107 constants.svh|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/decode.sv|
+Z24 !s90 -reportprogress|300|-work|work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/decode.sv|
+!i113 1
+R5
+R6
+Xdecode_sv_unit
+R1
+R7
+Vaf[_d?0OIDmalfLNNgVe<2
+r1
+!s85 0
+!i10b 1
+!s100 9_b_jRd=iRVh?6TOA=^930
+Iaf[_d?0OIDmalfLNNgVe<2
+!i103 1
+S1
+R0
+R2
+R21
+R22
+R14
+!i122 79
+R3
+R4
+31
+R11
+R23
+R24
+!i113 1
+R5
+R6
+vdecode_tb
+R1
+DXx4 work 17 decode_tb_sv_unit 0 22 HBl2CnB>UK_5TFEdRK7PP2
+R7
+R8
+r1
+!s85 0
+!i10b 1
+!s100 R`?i=]=E_fUTLBJzDG1S_0
+I@g;HM<K5OaU:8YGE904eJ2
+!s105 decode_tb_sv_unit
+S1
+R0
+Z25 w1760322477
+Z26 8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/decode_tb.sv
+Z27 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/decode_tb.sv
+!i122 80
+L0 3 983
+R4
+31
+R11
+Z28 !s107 constants.svh|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/decode_tb.sv|
+Z29 !s90 -reportprogress|300|-work|work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/decode_tb.sv|
+!i113 1
+R5
+R6
+Xdecode_tb_sv_unit
+R1
+R7
+VHBl2CnB>UK_5TFEdRK7PP2
+r1
+!s85 0
+!i10b 1
+!s100 C]nQTK]de^>VAbZFhe`W33
+IHBl2CnB>UK_5TFEdRK7PP2
+!i103 1
+S1
+R0
+R25
+R26
+R27
+R14
+!i122 80
+R3
+R4
+31
+R11
+R28
+R29
+!i113 1
+R5
+R6
+vfetch
+R1
+!s110 1760318241
+!i10b 1
+!s100 UTM^>e6Bb7_<?k=71ii=Y1
+Z30 !s11b Dg1SIo80bB@j0V0VzS_@n1
+I:E9]ojecXSQCB5U1NZK<a0
+R8
+S1
+R0
+w1760060064
+8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/fetch.sv
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/fetch.sv
+!i122 33
+L0 15 30
+R4
+r1
+!s85 0
+31
+!s108 1760318241.000000
+!s107 /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/fetch.sv|
+!s90 -reportprogress|300|-work|work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/fetch.sv|
+!i113 1
+R5
+R6
+vigen
+R1
+DXx4 work 12 igen_sv_unit 0 22 <RJoB_kE08nZELTdbOo^Q0
+R7
+R8
+r1
+!s85 0
+!i10b 1
+!s100 QQ?@zBebZDOZb75h^dzoD3
+IkVdzSZ6OOohm><mKclJ>42
+!s105 igen_sv_unit
+S1
+R0
+R2
+Z31 8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/igen.sv
+Z32 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/igen.sv
+!i122 81
+L0 15 41
+R4
+31
+R11
+Z33 !s107 constants.svh|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/igen.sv|
+Z34 !s90 -reportprogress|300|-work|work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/igen.sv|
+!i113 1
+R5
+R6
+Xigen_sv_unit
+R1
+R7
+V<RJoB_kE08nZELTdbOo^Q0
+r1
+!s85 0
+!i10b 1
+!s100 840bjGg328BEJ``T?>OKY3
+I<RJoB_kE08nZELTdbOo^Q0
+!i103 1
+S1
+R0
+R2
+R31
+R32
+R14
+!i122 81
+R3
+R4
+31
+R11
+R33
+R34
+!i113 1
+R5
+R6
+vigen_tb
+R1
+DXx4 work 15 igen_tb_sv_unit 0 22 N0lFbQhIEKG9Tl1?2Y6d]3
+R7
+R8
+r1
+!s85 0
+!i10b 1
+!s100 K7BaI>9DGBE?T]lRcLJNX3
+I54i^m>f3iK<QQ:hYa;QdE1
+!s105 igen_tb_sv_unit
+S1
+R0
+R20
+Z35 8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/igen_tb.sv
+Z36 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/igen_tb.sv
+!i122 82
+L0 3 69
+R4
+31
+R11
+!s107 constants.svh|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/igen_tb.sv|
+Z37 !s90 -reportprogress|300|-work|work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/igen_tb.sv|
+!i113 1
+R5
+R6
+Xigen_tb_sv_unit
+R1
+R7
+VN0lFbQhIEKG9Tl1?2Y6d]3
+r1
+!s85 0
+!i10b 1
+!s100 V`15C6I[`]c:I;GnfiofN1
+IN0lFbQhIEKG9Tl1?2Y6d]3
+!i103 1
+S1
+R0
+R2
+R35
+R36
+R14
+!i122 82
+R3
+R4
+31
+R11
+Z38 !s107 constants.svh|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/igen_tb.sv|
+R37
+!i113 1
+R5
+R6
+vpd2
+R1
+!s110 1760318242
+!i10b 1
+!s100 fG:79fX@`E2UagKkabW`i0
+R30
+I8S0BGh`OEmLZ@^9nV9ZTg0
+R8
+S1
+R0
+w1760062601
+8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/pd2.sv
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/pd2.sv
+!i122 36
+L0 11 128
+R4
+r1
+!s85 0
+31
+!s108 1760318242.000000
+!s107 /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/pd2.sv|
+!s90 -reportprogress|300|-work|work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/pd2.sv|
+!i113 1
+R5
+R6

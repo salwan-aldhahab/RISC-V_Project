@@ -1,0 +1,523 @@
+m255
+K4
+z2
+!s11f MIXED_VERSIONS
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/scripts
+valu
+Z1 DXx6 sv_std 3 std 0 22 VYECXdT12H8WgbUP_5Y6:3
+DXx4 work 15 execute_sv_unit 0 22 iAPCWDQEC5k=4ZhI_zE?k3
+Z2 !s110 1761532240
+Z3 VDg1SIo80bB@j0V0VzS_@n1
+r1
+!s85 0
+!i10b 1
+!s100 nid>RD?H`3[<5Nhn9@7<<1
+I0Bo9gakI;WaNUL<>A3GZ73
+!s105 execute_sv_unit
+S1
+R0
+Z4 w1761528771
+Z5 8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/execute.sv
+Z6 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/execute.sv
+!i122 55
+L0 21 137
+Z7 OV;L;2020.1;71
+31
+Z8 !s108 1761532240.000000
+!s107 /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/tasks.h|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/pattern_check.h|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/pattern_dump.h|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/trace_dump.h|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/fields.h|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/tracegen.v|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design//probes.svh|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/test_pd.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/design_wrapper.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/clockgen.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/pd3.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/execute.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/decode.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/control.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/fetch.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/memory.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/igen.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/branch_control.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/constants.svh|
+Z9 !s90 -work|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work|-suppress|7061|-sv|+incdir+/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code|+incdir+/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/|+incdir+/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests|+define+MEM_PATH="/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/data/test3.x"|+define+TEST_VECTOR="/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/data/test_vector.x"|+define+MEM_DEPTH=1048576|+define+GEN_TRACE=0|+define+TRACE_FILE="test3.trace"|+define+LINE_COUNT=51|+define+PATTERN_FILE="/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/data/test3.pattern"|+define+PATTERN_LINE_COUNT=48|+define+PATTERN_DUMP_FILE="test3.dump"|+define+PATTERN_DUMP=0|+define+PATTERN_CHECK=1|+define+VCD_FILE="test3.vcd"|+define+TIMEOUT=50000|-stats=none|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/constants.svh|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/branch_control.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/igen.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/memory.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/fetch.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/control.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/decode.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/execute.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/pd3.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/clockgen.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/design_wrapper.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/test_pd.sv|
+!i113 1
+Z10 o-suppress 7061 -work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work -sv
+Z11 !s92 -suppress 7061 -work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work -sv +incdir+/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code +incdir+/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/ +incdir+/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests +define+MEM_PATH=\"/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/data/test3.x\" +define+TEST_VECTOR=\"/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/data/test_vector.x\" +define+MEM_DEPTH=1048576 +define+GEN_TRACE=0 +define+TRACE_FILE=\"test3.trace\" +define+LINE_COUNT=51 +define+PATTERN_FILE=\"/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/data/test3.pattern\" +define+PATTERN_LINE_COUNT=48 +define+PATTERN_DUMP_FILE=\"test3.dump\" +define+PATTERN_DUMP=0 +define+PATTERN_CHECK=1 +define+VCD_FILE=\"test3.vcd\" +define+TIMEOUT=50000
+Z12 tCvgOpt 0
+vbranch_control
+R1
+DXx4 work 22 branch_control_sv_unit 0 22 hhoFUgI[Fc0<kmZoemEZj0
+R2
+R3
+r1
+!s85 0
+!i10b 1
+!s100 GRj0Q9O]KT1Cb0@1SNcjR1
+I>W2hkfAGba:6X<S2DRWo72
+!s105 branch_control_sv_unit
+S1
+R0
+R4
+Z13 8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/branch_control.sv
+Z14 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/branch_control.sv
+!i122 55
+L0 20 46
+R7
+31
+R8
+Z15 !s107 /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/tasks.h|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/pattern_check.h|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/pattern_dump.h|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/trace_dump.h|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/fields.h|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/tracegen.v|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design//probes.svh|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/test_pd.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/design_wrapper.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/clockgen.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/pd3.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/execute.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/decode.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/control.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/fetch.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/memory.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/igen.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/branch_control.sv|/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/constants.svh|
+R9
+!i113 1
+R10
+R11
+R12
+Xbranch_control_sv_unit
+R1
+R2
+VhhoFUgI[Fc0<kmZoemEZj0
+r1
+!s85 0
+!i10b 1
+!s100 `oCbHGV=KmoZOF6N`Hf?S1
+IhhoFUgI[Fc0<kmZoemEZj0
+!i103 1
+S1
+R0
+R4
+R13
+R14
+Z16 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/constants.svh
+!i122 55
+Z17 L0 10 0
+R7
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+vclockgen
+R1
+R2
+!i10b 1
+!s100 XGla>YnT?aHlG7Lg@<j9J1
+Z18 !s11b Dg1SIo80bB@j0V0VzS_@n1
+IilG2`L?c]lV3KWl_Xe<KD2
+R3
+S1
+R0
+w1760035365
+8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/clockgen.sv
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/clockgen.sv
+!i122 55
+L0 11 39
+R7
+r1
+!s85 0
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+Xconstants_svh_unit
+R1
+R2
+V>@<WcoK_NTY`_o2HZKZ`U3
+r1
+!s85 0
+!i10b 1
+!s100 [5eRL=FD]K;loPc@oA=d51
+I>@<WcoK_NTY`_o2HZKZ`U3
+!i103 1
+S1
+R0
+R4
+8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/constants.svh
+R16
+!i122 55
+R17
+R7
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+vcontrol
+R1
+DXx4 work 15 control_sv_unit 0 22 Hk^>f<<8R=bKF6J@hk9Ka3
+R2
+R3
+r1
+!s85 0
+!i10b 1
+!s100 LNT<FC[bV^A;HeCUYJI<^0
+ICMOU2FDDFYFWhTCT79lO=0
+!s105 control_sv_unit
+S1
+R0
+Z19 w1761435753
+Z20 8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/control.sv
+Z21 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/control.sv
+!i122 55
+L0 28 195
+R7
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+Xcontrol_sv_unit
+R1
+R2
+VHk^>f<<8R=bKF6J@hk9Ka3
+r1
+!s85 0
+!i10b 1
+!s100 zl=dYZe=iLbb8KeXz`EaZ1
+IHk^>f<<8R=bKF6J@hk9Ka3
+!i103 1
+S1
+R0
+R4
+R20
+R21
+R16
+!i122 55
+R17
+R7
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+vdecode
+R1
+DXx4 work 14 decode_sv_unit 0 22 `kBkGVBz`7>`c8?Y@R;;D2
+R2
+R3
+r1
+!s85 0
+!i10b 1
+!s100 k`MR@W6RfT3nZP`faIAmZ2
+I]dLI^1I;KQWUBKNm:d:lZ3
+!s105 decode_sv_unit
+S1
+R0
+w1761437336
+Z22 8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/decode.sv
+Z23 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/decode.sv
+!i122 55
+L0 26 141
+R7
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+Xdecode_sv_unit
+R1
+R2
+V`kBkGVBz`7>`c8?Y@R;;D2
+r1
+!s85 0
+!i10b 1
+!s100 MhlWVnZf2V;3m8F<FR5m83
+I`kBkGVBz`7>`c8?Y@R;;D2
+!i103 1
+S1
+R0
+R4
+R22
+R23
+R16
+!i122 55
+R17
+R7
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+vdesign_wrapper
+R1
+R2
+!i10b 1
+!s100 58IkI`:ZOK`ko1oG>H^Y63
+R18
+If?fB;0_S]]<[>o;KC3K0]0
+R3
+S1
+R0
+w1758380991
+8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/design_wrapper.sv
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/design_wrapper.sv
+!i122 55
+L0 6 10
+R7
+r1
+!s85 0
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+Xexecute_sv_unit
+R1
+R2
+ViAPCWDQEC5k=4ZhI_zE?k3
+r1
+!s85 0
+!i10b 1
+!s100 i0P72NFY]?RUH6fPAXPMm0
+IiAPCWDQEC5k=4ZhI_zE?k3
+!i103 1
+S1
+R0
+R4
+R5
+R6
+R16
+!i122 55
+R17
+R7
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+vfetch
+R1
+R2
+!i10b 1
+!s100 UTM^>e6Bb7_<?k=71ii=Y1
+R18
+I10]Ro?0kE8?[nFFCfeRcl3
+R3
+S1
+R0
+R19
+8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/fetch.sv
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/fetch.sv
+!i122 55
+L0 15 30
+R7
+r1
+!s85 0
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+vigen
+R1
+DXx4 work 12 igen_sv_unit 0 22 jWcR0=QP]Z@P:[6aDEboQ3
+R2
+R3
+r1
+!s85 0
+!i10b 1
+!s100 QQ?@zBebZDOZb75h^dzoD3
+I6:HDLf?Z4SI9_>PWn?MS=2
+!s105 igen_sv_unit
+S1
+R0
+R19
+Z24 8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/igen.sv
+Z25 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/igen.sv
+!i122 55
+L0 15 41
+R7
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+Xigen_sv_unit
+R1
+R2
+VjWcR0=QP]Z@P:[6aDEboQ3
+r1
+!s85 0
+!i10b 1
+!s100 08Iogj4QSZb@K4FjoT^Fo2
+IjWcR0=QP]Z@P:[6aDEboQ3
+!i103 1
+S1
+R0
+R4
+R24
+R25
+R16
+!i122 55
+R17
+R7
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+vmemory
+R1
+R2
+!i10b 1
+!s100 OD1H24jCDzW;9`3Jl`W<z0
+R18
+Idbck?TbH3VnDO0FOKnF`A1
+R3
+S1
+R0
+R19
+8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/memory.sv
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/memory.sv
+!i122 55
+L0 19 73
+R7
+r1
+!s85 0
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+vpd3
+R1
+R2
+!i10b 1
+!s100 hNP]bfe6UlKB:N2LEcVhQ2
+R18
+Ij?ZXFQMhz1?d5A[74Iioz3
+R3
+S1
+R0
+R4
+8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/pd3.sv
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/pd3.sv
+!i122 55
+L0 11 159
+R7
+r1
+!s85 0
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+vregister_file
+R1
+DXx4 work 21 register_file_sv_unit 0 22 UVJ1eYaf9@TYS@DJn`e?32
+R2
+R3
+r1
+!s85 0
+!i10b 1
+!s100 cEcEZ783_D=SgHUjRJ=iI0
+IN_f>J03dz8A<WC_EHcFXd2
+!s105 register_file_sv_unit
+S1
+R0
+w1761528748
+Z26 8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file.sv
+Z27 F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file.sv
+!i122 55
+L0 22 49
+R7
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+Xregister_file_sv_unit
+R1
+R2
+VUVJ1eYaf9@TYS@DJn`e?32
+r1
+!s85 0
+!i10b 1
+!s100 T:4mQCO6_5498`Akl2DZY1
+IUVJ1eYaf9@TYS@DJn`e?32
+!i103 1
+S1
+R0
+R4
+R26
+R27
+R16
+!i122 55
+R17
+R7
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12
+vtop
+R1
+R2
+!i10b 1
+!s100 z?QnJQ<lDRj1kYMBngVZd0
+R18
+I?3Zm90bk:LmW=D:JQ2DD12
+R3
+S1
+R0
+R19
+8/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/test_pd.sv
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/test_pd.sv
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/tracegen.v
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/fields.h
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/trace_dump.h
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/pattern_dump.h
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/pattern_check.h
+F/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/tasks.h
+!i122 55
+L0 4 330
+R7
+r1
+!s85 0
+31
+R8
+R15
+R9
+!i113 1
+R10
+R11
+R12

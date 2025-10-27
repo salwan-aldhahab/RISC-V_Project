@@ -1,0 +1,28 @@
+# vsim -suppress 3839 -c -do "/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/scripts/run.macro" /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.top 
+# Start time: 22:30:41 on Oct 26,2025
+# Loading sv_std.std
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.top
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.clockgen
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.design_wrapper
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.pd3
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.fetch
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.memory
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.decode_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.decode
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.igen_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.igen
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.control_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.control
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.register_file_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.register_file
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.execute_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.alu
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.branch_control_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/work.branch_control
+# do /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/scripts/run.macro
+# IMEMORY: Loaded 51 32-bit words from /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/data/test3.x
+# Check passed
+# ** Note: $finish    : /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/verif/tests/pattern_check.h(38)
+#    Time: 106 ps  Iteration: 1  Region: /top/genblk3
+# End time: 22:30:41 on Oct 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0

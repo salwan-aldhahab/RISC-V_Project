@@ -1,0 +1,291 @@
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/constants.svh
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:28:16 on Oct 12,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/constants.svh 
+# -- Compiling package constants_svh_unit
+# 
+# Top level modules:
+# 	--none--
+# End time: 22:28:17 on Oct 12,2025, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/control.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:28:17 on Oct 12,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/control.sv 
+# -- Compiling package control_sv_unit
+# -- Compiling module control
+# 
+# Top level modules:
+# 	control
+# End time: 22:28:17 on Oct 12,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/control_tb.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:28:17 on Oct 12,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/control_tb.sv 
+# -- Compiling package control_tb_sv_unit
+# -- Compiling module control_tb
+# 
+# Top level modules:
+# 	control_tb
+# End time: 22:28:17 on Oct 12,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/decode.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:28:17 on Oct 12,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/decode.sv 
+# -- Compiling package decode_sv_unit
+# -- Compiling module decode
+# 
+# Top level modules:
+# 	decode
+# End time: 22:28:17 on Oct 12,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/decode_tb.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:28:17 on Oct 12,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/decode_tb.sv 
+# -- Compiling package decode_tb_sv_unit
+# -- Compiling module decode_tb
+# 
+# Top level modules:
+# 	decode_tb
+# End time: 22:28:17 on Oct 12,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/igen.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:28:17 on Oct 12,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/igen.sv 
+# -- Compiling package igen_sv_unit
+# -- Compiling module igen
+# 
+# Top level modules:
+# 	igen
+# End time: 22:28:17 on Oct 12,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/igen_tb.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:28:17 on Oct 12,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/igen_tb.sv 
+# -- Compiling package igen_tb_sv_unit
+# -- Compiling module igen_tb
+# 
+# Top level modules:
+# 	igen_tb
+# End time: 22:28:18 on Oct 12,2025, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+vsim work.decode_tb
+# vsim work.decode_tb 
+# Start time: 22:28:30 on Oct 12,2025
+# Loading sv_std.std
+# Loading work.decode_tb_sv_unit
+# Loading work.decode_tb
+# Loading work.decode_sv_unit
+# Loading work.decode
+# Loading work.igen_sv_unit
+# Loading work.igen
+add wave sim:/decode_tb/*
+run -all
+# Starting Decode Module Testbench...
+# ======================================
+# Test Case 1: R-type (ADD x5, x6, x7)
+# Opcode: 0110011, rd:  5, rs1:  6, rs2:  7, funct3: 000, funct7: 0000000, imm:          0
+# 
+# Test Case 1 Passed
+# 
+# Test Case 2: R-type (SUB x5, x6, x7)
+# Opcode: 0110011, rd:  5, rs1:  6, rs2:  7, funct3: 000, funct7: 0100000, imm:          0
+# Test Case 2 Passed
+# 
+# Test Case 3: R-type (XOR x5, x6, x7)
+# Opcode: 0110011, rd:  5, rs1:  6, rs2:  7, funct3: 100, funct7: 0000000, imm:          0
+# Test Case 3 Passed
+# 
+# Test Case 4: R-type (OR x5, x6, x7)
+# Opcode: 0110011, rd:  5, rs1:  6, rs2:  7, funct3: 110, funct7: 0000000, imm:          0
+# Test Case 4 Passed
+# Test Case 5: R-type (AND x5, x6, x7)
+# Opcode: 0110011, rd:  5, rs1:  6, rs2:  7, funct3: 111, funct7: 0000000, imm:          0
+# Test Case 5 Passed
+# 
+# Test Case 6: R-type (SLL x5, x6, x7)
+# Opcode: 0110011, rd:  5, rs1:  6, rs2:  7, funct3: 001, funct7: 0000000, shamt:  0, imm:          0
+# Test Case 6 Passed
+# 
+# Test Case 7: R-type (SRL x5, x6, x7)
+# Opcode: 0110011, rd:  5, rs1:  6, rs2:  7, funct3: 101, funct7: 0000000, imm:          0
+# Test Case 7 Passed
+# 
+# Test Case 8: R-type (SRA x5, x6, x7)
+# Opcode: 0110011, rd:  5, rs1:  6, rs2:  7, funct3: 101, funct7: 0100000, imm:          0
+# Test Case 8 Passed
+# 
+# Test Case 9: R-type (SLT x5, x6, x7)
+# Opcode: 0110011, rd:  5, rs1:  6, rs2:  7, funct3: 010, funct7: 0000000, imm:          0
+# Test Case 9 Passed
+# 
+# Test Case 10: R-type (SLTU x5, x6, x7)
+# Opcode: 0110011, rd:  5, rs1:  6, rs2:  7, funct3: 011, funct7: 0000000, imm:          0
+# Test Case 10 Passed
+# 
+# Test Case 11: I-type (ADDI x5, x6, 10)
+# Opcode: 0010011, rd:  5, rs1:  6, funct3: 000, imm:         10
+# Test Case 11 Passed
+# 
+# Test Case 12: I-type (XORI x5, x6, 240)
+# Opcode: 0010011, rd:  5, rs1:  6, funct3: 100, imm:        240
+# Test Case 12 Passed
+# 
+# Test Case 13: I-type (ORI x5, x6, 85)
+# Opcode: 0010011, rd:  5, rs1:  6, funct3: 110, imm:         85
+# Test Case 13 Passed
+# 
+# Test Case 14: I-type (ANDI x5, x6, 255)
+# Opcode: 0010011, rd:  5, rs1:  6, funct3: 111, imm:        255
+# Test Case 14 Passed
+# 
+# Test Case 15: I-type (SLLI x5, x6, 3)
+# Opcode: 0010011, rd:  5, rs1:  6, funct3: 001, funct7: 0000000, shamt:  3, imm:          3
+# Test Case 15 Passed
+# 
+# Test Case 16: I-type (SRLI x5, x6, 3)
+# Opcode: 0010011, rd:  5, rs1:  6, rs2:  0, funct3: 101, funct7: 0000000, shamt:  3, imm:          3
+# Test Case 16 Passed
+# 
+# Test Case 17: I-type (SRAI x5, x6, 3)
+# Opcode: 0010011, rd:  5, rs1:  6, funct3: 101, funct7: 0100000, shamt:  3, imm:       1027
+# Test Case 17 Passed
+# 
+# Test Case 18: I-type (SLTI x5, x6, -5)
+# Opcode: 0010011, rd:  5, rs1:  6, funct3: 010, imm:          -5 (signed)
+# Test Case 18 Passed
+# 
+# Test Case 19: I-type (SLTIU x5, x6, 1000)
+# Opcode: 0010011, rd:  5, rs1:  6, funct3: 011, imm:       1000
+# Test Case 19 Passed
+# 
+# Test Case 20: I-type (LB x5, 8(x6))
+# Opcode: 0000011, rd:  5, rs1:  6, rs2:  0, funct3: 000, funct7: 0000000, shamt:  0, imm:          8
+# Test Case 20 Passed
+# 
+# Test Case 21: I-type (LH x5, 8(x6))
+# Opcode: 0000011, rd:  5, rs1:  6, rs2:  0, funct3: 001, funct7: 0000000, shamt:  0, imm:          8
+# Test Case 21 Passed
+# 
+# Test Case 22: I-type (LW x5, 8(x6))
+# Opcode: 0000011, rd:  5, rs1:  6, rs2:  0, funct3: 010, funct7: 0000000, shamt:  0, imm:          8
+# Test Case 22 Passed
+# 
+# Test Case 23: I-type (LBU x5, 8(x6))
+# Opcode: 0000011, rd:  5, rs1:  6, rs2:  0, funct3: 100, funct7: 0000000, shamt:  0, imm:          8
+# Test Case 23 Passed
+# 
+# Test Case 24: I-type (LHU x5, 8(x6))
+# Opcode: 0000011, rd:  5, rs1:  6, rs2:  0, funct3: 101, funct7: 0000000, shamt:  0, imm:          8
+# Test Case 24 Passed
+# 
+# Test Case 25: S-type (SB x7, 12(x6))
+# Opcode: 0100011, rd:  0, rs1:  6, rs2:  7, funct3: 000, funct7: 0000000, shamt:  0, imm:         12
+# Test Case 25 Passed
+# 
+# Test Case 26: S-type (SH x7, 12(x6))
+# Opcode: 0100011, rd:  0, rs1:  6, rs2:  7, funct3: 001, funct7: 0000000, shamt:  0, imm:         12
+# Test Case 26 Passed
+# 
+# Test Case 27: S-type (SW x7, 12(x6))
+# Opcode: 0100011, rd:  0, rs1:  6, rs2:  7, funct3: 010, funct7: 0000000, shamt:  0, imm:         12
+# Test Case 27 Passed
+# 
+# Test Case 28: B-type (BEQ x6, x7, +16)
+# Opcode: 1100011, rs1:  6, rs2:  7, funct3: 000, funct7: 0000000, shamt:  0, imm:         16
+# Test Case 28 Passed
+# 
+# Test Case 29: B-type (BNE x6, x7, +16)
+# Opcode: 1100011, rs1:  6, rs2:  7, funct3: 001, funct7: 0000000, shamt:  0, imm:         16
+# Test Case 29 Passed
+# 
+# Test Case 30: B-type (BLT x6, x7, +16)
+# Opcode: 1100011, rs1:  6, rs2:  7, funct3: 100, funct7: 0000000, shamt:  0, imm:         16
+# Test Case 30 Passed
+# 
+# Test Case 31: B-type (BGE x6, x7, +16)
+# Opcode: 1100011, rs1:  6, rs2:  7, funct3: 101, funct7: 0000000, shamt:  0, imm:         16
+# Test Case 31 Passed
+# 
+# Test Case 32: B-type (BLTU x6, x7, +16)
+# Opcode: 1100011, rs1:  6, rs2:  7, funct3: 110, funct7: 0000000, shamt:  0, imm:         16
+# Test Case 32 Passed
+# 
+# Test Case 33: B-type (BGEU x6, x7, +16)
+# Opcode: 1100011, rs1:  6, rs2:  7, funct3: 111, funct7: 0000000, shamt:  0, imm:         16
+# Test Case 33 Passed
+# 
+# Test Case 34: J-type (JAL x5, +32)
+# Opcode: 1101111, rd:  5, rs1:  0, rs2:  0, funct3: 000, funct7: 0000000, shamt:  0, imm: 00000000000000100000000000000000
+# Test Case 34 Passed
+# 
+# Test Case 35: I-type (JALR x5, 12(x6))
+# Opcode: 1100111, rd:  5, rs1:  6, rs2:  0, funct3: 000, funct7: 0000000, shamt:  0, imm:         12
+# Test Case 35 Passed
+# 
+# Test Case 36: U-type (LUI x5, 0xABC000)
+# Opcode: 0110111, rd:  5, rs1:  0, rs2:  0, funct3: 000, funct7: 0000000, shamt:  0, imm: 0xabc00000
+# Test Case 36 Passed
+# 
+# Test Case 37: U-type (AUIPC x5, 0x123450)
+# Opcode: 0010111, rd:  5, rs1:  0, rs2:  0, funct3: 000, funct7: 0000000, shamt:  0, imm: 0x12345000
+# Test Case 37 Passed
+# 
+# ======================================
+# Decode Module Test Summary:
+# Tests Passed: 37
+# Tests Failed: 0
+# ======================================
+# ** Note: $finish    : /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/decode_tb.sv(983)
+#    Time: 730 ps  Iteration: 0  Instance: /decode_tb
+# 1
+# Break in Module decode_tb at /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/decode_tb.sv line 983
+# WARNING: No extended dataflow license exists
+# Error: invalid command name "::.main_pane.dataflow.interior.cs.body.pw.df.c"
+# Error: invalid command name "::.main_pane.dataflow.interior.cs.body.pw.df.c"
+vsim work.igen_tb
+# End time: 22:31:35 on Oct 12,2025, Elapsed time: 0:03:05
+# Errors: 0, Warnings: 0
+# vsim work.igen_tb 
+# Start time: 22:31:35 on Oct 12,2025
+# Loading sv_std.std
+# Loading work.igen_tb_sv_unit
+# Loading work.igen_tb
+# Loading work.igen_sv_unit
+# Loading work.igen
+add wave sim:/igen_tb/*
+run -all
+# === Starting Immediate Generator Tests ===
+# 
+# Test 1: I-type instruction (ADDI x1, x0, 1)
+#   Result: imm = 0x00000001 (Expected: 0x00000001)
+#   Status: PASS
+# 
+# Test 2: S-type instruction (SW x2, 0(x1))
+#   Result: imm = 0x00000000 (Expected: 0x00000000)
+#   Status: PASS
+# 
+# Test 3: B-type instruction (BEQ x1, x2, +0)
+#   Result: imm = 0x00000000 (Expected: 0x00000000)
+#   Status: PASS
+# 
+# Test 4: U-type instruction (LUI x0, 0x1000)
+#   Result: imm = 0x00001000 (Expected: 0x00001000)
+#   Status: PASS
+# 
+# Test 5: J-type instruction (JAL x0, +0x1000)
+#   Result: imm = 0x00000800 (Expected: 0x00001000)
+#   Status: FAIL
+# 
+# === All tests completed ===
+# ** Note: $finish    : /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/igen_tb.sv(68)
+#    Time: 50 ps  Iteration: 0  Instance: /igen_tb
+# 1
+# Break in Module igen_tb at /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd2/design/code/igen_tb.sv line 68
+# End time: 22:36:11 on Oct 12,2025, Elapsed time: 0:04:36
+# Errors: 0, Warnings: 0

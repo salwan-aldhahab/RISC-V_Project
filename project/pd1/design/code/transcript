@@ -1,0 +1,38 @@
+vsim work.fetch_tb
+# vsim work.fetch_tb 
+# Start time: 22:03:57 on Sep 26,2025
+# Loading sv_std.std
+# Loading work.fetch_tb
+# Loading work.fetch
+# Loading work.memory
+add wave -position insertpoint  \
+sim:/fetch_tb/clk
+add wave -position insertpoint  \
+sim:/fetch_tb/rst
+add wave -position insertpoint  \
+sim:/fetch_tb/pc_o
+add wave -position insertpoint  \
+sim:/fetch_tb/insn_o
+run -all
+# IMEMORY: Loaded 127 32-bit words from mem_init.hex
+# PC Match: 01000000
+# Instruction Match: a3b2c1d0
+# PC Match: 01000004
+# Instruction Match: f8e7d6c5
+# PC Match: 01000008
+# Instruction Match: 12345678
+# PC Match: 0100000c
+# Instruction Match: 9abcdef0
+# Fetch module test completed.
+# ** Note: $finish    : fetch_tb.sv(69)
+#    Time: 65 ps  Iteration: 1  Instance: /fetch_tb
+# 1
+# Break in Module fetch_tb at fetch_tb.sv line 69
+# WARNING: No extended dataflow license exists
+# Error: invalid command name "::.main_pane.dataflow.interior.cs.body.pw.df.c"
+# WARNING: No extended dataflow license exists
+# Error: invalid command name "::.main_pane.dataflow.interior.cs.body.pw.df.c"
+# Error: invalid command name "::.main_pane.dataflow.interior.cs.body.pw.df.c"
+# Error: invalid command name "::.main_pane.dataflow.interior.cs.body.pw.df.c"
+# End time: 22:25:47 on Sep 26,2025, Elapsed time: 0:21:50
+# Errors: 0, Warnings: 0

@@ -1,0 +1,335 @@
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/constants.svh
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:00:32 on Oct 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/constants.svh 
+# -- Compiling package constants_svh_unit
+# 
+# Top level modules:
+# 	--none--
+# End time: 22:00:32 on Oct 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:00:32 on Oct 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file.sv 
+# -- Compiling package register_file_sv_unit
+# -- Compiling module register_file
+# 
+# Top level modules:
+# 	register_file
+# End time: 22:00:32 on Oct 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file_tb.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:00:32 on Oct 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file_tb.sv 
+# -- Compiling package register_file_tb_sv_unit
+# -- Compiling module register_file_tb
+# 
+# Top level modules:
+# 	register_file_tb
+# End time: 22:00:32 on Oct 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/constants.svh
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:00:32 on Oct 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/constants.svh 
+# -- Compiling package constants_svh_unit
+# 
+# Top level modules:
+# 	--none--
+# End time: 22:00:32 on Oct 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:00:32 on Oct 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file.sv 
+# -- Compiling package register_file_sv_unit
+# -- Compiling module register_file
+# 
+# Top level modules:
+# 	register_file
+# End time: 22:00:32 on Oct 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file_tb.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 22:00:32 on Oct 26,2025
+# vlog -reportprogress 300 -work work /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file_tb.sv 
+# -- Compiling package register_file_tb_sv_unit
+# -- Compiling module register_file_tb
+# 
+# Top level modules:
+# 	register_file_tb
+# End time: 22:00:32 on Oct 26,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vsim work.register_file_tb
+# vsim work.register_file_tb 
+# Start time: 22:00:54 on Oct 26,2025
+# Loading sv_std.std
+# Loading work.register_file_tb_sv_unit
+# Loading work.register_file_tb
+# Loading work.register_file_sv_unit
+# Loading work.register_file
+run -all
+# === Starting Register File Tests ===
+# 
+# Test 1: Reset functionality
+#   Result: x0=0x00000000, x2=0x01100000 (Expected: x0=0x00000000, x2=0x01100000)
+#   Status: PASS
+# 
+# Test 2: Write to x0 (should remain zero)
+#   Result: x0=0x00000000 (Expected: x0=0x00000000)
+#   Status: PASS
+# 
+# Test 3: Write to x1 and read back
+#   Result: x1=0x12345678 (Expected: x1=0x12345678)
+#   Status: PASS
+# 
+# Test 4: Write to x31 (last register)
+#   Result: x31=0xabcdef00 (Expected: x31=0xABCDEF00)
+#   Status: PASS
+# 
+# Test 5: Read from two registers simultaneously (x1 and x31)
+#   Result: rs1=0x12345678, rs2=0xabcdef00 (Expected: rs1=0x12345678, rs2=0xABCDEF00)
+#   Status: PASS
+# 
+# Test 6: Write without enable (should not write)
+#   Result: x5=0x00000000 (Expected: x5=0x00000000)
+#   Status: PASS
+# 
+# Test 7: Overwrite existing register (x1)
+#   Result: x1=0x87654321 (Expected: x1=0x87654321)
+#   Status: PASS
+# 
+# Test 8: Write to multiple registers sequentially
+#   Result: x10=0x11111111, x20=0x22222222 (Expected: x10=0x11111111, x20=0x22222222)
+#   Status: PASS
+# 
+# Test 9: x0 always reads as zero
+#   Result: x0(rs1)=0x00000000, x0(rs2)=0x00000000 (Expected: both=0x00000000)
+#   Status: PASS
+# 
+# Test 10: Stack pointer preservation
+#   Result: x2=0x01100000 (Expected: x2=0x01100000)
+#   Status: PASS
+# 
+# === Test Summary ===
+# Total Tests: 10
+# Tests Passed: 10
+# Tests Failed: 0
+# Pass Rate: 100.0%
+# ALL TESTS PASSED!
+# === All tests completed ===
+# ** Note: $finish    : /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file_tb.sv(259)
+#    Time: 270 ps  Iteration: 0  Instance: /register_file_tb
+# 1
+# Break in Module register_file_tb at /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file_tb.sv line 259
+vsim work.branch_control_tb
+# End time: 22:03:47 on Oct 26,2025, Elapsed time: 0:02:53
+# Errors: 0, Warnings: 0
+# vsim work.branch_control_tb 
+# Start time: 22:03:47 on Oct 26,2025
+# Loading sv_std.std
+# Loading work.branch_control_tb_sv_unit
+# Loading work.branch_control_tb
+# Loading work.branch_control_sv_unit
+# Loading work.branch_control
+add wave sim:/branch_control_tb/*
+# Can't move the Now cursor.
+run -all
+# === Starting Branch Control Tests ===
+# 
+# Test 1: BEQ with equal values (rs1=5, rs2=5)
+#   Result: breq=1, brlt=0 (Expected: breq=1, brlt=0)
+#   Status: PASS
+# 
+# Test 2: BEQ with unequal values (rs1=5, rs2=3)
+#   Result: breq=0, brlt=0 (Expected: breq=0, brlt=0)
+#   Status: PASS
+# 
+# Test 3: BLT with rs1 < rs2 (rs1=3, rs2=5)
+#   Result: breq=0, brlt=1 (Expected: breq=0, brlt=1)
+#   Status: PASS
+# 
+# Test 4: BLT with rs1 > rs2 (rs1=5, rs2=3)
+#   Result: breq=0, brlt=0 (Expected: breq=0, brlt=0)
+#   Status: PASS
+# 
+# Test 5: BLT with negative rs1 (rs1=-5, rs2=3)
+#   Result: breq=0, brlt=1 (Expected: breq=0, brlt=1)
+#   Status: PASS
+# 
+# Test 6: BLTU with rs1 < rs2 (rs1=3, rs2=5)
+#   Result: breq=0, brlt=1 (Expected: breq=0, brlt=1)
+#   Status: PASS
+# 
+# Test 7: BLTU with large unsigned (rs1=0xFFFFFFFB, rs2=3)
+#   Result: breq=0, brlt=0 (Expected: breq=0, brlt=0)
+#   Status: PASS
+# 
+# Test 8: BGE with rs1 >= rs2 (rs1=5, rs2=3)
+#   Result: breq=0, brlt=0 (Expected: breq=0, brlt=0)
+#   Status: PASS
+# 
+# Test 9: Non-branch opcode (I-type instruction)
+#   Result: breq=0, brlt=0 (Expected: breq=0, brlt=0)
+#   Status: PASS
+# 
+# Test 10: BNE with equal values (rs1=5, rs2=5)
+#   Result: breq=1, brlt=0 (Expected: breq=1, brlt=0)
+#   Status: PASS
+# 
+# === Test Summary ===
+# Total Tests: 10
+# Tests Passed: 10
+# Tests Failed: 0
+# Pass Rate: 100.0%
+# ALL TESTS PASSED!
+# === All tests completed ===
+# ** Note: $finish    : /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/branch_control_tb.sv(217)
+#    Time: 100 ps  Iteration: 0  Instance: /branch_control_tb
+# 1
+# Break in Module branch_control_tb at /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/branch_control_tb.sv line 217
+vsim work.register_file_tb
+# End time: 22:09:03 on Oct 26,2025, Elapsed time: 0:05:16
+# Errors: 0, Warnings: 0
+# vsim work.register_file_tb 
+# Start time: 22:09:03 on Oct 26,2025
+# Loading sv_std.std
+# Loading work.register_file_tb_sv_unit
+# Loading work.register_file_tb
+# Loading work.register_file_sv_unit
+# Loading work.register_file
+add wave sim:/register_file_tb/*
+# Load canceled
+run -all
+# === Starting Register File Tests ===
+# 
+# Test 1: Reset functionality
+#   Result: x0=0x00000000, x2=0x01100000 (Expected: x0=0x00000000, x2=0x01100000)
+#   Status: PASS
+# 
+# Test 2: Write to x0 (should remain zero)
+#   Result: x0=0x00000000 (Expected: x0=0x00000000)
+#   Status: PASS
+# 
+# Test 3: Write to x1 and read back
+#   Result: x1=0x12345678 (Expected: x1=0x12345678)
+#   Status: PASS
+# 
+# Test 4: Write to x31 (last register)
+#   Result: x31=0xabcdef00 (Expected: x31=0xABCDEF00)
+#   Status: PASS
+# 
+# Test 5: Read from two registers simultaneously (x1 and x31)
+#   Result: rs1=0x12345678, rs2=0xabcdef00 (Expected: rs1=0x12345678, rs2=0xABCDEF00)
+#   Status: PASS
+# 
+# Test 6: Write without enable (should not write)
+#   Result: x5=0x00000000 (Expected: x5=0x00000000)
+#   Status: PASS
+# 
+# Test 7: Overwrite existing register (x1)
+#   Result: x1=0x87654321 (Expected: x1=0x87654321)
+#   Status: PASS
+# 
+# Test 8: Write to multiple registers sequentially
+#   Result: x10=0x11111111, x20=0x22222222 (Expected: x10=0x11111111, x20=0x22222222)
+#   Status: PASS
+# 
+# Test 9: x0 always reads as zero
+#   Result: x0(rs1)=0x00000000, x0(rs2)=0x00000000 (Expected: both=0x00000000)
+#   Status: PASS
+# 
+# Test 10: Stack pointer preservation
+#   Result: x2=0x01100000 (Expected: x2=0x01100000)
+#   Status: PASS
+# 
+# === Test Summary ===
+# Total Tests: 10
+# Tests Passed: 10
+# Tests Failed: 0
+# Pass Rate: 100.0%
+# ALL TESTS PASSED!
+# === All tests completed ===
+# ** Note: $finish    : /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file_tb.sv(259)
+#    Time: 270 ps  Iteration: 0  Instance: /register_file_tb
+# 1
+# Break in Module register_file_tb at /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/register_file_tb.sv line 259
+vsim work.execute_tb
+# End time: 22:11:57 on Oct 26,2025, Elapsed time: 0:02:54
+# Errors: 0, Warnings: 0
+# vsim work.execute_tb 
+# Start time: 22:11:57 on Oct 26,2025
+# Loading sv_std.std
+# Loading work.execute_tb_sv_unit
+# Loading work.execute_tb
+# Loading work.execute_sv_unit
+# Loading work.alu
+# Loading work.branch_control_sv_unit
+# Loading work.branch_control
+add wave sim:/execute_tb/*
+run -all
+# === Starting ALU (Execute) Tests ===
+# 
+# Test 1: R-type ADD (rs1=10, rs2=5)
+#   Result: res=0x0000000f, brtaken=0 (Expected: res=0x0000000F, brtaken=0)
+#   Status: PASS
+# 
+# Test 2: R-type SUB (rs1=10, rs2=3)
+#   Result: res=0x00000007, brtaken=0 (Expected: res=0x00000007, brtaken=0)
+#   Status: PASS
+# 
+# Test 3: I-type ADDI (rs1=10, imm=20)
+#   Result: res=0x0000001e, brtaken=0 (Expected: res=0x0000001E, brtaken=0)
+#   Status: PASS
+# 
+# Test 4: LOAD (rs1=0x1000, imm=0x10)
+#   Result: res=0x00001010, brtaken=0 (Expected: res=0x00001010, brtaken=0)
+#   Status: PASS
+# 
+# Test 5: STORE (rs1=0x2000, imm=0x4)
+#   Result: res=0x00002004, brtaken=0 (Expected: res=0x00002004, brtaken=0)
+#   Status: PASS
+# 
+# Test 6: BEQ taken (rs1=5, rs2=5, pc=0x1000, imm=0x8)
+#   Result: res=0x00001008, brtaken=1 (Expected: res=0x00001008, brtaken=1)
+#   Status: PASS
+# 
+# Test 7: BEQ not taken (rs1=5, rs2=3, pc=0x1000, imm=0x8)
+#   Result: res=0x00001008, brtaken=0 (Expected: res=0x00001008, brtaken=0)
+#   Status: PASS
+# 
+# Test 8: BLT taken (rs1=3, rs2=7, pc=0x1000, imm=0xC)
+#   Result: res=0x0000100c, brtaken=1 (Expected: res=0x0000100C, brtaken=1)
+#   Status: PASS
+# 
+# Test 9: JAL (pc=0x1000, imm=0x100)
+#   Result: res=0x00001100, brtaken=0 (Expected: res=0x00001100, brtaken=0)
+#   Status: PASS
+# 
+# Test 10: LUI (imm=0x12345000)
+#   Result: res=0x12345000, brtaken=0 (Expected: res=0x12345000, brtaken=0)
+#   Status: PASS
+# 
+# Test 11: R-type XOR (rs1=0xF0F0F0F0, rs2=0x0F0F0F0F)
+#   Result: res=0xffffffff, brtaken=0 (Expected: res=0xFFFFFFFF, brtaken=0)
+#   Status: PASS
+# 
+# Test 12: R-type SLT (rs1=-5, rs2=3)
+#   Result: res=0x00000001, brtaken=0 (Expected: res=0x00000001, brtaken=0)
+#   Status: PASS
+# 
+# === Test Summary ===
+# Total Tests: 12
+# Tests Passed: 12
+# Tests Failed: 0
+# Pass Rate: 100.0%
+# ALL TESTS PASSED!
+# === All tests completed ===
+# ** Note: $finish    : /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/execute_tb.sv(297)
+#    Time: 120 ps  Iteration: 0  Instance: /execute_tb
+# 1
+# Break in Module execute_tb at /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd3/design/code/execute_tb.sv line 297
+# End time: 22:30:21 on Oct 26,2025, Elapsed time: 0:18:24
+# Errors: 0, Warnings: 0
