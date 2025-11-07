@@ -32,5 +32,32 @@
      * Process definitions to be filled by
      * student below...
      */
+    
+    // Write-back data selection logic
+    always_comb begin
+        case (wbsel_i)
+            2'b00: begin
+                writeback_data_o = alu_res_i;          // From ALU
+            end
+            2'b01: begin
+                writeback_data_o = memory_data_i;     // From Memory
+            end
+            2'b10: begin
+                writeback_data_o = pc_i + 4;          // From PC + 4
+            end
+            default: begin
+                writeback_data_o = '0;               // Default case
+            end
+        endcase
+    end
+
+    // Next PC computation logic
+    always_comb begin
+        if (brtaken_i) begin
+            next_pc_o = alu_res_i;  // Branch taken, next PC from ALU result
+        end else begin
+            next_pc_o = pc_i + 4;   // Sequential execution, next PC is PC + 4
+        end
+    end
 
 endmodule : writeback
