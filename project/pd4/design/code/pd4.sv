@@ -92,8 +92,6 @@ module pd4 #(
   ) fetch_stage (
       .clk(clk),
       .rst(reset),
-      .pcsel_i(pcsel & e_br_taken),
-      .pctarget_i(next_pc),
       .pc_o(f_pc),            
       .insn_o()         
   );
@@ -191,10 +189,10 @@ module pd4 #(
       .pc_i(e_pc),
       .rs1_i(r_read_rs1_data),
       .rs2_i(r_read_rs2_data),
+      .imm_i(d_imm),           // Added: Your ALU expects imm_i input
       .opcode_i(d_opcode),
       .funct3_i(d_funct3),
       .funct7_i(d_funct7),
-      .imm_i(d_imm),
       .res_o(e_alu_res),
       .brtaken_o(e_br_taken)
   );
@@ -222,7 +220,7 @@ module pd4 #(
 
   // Writeback stage - connect to probes
   assign w_pc = m_pc;
-  assign w_enable = r_write_enable;
+  assign w_enable = regwren;
   assign w_destination = r_write_destination;
   
   // Writeback stage using writeback module
@@ -250,7 +248,7 @@ module pd4 #(
   always_ff @(posedge clk) begin
       if (data_out == 32'h00000073) $finish;  // directly terminate if see ecall
       if (data_out == 32'h00008067) is_program = 1;  // if see ret instruction, it is simple program test
-      // [TODO] Change register_file_0.registers[2] to the appropriate x2 register based on your module instantiations...
+      // Corrected: Use reg_file instance name to access register x2 (stack pointer)
       if (is_program && (reg_file.registers[2] == 32'h01000000 + `MEM_DEPTH)) $finish;
   end
 
