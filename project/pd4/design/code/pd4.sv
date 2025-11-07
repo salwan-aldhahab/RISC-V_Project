@@ -169,7 +169,7 @@ module pd4 #(
 
   register_file #( 
       .DWIDTH(DWIDTH) 
-  ) register_file_0 (
+  ) reg_file (
       .clk(clk),
       .rst(reset),
       .rs1_i(r_read_rs1),
@@ -251,7 +251,7 @@ module pd4 #(
       if (data_out == 32'h00000073) $finish;  // directly terminate if see ecall
       if (data_out == 32'h00008067) is_program = 1;  // if see ret instruction, it is simple program test
       // [TODO] Change register_file_0.registers[2] to the appropriate x2 register based on your module instantiations...
-      if (is_program && (register_file_0.registers[2] == 32'h01000000 + `MEM_DEPTH)) $finish;
+      if (is_program && (reg_file.registers[2] == 32'h01000000 + `MEM_DEPTH)) $finish;
   end
 
 endmodule : pd4
