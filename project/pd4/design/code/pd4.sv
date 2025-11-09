@@ -273,19 +273,8 @@ module pd4 #(
   assign m_address = e_alu_res;
   assign m_size_encoded = d_funct3[1:0];
   
-  // For memory stage probe - must match what's actually being written/read
-  always_comb begin
-    if (memwren) begin
-      // Store operation - show data being written (must match dmem data_i)
-      m_data = forwarded_rs2_data;
-    end else if (memren) begin
-      // Load operation - show data being read
-      m_data = dmem_data_o;
-    end else begin
-      // Other operations - show zero
-      m_data = '0;
-    end
-  end
+  // For memory stage probe - show instruction word for all operations
+  assign m_data = d_insn;
 
   // Pipeline register: Memory to Writeback
   always_ff @(posedge clk) begin
