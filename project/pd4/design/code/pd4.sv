@@ -197,39 +197,10 @@ module pd4 #(
       .rs2data_o(rf_rs2data_raw)
   );
 
-  // Expose forwarded data in register read probes for test visibility
-  always_comb begin
-    // Default: use register file output
-    r_read_rs1_data = rf_rs1data_raw;
-    r_read_rs2_data = rf_rs2data_raw;
-
-    // Show the data that WILL BE written (even before it's written)
-    // This makes the probes show the correct value immediately
-    if (mw_regwren && (mw_rd != 5'b00000)) begin
-      if (mw_rd == r_read_rs1) begin
-        case (mw_wbsel)
-          2'b00: r_read_rs1_data = mw_alu_res;
-          2'b01: r_read_rs1_data = mw_mem_data;
-          2'b10: r_read_rs1_data = mw_pc + 4;
-          default: r_read_rs1_data = rf_rs1data_raw;
-        endcase
-      end
-      
-      if (mw_rd == r_read_rs2) begin
-        case (mw_wbsel)
-          2'b00: r_read_rs2_data = mw_alu_res;
-          2'b01: r_read_rs2_data = mw_mem_data;
-          2'b10: r_read_rs2_data = mw_pc + 4;
-          default: r_read_rs2_data = rf_rs2data_raw;
-        endcase
-      end
-    end
-  end
-
   // Execute stage - connect to probes
   assign e_pc = d_pc;
 
-  // Data forwarding logic for ALU inputs
+  // Data forwarding logic - combined for both probes and ALU inputs
   logic [DWIDTH-1:0] forwarded_rs1_data;
   logic [DWIDTH-1:0] forwarded_rs2_data;
 
@@ -279,10 +250,8 @@ module pd4 #(
         endcase
       end
     end
-  end
-
-  // Update probe signals to show forwarded data
-  always_comb begin
+    
+    // Update probe signals to show forwarded data
     r_read_rs1_data = forwarded_rs1_data;
     r_read_rs2_data = forwarded_rs2_data;
   end
