@@ -130,7 +130,7 @@ module pd4 #(
       .read_en_i(read_en),
       .write_en_i(write_en),
       .funct3_i(3'b010),
-      .data_o(imem_insn_f)
+    .data_o(imem_insn_f)
   );
 
   // Connect fetched instruction to fetch stage output
