@@ -67,13 +67,7 @@ module pd4 #(
   // -- End Probes Instantiation --
 
   // Internal signals
-  logic [AWIDTH-1:0] addr_i;
-  logic [DWIDTH-1:0] data_i;
-  logic write_en;
-  logic read_en;
-  logic [DWIDTH-1:0] imem_insn_f;
   logic [DWIDTH-1:0] d_insn;
-  logic [DWIDTH-1:0] dmem_data_o;
   logic [AWIDTH-1:0] next_pc;
   logic [DWIDTH-1:0] data_out;
   logic pcsel_actual;
@@ -82,6 +76,14 @@ module pd4 #(
   logic pcsel, immsel, regwren, rs1sel, rs2sel, memren, memwren;
   logic [1:0] wbsel;
   logic [3:0] alusel;
+
+  // Memory interface signals
+  logic [AWIDTH-1:0] mem_addr;
+  logic [DWIDTH-1:0] mem_data_i;
+  logic              mem_read_en;
+  logic              mem_write_en;
+  logic [2:0]        mem_funct3;
+  logic [DWIDTH-1:0] mem_data_o;
 
   // Determine if PC should be redirected (branch taken or unconditional jump)
   assign pcsel_actual = (pcsel & e_br_taken) | (d_opcode == 7'b1101111) | (d_opcode == 7'b1100111);
@@ -99,29 +101,6 @@ module pd4 #(
       .pc_o(f_pc),            
       .insn_o()
   );
-
-  // Instruction Memory (read-only for fetch stage)
-  assign addr_i = f_pc;
-  assign data_i = '0;
-  assign read_en = 1'b1;
-  assign write_en = 1'b0;
-
-  memory #(
-      .AWIDTH(AWIDTH),
-      .DWIDTH(DWIDTH),
-      .BASE_ADDR(32'h01000000)
-  ) imem (
-      .clk(clk),
-      .rst(reset),
-      .addr_i(addr_i),
-      .data_i(data_i),
-      .read_en_i(read_en),
-      .write_en_i(write_en),
-      .funct3_i(FUNCT3_LW),  // Always word access for instruction fetch
-      .data_o(imem_insn_f)
-  );
-
-  assign f_insn = imem_insn_f;
 
   // Decode stage
   decode #( 
@@ -192,10 +171,6 @@ module pd4 #(
   // Execute stage - connect to probes
   assign e_pc = d_pc;
 
-  // Data forwarding logic - REMOVED for single-cycle design
-  // In a single-cycle processor, register writes happen at end of cycle,
-  // so reads in the same cycle see the old value (correct behavior)
-  
   // Update probe signals directly from register file
   assign r_read_rs1_data = rf_rs1data_raw;
   assign r_read_rs2_data = rf_rs2data_raw;
@@ -205,8 +180,8 @@ module pd4 #(
       .AWIDTH(AWIDTH) 
   ) alu_stage (
       .pc_i(e_pc),
-      .rs1_i(rf_rs1data_raw),      // Use direct register file output
-      .rs2_i(rf_rs2data_raw),      // Use direct register file output
+      .rs1_i(rf_rs1data_raw),
+      .rs2_i(rf_rs2data_raw),
       .imm_i(d_imm),
       .opcode_i(d_opcode),
       .funct3_i(d_funct3),
@@ -215,21 +190,39 @@ module pd4 #(
       .brtaken_o(e_br_taken)
   );
 
-  // Data Memory for load/store operations
+  // UNIFIED MEMORY - handles both instruction fetch and data access
+  // Memory address muxing: use PC for instruction fetch, ALU result for load/store
+  assign mem_addr = (memren || memwren) ? e_alu_res : f_pc;
+  
+  // Memory data input (for stores)
+  assign mem_data_i = rf_rs2data_raw;
+  
+  // Memory read enable: always read (for instruction fetch or loads)
+  assign mem_read_en = 1'b1;
+  
+  // Memory write enable: only for stores
+  assign mem_write_en = memwren;
+  
+  // Memory funct3: use instruction's funct3 for loads/stores, word access for fetch
+  assign mem_funct3 = (memren || memwren) ? d_funct3 : FUNCT3_LW;
+
   memory #(
       .AWIDTH(AWIDTH),
       .DWIDTH(DWIDTH),
-      .BASE_ADDR(32'h02000000)
-  ) dmem (
+      .BASE_ADDR(32'h01000000)
+  ) unified_mem (
       .clk(clk),
       .rst(reset),
-      .addr_i(e_alu_res),
-      .data_i(rf_rs2data_raw),      // Use direct register file output
-      .read_en_i(memren),
-      .write_en_i(memwren),
-      .funct3_i(d_funct3),
-      .data_o(dmem_data_o)
+      .addr_i(mem_addr),
+      .data_i(mem_data_i),
+      .read_en_i(mem_read_en),
+      .write_en_i(mem_write_en),
+      .funct3_i(mem_funct3),
+      .data_o(mem_data_o)
   );
+
+  // Connect memory output to instruction fetch
+  assign f_insn = mem_data_o;
 
   // Memory stage - connect to probes
   assign m_pc = e_pc;
@@ -237,7 +230,7 @@ module pd4 #(
   assign m_size_encoded = d_funct3[1:0];
   
   // For memory stage probe - show write data for stores, read data for loads
-  assign m_data = memwren ? rf_rs2data_raw : dmem_data_o;
+  assign m_data = memwren ? rf_rs2data_raw : mem_data_o;
 
   // Writeback stage - connect to probes
   assign w_pc = e_pc;
@@ -251,7 +244,7 @@ module pd4 #(
   ) writeback_stage (
       .pc_i(e_pc),
       .alu_res_i(e_alu_res),
-      .memory_data_i(dmem_data_o),
+      .memory_data_i(mem_data_o),
       .wbsel_i(wbsel),
       .brtaken_i(e_br_taken),
       .writeback_data_o(w_data),
