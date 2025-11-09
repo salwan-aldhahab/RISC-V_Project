@@ -85,6 +85,15 @@ module pd4 #(
   logic [1:0] wbsel;
   logic [3:0] alusel;
 
+  // -- Pipeline Register: Memory to Writeback --
+  logic [AWIDTH-1:0] mw_pc;
+  logic [DWIDTH-1:0] mw_alu_res;
+  logic [DWIDTH-1:0] mw_mem_data;
+  logic [4:0]        mw_rd;
+  logic              mw_regwren;
+  logic [1:0]        mw_wbsel;
+  logic              mw_br_taken;
+
   // Determine if PC should be redirected (branch taken or unconditional jump)
   assign pcsel_actual = (pcsel & e_br_taken) | (d_opcode == 7'b1101111) | (d_opcode == 7'b1100111); // Branch taken or JAL or JALR
 
@@ -206,8 +215,9 @@ module pd4 #(
   // Memory stage - connect to probes
   assign m_pc = e_pc;
   assign m_address = e_alu_res;
-  assign m_size_encoded = d_funct3[1:0]; // Size encoding from funct3
-  assign m_data = dmem_data_o;
+  assign m_size_encoded = d_funct3[1:0];
+  // Fix: For stores, show the data being written; for loads, show the data read
+  assign m_data = memwren ? r_read_rs2_data : dmem_data_o;
 
   // Data Memory for load/store operations
   memory #(
@@ -218,33 +228,74 @@ module pd4 #(
       .clk(clk),
       .rst(reset),
       .addr_i(m_address),
-      .data_i(r_read_rs2_data), // Store data comes from rs2
+      .data_i(r_read_rs2_data),
       .read_en_i(memren),
       .write_en_i(memwren),
       .data_o(dmem_data_o)
   );
 
-  // Writeback stage - connect to probes
-  assign w_pc = m_pc;
-  assign w_enable = regwren;
-  assign w_destination = r_write_destination;
+  // Pipeline register: Memory to Writeback
+  always_ff @(posedge clk) begin
+    if (reset) begin
+      mw_pc <= '0;
+      mw_alu_res <= '0;
+      mw_mem_data <= '0;
+      mw_rd <= '0;
+      mw_regwren <= '0;
+      mw_wbsel <= '0;
+      mw_br_taken <= '0;
+    end else begin
+      mw_pc <= m_pc;
+      mw_alu_res <= e_alu_res;
+      mw_mem_data <= dmem_data_o;
+      mw_rd <= d_rd;
+      mw_regwren <= regwren;
+      mw_wbsel <= wbsel;
+      mw_br_taken <= e_br_taken;
+    end
+  end
+
+  // Writeback stage - connect to probes using PIPELINE REGISTERS
+  assign w_pc = mw_pc;
+  assign w_enable = mw_regwren;
+  assign w_destination = mw_rd;
   
-  // Writeback stage using writeback module
+  // Writeback stage using writeback module with PIPELINE REGISTERS
   writeback #(
       .DWIDTH(DWIDTH),
       .AWIDTH(AWIDTH)
   ) writeback_stage (
-      .pc_i(m_pc),
-      .alu_res_i(e_alu_res),
-      .memory_data_i(dmem_data_o),
-      .wbsel_i(wbsel),
-      .brtaken_i(e_br_taken),
+      .pc_i(mw_pc),
+      .alu_res_i(mw_alu_res),
+      .memory_data_i(mw_mem_data),
+      .wbsel_i(mw_wbsel),
+      .brtaken_i(mw_br_taken),
       .writeback_data_o(w_data),
       .next_pc_o(next_pc)
   );
 
   // Connect writeback data to register file and probe
   assign r_write_data = w_data;
+
+  // Register File - connect to probes using PIPELINE REGISTERS for write
+  assign r_read_rs1 = d_rs1;
+  assign r_read_rs2 = d_rs2;
+  assign r_write_enable = mw_regwren;  // Use pipelined signal
+  assign r_write_destination = mw_rd;  // Use pipelined signal
+
+  register_file #( 
+      .DWIDTH(DWIDTH) 
+  ) reg_file (
+      .clk(clk),
+      .rst(reset),
+      .rs1_i(r_read_rs1),
+      .rs2_i(r_read_rs2),
+      .rd_i(r_write_destination),
+      .datawb_i(r_write_data),
+      .regwren_i(r_write_enable),
+      .rs1data_o(r_read_rs1_data),
+      .rs2data_o(r_read_rs2_data)
+  );
 
   // Make data_out available for program termination logic
   assign data_out = d_insn;
