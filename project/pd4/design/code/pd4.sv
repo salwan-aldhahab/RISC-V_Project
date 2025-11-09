@@ -78,13 +78,17 @@ module pd4 #(
   logic [DWIDTH-1:0] dmem_data_o;
   logic [AWIDTH-1:0] next_pc;
   logic [DWIDTH-1:0] data_out;
+  logic pcsel_actual;
 
   // Control signals
   logic pcsel, immsel, regwren, rs1sel, rs2sel, memren, memwren;
   logic [1:0] wbsel;
   logic [3:0] alusel;
 
-  // Fetch stage
+  // Determine if PC should be redirected (branch taken or unconditional jump)
+  assign pcsel_actual = (pcsel & e_br_taken) | (d_opcode == 7'b1101111) | (d_opcode == 7'b1100111); // Branch taken or JAL or JALR
+
+  // Fetch stage with branch/jump support
   fetch #(
       .AWIDTH(AWIDTH),
       .DWIDTH(DWIDTH),
@@ -92,8 +96,10 @@ module pd4 #(
   ) fetch_stage (
       .clk(clk),
       .rst(reset),
+      .pcsel_i(pcsel_actual),      // Select between sequential and branch/jump PC
+      .pctarget_i(next_pc),        // Target PC from writeback stage
       .pc_o(f_pc),            
-      .insn_o()         
+      .insn_o()                    // Not used, we get instruction from memory
   );
 
   // Instruction Memory (read-only for fetch stage)
@@ -189,7 +195,7 @@ module pd4 #(
       .pc_i(e_pc),
       .rs1_i(r_read_rs1_data),
       .rs2_i(r_read_rs2_data),
-      .imm_i(d_imm),           // Added: Your ALU expects imm_i input
+      .imm_i(d_imm),
       .opcode_i(d_opcode),
       .funct3_i(d_funct3),
       .funct7_i(d_funct7),
