@@ -254,28 +254,6 @@ module pd4 #(
       .brtaken_o(e_br_taken)
   );
 
-  // Memory stage - connect to probes
-  assign m_pc = e_pc;
-  assign m_address = e_alu_res;
-  assign m_size_encoded = d_funct3[1:0];
-  
-  // For memory stage probe:
-  // - During stores: show the data being written (rs2)
-  // - During loads: show the data being read from memory
-  // - For other instructions: show zero
-  always_comb begin
-    if (memwren) begin
-      // Store operation - show data being written
-      m_data = forwarded_rs2_data;
-    end else if (memren) begin
-      // Load operation - show data being read
-      m_data = dmem_data_o;
-    end else begin
-      // Other operations - show zero
-      m_data = '0;
-    end
-  end
-
   // Data Memory for load/store operations
   memory #(
       .AWIDTH(AWIDTH),
@@ -285,11 +263,30 @@ module pd4 #(
       .clk(clk),
       .rst(reset),
       .addr_i(m_address),
-      .data_i(r_read_rs2_data),
+      .data_i(forwarded_rs2_data),  // Changed: use forwarded data for writes
       .read_en_i(memren),
       .write_en_i(memwren),
       .data_o(dmem_data_o)
   );
+
+  // Memory stage - connect to probes
+  assign m_pc = e_pc;
+  assign m_address = e_alu_res;
+  assign m_size_encoded = d_funct3[1:0];
+  
+  // For memory stage probe - must match what's actually being written/read
+  always_comb begin
+    if (memwren) begin
+      // Store operation - show data being written (must match dmem data_i)
+      m_data = forwarded_rs2_data;
+    end else if (memren) begin
+      // Load operation - show data being read
+      m_data = dmem_data_o;
+    end else begin
+      // Other operations - show zero
+      m_data = '0;
+    end
+  end
 
   // Pipeline register: Memory to Writeback
   always_ff @(posedge clk) begin
