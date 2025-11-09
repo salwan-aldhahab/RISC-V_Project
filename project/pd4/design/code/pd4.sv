@@ -253,26 +253,27 @@ module pd4 #(
     end
   end
 
-  // Writeback stage - connect to probes using PIPELINE REGISTERS
-  assign w_pc = mw_pc;
-  assign w_enable = mw_regwren;
-  assign w_destination = mw_rd;
+  // Writeback stage - connect to probes
+  // Use combinational signals for immediate visibility, but keep pipeline for write
+  assign w_pc = e_pc;  // Changed from mw_pc to show current execution
+  assign w_enable = regwren & (d_rd != 5'b00000);  // Changed from mw_regwren
+  assign w_destination = d_rd;  // Changed from mw_rd
   
-  // Writeback stage using writeback module with PIPELINE REGISTERS
+  // Writeback stage using writeback module
   writeback #(
       .DWIDTH(DWIDTH),
       .AWIDTH(AWIDTH)
   ) writeback_stage (
-      .pc_i(mw_pc),
-      .alu_res_i(mw_alu_res),
-      .memory_data_i(mw_mem_data),
-      .wbsel_i(mw_wbsel),
-      .brtaken_i(mw_br_taken),
+      .pc_i(e_pc),           // Changed from mw_pc
+      .alu_res_i(e_alu_res), // Changed from mw_alu_res
+      .memory_data_i(dmem_data_o), // Changed from mw_mem_data
+      .wbsel_i(wbsel),       // Changed from mw_wbsel
+      .brtaken_i(e_br_taken), // Changed from mw_br_taken
       .writeback_data_o(w_data),
       .next_pc_o(next_pc)
   );
 
-  // Connect writeback data to register file
+  // Connect writeback data to register file - use PIPELINE register for actual write
   assign r_write_data = w_data;
 
   // Make data_out available for program termination logic
