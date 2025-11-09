@@ -200,7 +200,7 @@ module pd4 #(
   // Execute stage - connect to probes
   assign e_pc = d_pc;
 
-  // Data forwarding logic - combined for both probes and ALU inputs
+  // Data forwarding logic - ONLY forward from pipeline register
   logic [DWIDTH-1:0] forwarded_rs1_data;
   logic [DWIDTH-1:0] forwarded_rs2_data;
 
@@ -210,6 +210,7 @@ module pd4 #(
     forwarded_rs2_data = rf_rs2data_raw;
 
     // Forward from writeback stage (instruction finishing writeback)
+    // This uses REGISTERED values from previous clock cycle - no combinational loop
     if (mw_regwren && (mw_rd != 5'b00000)) begin
       if (mw_rd == d_rs1) begin
         case (mw_wbsel)
@@ -225,27 +226,6 @@ module pd4 #(
           2'b00: forwarded_rs2_data = mw_alu_res;
           2'b01: forwarded_rs2_data = mw_mem_data;
           2'b10: forwarded_rs2_data = mw_pc + 4;
-          default: forwarded_rs2_data = rf_rs2data_raw;
-        endcase
-      end
-    end
-    
-    // Also forward from execute/memory stage (instruction just computed)
-    if (regwren && (d_rd != 5'b00000)) begin
-      if (d_rd == d_rs1) begin
-        case (wbsel)
-          2'b00: forwarded_rs1_data = e_alu_res;
-          2'b01: forwarded_rs1_data = dmem_data_o;
-          2'b10: forwarded_rs1_data = e_pc + 4;
-          default: forwarded_rs1_data = rf_rs1data_raw;
-        endcase
-      end
-      
-      if (d_rd == d_rs2) begin
-        case (wbsel)
-          2'b00: forwarded_rs2_data = e_alu_res;
-          2'b01: forwarded_rs2_data = dmem_data_o;
-          2'b10: forwarded_rs2_data = e_pc + 4;
           default: forwarded_rs2_data = rf_rs2data_raw;
         endcase
       end
