@@ -201,8 +201,16 @@ module pd4 #(
     forwarded_rs1_data = rf_rs1data_raw;
     forwarded_rs2_data = rf_rs2data_raw;
 
-    // No forwarding needed since we removed the pipeline
-    // Register file handles write-through within same cycle
+    // Write-through forwarding: if we're writing to a register that we're also reading
+    // in the same cycle, forward the write data
+    if (r_write_enable && (r_write_destination != 5'b00000)) begin
+      if (r_write_destination == r_read_rs1) begin
+        forwarded_rs1_data = r_write_data;
+      end
+      if (r_write_destination == r_read_rs2) begin
+        forwarded_rs2_data = r_write_data;
+      end
+    end
     
     // Update probe signals
     r_read_rs1_data = forwarded_rs1_data;
