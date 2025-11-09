@@ -262,7 +262,7 @@ module pd4 #(
   // For memory stage probe:
   // - During stores: show the data being written (rs2)
   // - During loads: show the data being read from memory
-  // - For other instructions: show the instruction itself
+  // - For other instructions: show zero
   always_comb begin
     if (memwren) begin
       // Store operation - show data being written
@@ -271,8 +271,8 @@ module pd4 #(
       // Load operation - show data being read
       m_data = dmem_data_o;
     end else begin
-      // Other operations - show the instruction
-      m_data = d_insn;
+      // Other operations - show zero
+      m_data = '0;
     end
   end
 
