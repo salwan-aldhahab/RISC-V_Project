@@ -53,11 +53,11 @@ module memory #(
     output logic [DWIDTH-1:0] data_o
 );
 
-    localparam [2:0] FUNCT3_LB  = 3'b000; // Load/Store Byte (signed load)
-    localparam [2:0] FUNCT3_LH  = 3'b001; // Load/Store Halfword (signed load)
+    localparam [2:0] FUNCT3_LB  = 3'b000; // Load/Store Byte 
+    localparam [2:0] FUNCT3_LH  = 3'b001; // Load/Store Halfword 
     localparam [2:0] FUNCT3_LW  = 3'b010; // Load/Store Word
-    localparam [2:0] FUNCT3_LBU = 3'b100; // Load Byte Unsigned (zero-ext)
-    localparam [2:0] FUNCT3_LHU = 3'b101; // Load Halfword Unsigned (zero-ext)
+    localparam [2:0] FUNCT3_LBU = 3'b100; // Load Byte Unsigned 
+    localparam [2:0] FUNCT3_LHU = 3'b101; // Load Halfword Unsigned 
    
 
     localparam int LINE_COUNT = `LINE_COUNT; 
@@ -66,7 +66,7 @@ module memory #(
     // Temporary memory for initialization
     logic [DWIDTH-1:0] temp_memory [0:LINE_COUNT - 1];
 
-    // Byte-addressable main memory array (Little-Endian storage)
+    // Byte-addressable main memory array 
     logic [7:0] main_memory [0:MEM_BYTES - 1];
 
     logic [AWIDTH-1:0] address;
@@ -112,7 +112,7 @@ module memory #(
                         };
                     end
 
-                    FUNCT3_LH, FUNCT3_LHU: begin // Load Halfword (LH/LHU)
+                    FUNCT3_LH, FUNCT3_LHU: begin // Load Halfword 
                         logic [15:0] halfword;
                         halfword = {main_memory[address + 1], main_memory[address]}; 
                         if (funct3_i == FUNCT3_LHU) begin
@@ -133,7 +133,7 @@ module memory #(
                     end
 
                     default: begin
-                        // If funct3 is unrecognized, default to word read (e.g., if used by IMEM)
+                        // If funct3 is unrecognized, default to word read 
                         data_o = {
                             main_memory[address + 3], main_memory[address + 2],
                             main_memory[address + 1], main_memory[address]
