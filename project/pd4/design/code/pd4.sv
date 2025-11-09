@@ -246,7 +246,7 @@ module pd4 #(
   assign m_size_encoded = d_funct3[1:0];
   
   // For memory stage probe - show write data for stores, read data for loads
-  assign m_data = dmem_data_o;
+  assign m_data = memwren ? forwarded_rs2_data : dmem_data_o;
 
   // Writeback stage - connect to probes
   assign w_pc = e_pc;
