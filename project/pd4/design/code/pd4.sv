@@ -196,7 +196,7 @@ module pd4 #(
   // Execute stage - connect to probes
   assign e_pc = d_pc;
 
-  // Data forwarding logic
+  // Data forwarding logic - FIXED to use pipelined MW stage
   logic [DWIDTH-1:0] forwarded_rs1_data;
   logic [DWIDTH-1:0] forwarded_rs2_data;
 
@@ -205,12 +205,26 @@ module pd4 #(
     forwarded_rs1_data = r_read_rs1_data;
     forwarded_rs2_data = r_read_rs2_data;
 
-    // Forward from Memory/Writeback stage if there's a match
+    // Forward from Memory/Writeback PIPELINE stage if there's a match
+    // Use mw_alu_res instead of w_data to break the combinational loop
     if (mw_regwren && (mw_rd != 5'b00000) && (mw_rd == d_rs1)) begin
-      forwarded_rs1_data = w_data;
+      // Select correct forwarding source based on wbsel
+      case (mw_wbsel)
+        2'b00: forwarded_rs1_data = mw_alu_res;      // From ALU
+        2'b01: forwarded_rs1_data = mw_mem_data;     // From Memory
+        2'b10: forwarded_rs1_data = mw_pc + 4;       // From PC + 4
+        default: forwarded_rs1_data = r_read_rs1_data;
+      endcase
     end
+    
     if (mw_regwren && (mw_rd != 5'b00000) && (mw_rd == d_rs2)) begin
-      forwarded_rs2_data = w_data;
+      // Select correct forwarding source based on wbsel
+      case (mw_wbsel)
+        2'b00: forwarded_rs2_data = mw_alu_res;      // From ALU
+        2'b01: forwarded_rs2_data = mw_mem_data;     // From Memory
+        2'b10: forwarded_rs2_data = mw_pc + 4;       // From PC + 4
+        default: forwarded_rs2_data = r_read_rs2_data;
+      endcase
     end
   end
 
