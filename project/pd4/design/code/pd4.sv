@@ -274,7 +274,7 @@ module pd4 #(
   assign m_size_encoded = d_funct3[1:0];
   
   // For memory stage probe - show write data for stores, read data for loads
-  assign m_data = memwren ? dmem_data_o : d_insn;
+  assign m_data = memwren ? d_insn : dmem_data_o;
 
   // Pipeline register: Memory to Writeback
   always_ff @(posedge clk) begin
