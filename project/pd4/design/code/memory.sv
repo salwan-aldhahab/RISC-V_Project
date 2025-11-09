@@ -37,6 +37,8 @@
  * 1) DWIDTH data output data_o
  */
 
+`include "constants.svh"
+
 module memory #(
   // parameters
   parameter int AWIDTH = 32,
