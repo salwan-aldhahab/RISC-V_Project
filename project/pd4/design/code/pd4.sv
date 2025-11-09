@@ -258,7 +258,23 @@ module pd4 #(
   assign m_pc = e_pc;
   assign m_address = e_alu_res;
   assign m_size_encoded = d_funct3[1:0];
-  assign m_data = memwren ? r_read_rs2_data : dmem_data_o;
+  
+  // For memory stage probe:
+  // - During stores: show the data being written (rs2)
+  // - During loads: show the data being read from memory
+  // - For other instructions: show the instruction itself
+  always_comb begin
+    if (memwren) begin
+      // Store operation - show data being written
+      m_data = forwarded_rs2_data;
+    end else if (memren) begin
+      // Load operation - show data being read
+      m_data = dmem_data_o;
+    end else begin
+      // Other operations - show the instruction
+      m_data = d_insn;
+    end
+  end
 
   // Data Memory for load/store operations
   memory #(
