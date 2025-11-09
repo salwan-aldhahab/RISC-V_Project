@@ -224,7 +224,7 @@ module pd4 #(
   );
 
   // Connect memory output to instruction fetch
-  assign f_insn = mem_data_o;
+  assign f_insn = mem_read_en? mem_data_o : 32'h00000000;
 
   // Memory stage - connect to probes
   assign m_pc = e_pc;
