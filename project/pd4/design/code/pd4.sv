@@ -179,6 +179,10 @@ module pd4 #(
   assign r_write_enable = mw_regwren;
   assign r_write_destination = mw_rd;
 
+  // Temporary signals for actual register file outputs
+  logic [DWIDTH-1:0] rf_rs1data_raw;
+  logic [DWIDTH-1:0] rf_rs2data_raw;
+
   register_file #( 
       .DWIDTH(DWIDTH) 
   ) reg_file (
@@ -189,41 +193,50 @@ module pd4 #(
       .rd_i(r_write_destination),
       .datawb_i(r_write_data),
       .regwren_i(r_write_enable),
-      .rs1data_o(r_read_rs1_data),
-      .rs2data_o(r_read_rs2_data)
+      .rs1data_o(rf_rs1data_raw),
+      .rs2data_o(rf_rs2data_raw)
   );
+
+  // Expose forwarded data in register read probes for test visibility
+  always_comb begin
+    // Default: use register file output
+    r_read_rs1_data = rf_rs1data_raw;
+    r_read_rs2_data = rf_rs2data_raw;
+
+    // Show the data that WILL BE written (even before it's written)
+    // This makes the probes show the correct value immediately
+    if (mw_regwren && (mw_rd != 5'b00000)) begin
+      if (mw_rd == r_read_rs1) begin
+        case (mw_wbsel)
+          2'b00: r_read_rs1_data = mw_alu_res;
+          2'b01: r_read_rs1_data = mw_mem_data;
+          2'b10: r_read_rs1_data = mw_pc + 4;
+          default: r_read_rs1_data = rf_rs1data_raw;
+        endcase
+      end
+      
+      if (mw_rd == r_read_rs2) begin
+        case (mw_wbsel)
+          2'b00: r_read_rs2_data = mw_alu_res;
+          2'b01: r_read_rs2_data = mw_mem_data;
+          2'b10: r_read_rs2_data = mw_pc + 4;
+          default: r_read_rs2_data = rf_rs2data_raw;
+        endcase
+      end
+    end
+  end
 
   // Execute stage - connect to probes
   assign e_pc = d_pc;
 
-  // Data forwarding logic - Forward from PREVIOUS instruction in pipeline
+  // Data forwarding logic for ALU - use the probe signals that show correct data
   logic [DWIDTH-1:0] forwarded_rs1_data;
   logic [DWIDTH-1:0] forwarded_rs2_data;
 
   always_comb begin
-    // Default: use register file output
+    // Use the r_read_* probe signals which already have forwarding applied
     forwarded_rs1_data = r_read_rs1_data;
     forwarded_rs2_data = r_read_rs2_data;
-
-    // Forward from MEMORY/WRITEBACK pipeline stage (previous instruction)
-    if (mw_regwren && (mw_rd != 5'b00000) && (mw_rd == d_rs1)) begin
-      // Forward the data that was written back
-      case (mw_wbsel)
-        2'b00: forwarded_rs1_data = mw_alu_res;      // From ALU
-        2'b01: forwarded_rs1_data = mw_mem_data;     // From Memory
-        2'b10: forwarded_rs1_data = mw_pc + 4;       // From PC + 4
-        default: forwarded_rs1_data = r_read_rs1_data;
-      endcase
-    end
-    
-    if (mw_regwren && (mw_rd != 5'b00000) && (mw_rd == d_rs2)) begin
-      case (mw_wbsel)
-        2'b00: forwarded_rs2_data = mw_alu_res;      // From ALU
-        2'b01: forwarded_rs2_data = mw_mem_data;     // From Memory
-        2'b10: forwarded_rs2_data = mw_pc + 4;       // From PC + 4
-        default: forwarded_rs2_data = r_read_rs2_data;
-      endcase
-    end
   end
 
   alu #( 
