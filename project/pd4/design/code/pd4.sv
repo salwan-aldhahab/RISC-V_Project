@@ -192,38 +192,21 @@ module pd4 #(
   // Execute stage - connect to probes
   assign e_pc = d_pc;
 
-  // Data forwarding logic
-  logic [DWIDTH-1:0] forwarded_rs1_data;
-  logic [DWIDTH-1:0] forwarded_rs2_data;
-
-  always_comb begin
-    // Default: use register file output
-    forwarded_rs1_data = rf_rs1data_raw;
-    forwarded_rs2_data = rf_rs2data_raw;
-
-    // Write-through forwarding: if we're writing to a register that we're also reading
-    // in the same cycle, forward the write data
-    if (r_write_enable && (r_write_destination != 5'b00000)) begin
-      if (r_write_destination == r_read_rs1) begin
-        forwarded_rs1_data = r_write_data;
-      end
-      if (r_write_destination == r_read_rs2) begin
-        forwarded_rs2_data = r_write_data;
-      end
-    end
-    
-    // Update probe signals
-    r_read_rs1_data = forwarded_rs1_data;
-    r_read_rs2_data = forwarded_rs2_data;
-  end
+  // Data forwarding logic - REMOVED for single-cycle design
+  // In a single-cycle processor, register writes happen at end of cycle,
+  // so reads in the same cycle see the old value (correct behavior)
+  
+  // Update probe signals directly from register file
+  assign r_read_rs1_data = rf_rs1data_raw;
+  assign r_read_rs2_data = rf_rs2data_raw;
 
   alu #( 
       .DWIDTH(DWIDTH), 
       .AWIDTH(AWIDTH) 
   ) alu_stage (
       .pc_i(e_pc),
-      .rs1_i(forwarded_rs1_data),
-      .rs2_i(forwarded_rs2_data),
+      .rs1_i(rf_rs1data_raw),      // Use direct register file output
+      .rs2_i(rf_rs2data_raw),      // Use direct register file output
       .imm_i(d_imm),
       .opcode_i(d_opcode),
       .funct3_i(d_funct3),
@@ -241,7 +224,7 @@ module pd4 #(
       .clk(clk),
       .rst(reset),
       .addr_i(e_alu_res),
-      .data_i(forwarded_rs2_data),
+      .data_i(rf_rs2data_raw),      // Use direct register file output
       .read_en_i(memren),
       .write_en_i(memwren),
       .funct3_i(d_funct3),
@@ -254,7 +237,7 @@ module pd4 #(
   assign m_size_encoded = d_funct3[1:0];
   
   // For memory stage probe - show write data for stores, read data for loads
-  assign m_data = memwren ? forwarded_rs2_data : dmem_data_o;
+  assign m_data = memwren ? rf_rs2data_raw : dmem_data_o;
 
   // Writeback stage - connect to probes
   assign w_pc = e_pc;
