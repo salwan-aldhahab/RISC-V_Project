@@ -229,14 +229,62 @@ module pd4 #(
   // Execute stage - connect to probes
   assign e_pc = d_pc;
 
-  // Data forwarding logic for ALU - use the probe signals that show correct data
+  // Data forwarding logic for ALU inputs
   logic [DWIDTH-1:0] forwarded_rs1_data;
   logic [DWIDTH-1:0] forwarded_rs2_data;
 
   always_comb begin
-    // Use the r_read_* probe signals which already have forwarding applied
-    forwarded_rs1_data = r_read_rs1_data;
-    forwarded_rs2_data = r_read_rs2_data;
+    // Default: use register file output
+    forwarded_rs1_data = rf_rs1data_raw;
+    forwarded_rs2_data = rf_rs2data_raw;
+
+    // Forward from writeback stage (instruction finishing writeback)
+    if (mw_regwren && (mw_rd != 5'b00000)) begin
+      if (mw_rd == d_rs1) begin
+        case (mw_wbsel)
+          2'b00: forwarded_rs1_data = mw_alu_res;
+          2'b01: forwarded_rs1_data = mw_mem_data;
+          2'b10: forwarded_rs1_data = mw_pc + 4;
+          default: forwarded_rs1_data = rf_rs1data_raw;
+        endcase
+      end
+      
+      if (mw_rd == d_rs2) begin
+        case (mw_wbsel)
+          2'b00: forwarded_rs2_data = mw_alu_res;
+          2'b01: forwarded_rs2_data = mw_mem_data;
+          2'b10: forwarded_rs2_data = mw_pc + 4;
+          default: forwarded_rs2_data = rf_rs2data_raw;
+        endcase
+      end
+    end
+    
+    // Also forward from execute/memory stage (instruction just computed)
+    if (regwren && (d_rd != 5'b00000)) begin
+      if (d_rd == d_rs1) begin
+        case (wbsel)
+          2'b00: forwarded_rs1_data = e_alu_res;
+          2'b01: forwarded_rs1_data = dmem_data_o;
+          2'b10: forwarded_rs1_data = e_pc + 4;
+          default: forwarded_rs1_data = rf_rs1data_raw;
+        endcase
+      end
+      
+      if (d_rd == d_rs2) begin
+        case (wbsel)
+          2'b00: forwarded_rs2_data = e_alu_res;
+          2'b01: forwarded_rs2_data = dmem_data_o;
+          2'b10: forwarded_rs2_data = e_pc + 4;
+          default: forwarded_rs2_data = rf_rs2data_raw;
+        endcase
+      end
+    end
+  end
+
+  // Update probe signals to show forwarded data
+  always_comb begin
+    r_read_rs1_data = forwarded_rs1_data;
+    r_read_rs2_data = forwarded_rs2_data;
   end
 
   alu #( 
