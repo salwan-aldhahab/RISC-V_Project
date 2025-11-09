@@ -126,6 +126,7 @@ module pd4 #(
       .data_i(data_i),
       .read_en_i(read_en),
       .write_en_i(write_en),
+      .funct3_i(FUNCT3_LW),  // Always word access for instruction fetch
       .data_o(imem_insn_f)
   );
 
@@ -260,9 +261,10 @@ module pd4 #(
       .clk(clk),
       .rst(reset),
       .addr_i(m_address),
-      .data_i(forwarded_rs2_data),  // Changed: use forwarded data for writes
+      .data_i(forwarded_rs2_data),  // Use forwarded data for writes
       .read_en_i(memren),
       .write_en_i(memwren),
+      .funct3_i(d_funct3),  // Pass funct3 for load/store size
       .data_o(dmem_data_o)
   );
 
