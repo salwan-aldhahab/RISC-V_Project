@@ -196,7 +196,7 @@ module pd4 #(
   // Execute stage - connect to probes
   assign e_pc = d_pc;
 
-  // Data forwarding logic - FIXED to forward from execute stage
+  // Data forwarding logic - Forward from PREVIOUS instruction in pipeline
   logic [DWIDTH-1:0] forwarded_rs1_data;
   logic [DWIDTH-1:0] forwarded_rs2_data;
 
@@ -205,22 +205,22 @@ module pd4 #(
     forwarded_rs1_data = r_read_rs1_data;
     forwarded_rs2_data = r_read_rs2_data;
 
-    // Forward from EXECUTE stage if there's a write-back and destination matches
-    if (regwren && (d_rd != 5'b00000) && (d_rd == d_rs1)) begin
-      // Forward the data that will be written back
-      case (wbsel)
-        2'b00: forwarded_rs1_data = e_alu_res;      // From ALU
-        2'b01: forwarded_rs1_data = dmem_data_o;    // From Memory
-        2'b10: forwarded_rs1_data = e_pc + 4;       // From PC + 4
+    // Forward from MEMORY/WRITEBACK pipeline stage (previous instruction)
+    if (mw_regwren && (mw_rd != 5'b00000) && (mw_rd == d_rs1)) begin
+      // Forward the data that was written back
+      case (mw_wbsel)
+        2'b00: forwarded_rs1_data = mw_alu_res;      // From ALU
+        2'b01: forwarded_rs1_data = mw_mem_data;     // From Memory
+        2'b10: forwarded_rs1_data = mw_pc + 4;       // From PC + 4
         default: forwarded_rs1_data = r_read_rs1_data;
       endcase
     end
     
-    if (regwren && (d_rd != 5'b00000) && (d_rd == d_rs2)) begin
-      case (wbsel)
-        2'b00: forwarded_rs2_data = e_alu_res;      // From ALU
-        2'b01: forwarded_rs2_data = dmem_data_o;    // From Memory
-        2'b10: forwarded_rs2_data = e_pc + 4;       // From PC + 4
+    if (mw_regwren && (mw_rd != 5'b00000) && (mw_rd == d_rs2)) begin
+      case (mw_wbsel)
+        2'b00: forwarded_rs2_data = mw_alu_res;      // From ALU
+        2'b01: forwarded_rs2_data = mw_mem_data;     // From Memory
+        2'b10: forwarded_rs2_data = mw_pc + 4;       // From PC + 4
         default: forwarded_rs2_data = r_read_rs2_data;
       endcase
     end
