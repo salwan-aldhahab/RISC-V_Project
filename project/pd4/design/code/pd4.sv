@@ -196,13 +196,31 @@ module pd4 #(
   // Execute stage - connect to probes
   assign e_pc = d_pc;
 
+  // Data forwarding logic
+  logic [DWIDTH-1:0] forwarded_rs1_data;
+  logic [DWIDTH-1:0] forwarded_rs2_data;
+
+  always_comb begin
+    // Default: use register file output
+    forwarded_rs1_data = r_read_rs1_data;
+    forwarded_rs2_data = r_read_rs2_data;
+
+    // Forward from Memory/Writeback stage if there's a match
+    if (mw_regwren && (mw_rd != 5'b00000) && (mw_rd == d_rs1)) begin
+      forwarded_rs1_data = w_data;
+    end
+    if (mw_regwren && (mw_rd != 5'b00000) && (mw_rd == d_rs2)) begin
+      forwarded_rs2_data = w_data;
+    end
+  end
+
   alu #( 
       .DWIDTH(DWIDTH), 
       .AWIDTH(AWIDTH) 
   ) alu_stage (
       .pc_i(e_pc),
-      .rs1_i(r_read_rs1_data),
-      .rs2_i(r_read_rs2_data),
+      .rs1_i(forwarded_rs1_data),  // Use forwarded data
+      .rs2_i(forwarded_rs2_data),  // Use forwarded data
       .imm_i(d_imm),
       .opcode_i(d_opcode),
       .funct3_i(d_funct3),
