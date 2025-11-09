@@ -66,8 +66,6 @@ module pd4 #(
   
   // -- End Probes Instantiation --
 
-  // -- Submodule Instantiations --
-
   // Internal signals
   logic [AWIDTH-1:0] addr_i;
   logic [DWIDTH-1:0] data_i;
@@ -95,7 +93,7 @@ module pd4 #(
   logic              mw_br_taken;
 
   // Determine if PC should be redirected (branch taken or unconditional jump)
-  assign pcsel_actual = (pcsel & e_br_taken) | (d_opcode == 7'b1101111) | (d_opcode == 7'b1100111); // Branch taken or JAL or JALR
+  assign pcsel_actual = (pcsel & e_br_taken) | (d_opcode == 7'b1101111) | (d_opcode == 7'b1100111);
 
   // Fetch stage with branch/jump support
   fetch #(
@@ -105,15 +103,15 @@ module pd4 #(
   ) fetch_stage (
       .clk(clk),
       .rst(reset),
-      .pcsel_i(pcsel_actual),      // Select between sequential and branch/jump PC
-      .pctarget_i(next_pc),        // Target PC from writeback stage
+      .pcsel_i(pcsel_actual),
+      .pctarget_i(next_pc),
       .pc_o(f_pc),            
-      .insn_o()                    // Not used, we get instruction from memory
+      .insn_o()
   );
 
   // Instruction Memory (read-only for fetch stage)
   assign addr_i = f_pc;
-  assign data_i = '0; // No data to write
+  assign data_i = '0;
   assign read_en = 1'b1;
   assign write_en = 1'b0;
 
@@ -131,7 +129,6 @@ module pd4 #(
       .data_o(imem_insn_f)
   );
 
-  // Connect fetched instruction to fetch stage output
   assign f_insn = imem_insn_f;
 
   // Decode stage
@@ -175,10 +172,12 @@ module pd4 #(
   );
 
   // Register File - connect to probes
+  // Read addresses come from decode stage
   assign r_read_rs1 = d_rs1;
   assign r_read_rs2 = d_rs2;
-  assign r_write_enable = regwren;
-  assign r_write_destination = d_rd;
+  // Write signals come from pipelined writeback stage
+  assign r_write_enable = mw_regwren;
+  assign r_write_destination = mw_rd;
 
   register_file #( 
       .DWIDTH(DWIDTH) 
@@ -216,7 +215,6 @@ module pd4 #(
   assign m_pc = e_pc;
   assign m_address = e_alu_res;
   assign m_size_encoded = d_funct3[1:0];
-  // Fix: For stores, show the data being written; for loads, show the data read
   assign m_data = memwren ? r_read_rs2_data : dmem_data_o;
 
   // Data Memory for load/store operations
@@ -274,28 +272,8 @@ module pd4 #(
       .next_pc_o(next_pc)
   );
 
-  // Connect writeback data to register file and probe
+  // Connect writeback data to register file
   assign r_write_data = w_data;
-
-  // Register File - connect to probes using PIPELINE REGISTERS for write
-  assign r_read_rs1 = d_rs1;
-  assign r_read_rs2 = d_rs2;
-  assign r_write_enable = mw_regwren;  // Use pipelined signal
-  assign r_write_destination = mw_rd;  // Use pipelined signal
-
-  register_file #( 
-      .DWIDTH(DWIDTH) 
-  ) reg_file (
-      .clk(clk),
-      .rst(reset),
-      .rs1_i(r_read_rs1),
-      .rs2_i(r_read_rs2),
-      .rd_i(r_write_destination),
-      .datawb_i(r_write_data),
-      .regwren_i(r_write_enable),
-      .rs1data_o(r_read_rs1_data),
-      .rs2data_o(r_read_rs2_data)
-  );
 
   // Make data_out available for program termination logic
   assign data_out = d_insn;
@@ -303,9 +281,8 @@ module pd4 #(
   // program termination logic
   reg is_program = 0;
   always_ff @(posedge clk) begin
-      if (data_out == 32'h00000073) $finish;  // directly terminate if see ecall
-      if (data_out == 32'h00008067) is_program = 1;  // if see ret instruction, it is simple program test
-      // Corrected: Use reg_file instance name to access register x2 (stack pointer)
+      if (data_out == 32'h00000073) $finish;
+      if (data_out == 32'h00008067) is_program = 1;
       if (is_program && (reg_file.registers[2] == 32'h01000000 + `MEM_DEPTH)) $finish;
   end
 
