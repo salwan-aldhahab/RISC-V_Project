@@ -1,12 +1,3 @@
-/*
- * Module: control
- *
- * Description: This module sets the control bits (control path) based on the decoded
- * instruction. Note that this is part of the decode stage but housed in a separate
- * module for better readability, debug and design purposes.
- *
- * -------- REPLACE THIS FILE WITH THE CONTROL MODULE DEVELOPED IN PD2 -----------
- */
 
 /*
  * Module: control
@@ -53,7 +44,10 @@ module control #(
     output logic memren_o,
     output logic memwren_o,
     output logic [1:0] wbsel_o,
-    output logic [3:0] alusel_o
+    output logic [3:0] alusel_o,
+    output logic jump_o,
+    output logic branch_o,
+    output logic [2:0] funct3_o
 );
 
     /*
@@ -72,10 +66,13 @@ module control #(
         memwren_o = 1'b0;    // No memory writes
         wbsel_o = 2'b00;     // Default writeback source is ALU
         alusel_o = ALU_ADD;  // Default ALU operation is addition
+        jump_o = 1'b0;
+        branch_o = 1'b0;
+        funct3_o = funct3_i;
 
         // Decode the instruction based on its opcode
         case (opcode_i)
-            // R-type instructions: register-to-register operations (add, sub, and, or, etc.)
+            
             OPCODE_RTYPE: begin
                 regwren_o = 1'b1;    // We'll write the result back to rd
                 rs1sel_o = 1'b0;     // Use rs1 register value
@@ -83,7 +80,7 @@ module control #(
                 immsel_o = 1'b0;     // No immediate needed
                 wbsel_o = 2'b00;     // Write back the ALU result
 
-                // Figure out which ALU operation to perform
+                
                 case (funct3_i)
                     FUNCT3_ADD_SUB: begin
                         // Could be ADD or SUB - check funct7 to decide
@@ -118,7 +115,7 @@ module control #(
                 rs2sel_o = 1'b1;     // Use immediate instead of rs2
                 immsel_o = 1'b1;     // Enable immediate value
                 wbsel_o = 2'b00;     // Write back ALU result
-                
+
                 case (funct3_i)
                     FUNCT3_ADD_SUB: alusel_o = ALU_ADD;  // ADDI (no SUBI in RISC-V)
                     FUNCT3_AND: alusel_o = ALU_AND;      // ANDI
@@ -167,6 +164,7 @@ module control #(
                 rs1sel_o = 1'b0;     // Use rs1 for comparison
                 rs2sel_o = 1'b0;     // Use rs2 for comparison
                 immsel_o = 1'b1;     // Immediate holds branch offset
+                branch_o = 1'b1;
                 pcsel_o = 1'b0;      // Branch unit will decide if we actually branch
                 wbsel_o = 2'b00;     // Doesn't matter since no writeback
                 alusel_o = ALU_SUB;  // Compare by subtracting: rs1 - rs2
@@ -179,10 +177,11 @@ module control #(
                 rs2sel_o = 1'b1;     // Don't need rs2
                 immsel_o = 1'b1;     // Jump offset is in immediate
                 pcsel_o = 1'b1;      // Take the jump
+                jump_o = 1'b1;
                 wbsel_o = 2'b10;     // Write back PC+4 (return address)
                 alusel_o = ALU_ADD;  // ALU not really used here
             end
-            
+
             // JALR: Jump and link register (jump to rs1+imm, save return address)
             OPCODE_JALR: begin
                 regwren_o = 1'b1;    // Save return address (PC+4) in rd
@@ -190,6 +189,7 @@ module control #(
                 rs2sel_o = 1'b1;     // Use immediate as offset
                 immsel_o = 1'b1;     // Immediate is jump offset
                 pcsel_o = 1'b1;      // Take the jump
+                jump_o = 1'b1;
                 wbsel_o = 2'b10;     // Write back PC+4 (return address)
                 alusel_o = ALU_ADD;  // Calculate jump target: rs1 + immediate
             end

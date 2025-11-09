@@ -83,6 +83,21 @@ module pd4 #(
   logic pcsel, immsel, regwren, rs1sel, rs2sel, memren, memwren;
   logic [1:0] wbsel;
   logic [3:0] alusel;
+  logic jump, branch;
+  logic [2:0] funt3_ctrl;
+
+ 
+ // Control Unit 
+ // Control #(
+  //  .DWIDTH(DWIDTH)
+ // ) control_unit(
+  //  .pcsel_o(pcsel),
+   // .wbsel_o(wbsel),
+  //  .alusel_o(alusel),
+   // .jump_o(jump),
+   // .branch_o(branch)
+ // );
+ 
 
   // Fetch stage
   fetch #(
@@ -92,6 +107,7 @@ module pd4 #(
   ) fetch_stage (
       .clk(clk),
       .rst(reset),
+      .pc_i(next_pc),
       .pc_o(f_pc),            
       .insn_o()         
   );
@@ -113,6 +129,7 @@ module pd4 #(
       .data_i(data_i),
       .read_en_i(read_en),
       .write_en_i(write_en),
+      .funct3_i(3'b010),
       .data_o(imem_insn_f)
   );
 
@@ -156,7 +173,10 @@ module pd4 #(
       .memren_o(memren),
       .memwren_o(memwren),
       .wbsel_o(wbsel),
-      .alusel_o(alusel)
+      .alusel_o(alusel),
+      .jump_o(jump),
+      .branch_o(branch)
+      .funt3_o(funct3_ctrl)
   );
 
   // Register File - connect to probes
@@ -190,6 +210,10 @@ module pd4 #(
       .rs1_i(r_read_rs1_data),
       .rs2_i(r_read_rs2_data),
       .imm_i(d_imm),           // Added: Your ALU expects imm_i input
+      .alusel_i(alusel),      
+      .rs1sel_i(rs1sel),      
+      .rs2sel_i(rs2sel),      
+      .immsel_i(immsel), 
       .opcode_i(d_opcode),
       .funct3_i(d_funct3),
       .funct7_i(d_funct7),
@@ -215,6 +239,7 @@ module pd4 #(
       .data_i(r_read_rs2_data), // Store data comes from rs2
       .read_en_i(memren),
       .write_en_i(memwren),
+      .funct3_i(d_funct3),
       .data_o(dmem_data_o)
   );
 
@@ -233,6 +258,8 @@ module pd4 #(
       .memory_data_i(dmem_data_o),
       .wbsel_i(wbsel),
       .brtaken_i(e_br_taken),
+      .jump_i(jump),
+      .branch_i(branch),
       .writeback_data_o(w_data),
       .next_pc_o(next_pc)
   );
