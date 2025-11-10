@@ -79,16 +79,12 @@ module pd4 #(
   logic [1:0] wbsel;
   logic [3:0] alusel;
 
-  // Memory interface signals
-  logic [AWIDTH-1:0] mem_addr;
-  logic [DWIDTH-1:0] mem_data_i;
-  logic              mem_read_en;
-  logic              mem_write_en;
-  logic [2:0]        mem_funct3;
-  logic [DWIDTH-1:0] mem_data_o;
-  
-  // Add a register for fetched instruction to break combinational loop
-  logic [DWIDTH-1:0] f_insn_reg;
+  // Data memory signals
+  logic [DWIDTH-1:0] dmem_data_o;
+
+  // Temporary signals for actual register file outputs
+  logic [DWIDTH-1:0] rf_rs1data_raw;
+  logic [DWIDTH-1:0] rf_rs2data_raw;
 
   // Determine if PC should be redirected (branch taken or unconditional jump)
   assign pcsel_actual = (pcsel & e_br_taken) | (d_opcode == 7'b1101111) | (d_opcode == 7'b1100111);
@@ -105,6 +101,22 @@ module pd4 #(
       .pctarget_i(next_pc),
       .pc_o(f_pc),            
       .insn_o()
+  );
+
+  // INSTRUCTION MEMORY - Read-only memory for instruction fetch
+  memory #(
+      .AWIDTH(AWIDTH),
+      .DWIDTH(DWIDTH),
+      .BASE_ADDR(32'h01000000)
+  ) imem (
+      .clk(clk),
+      .rst(reset),
+      .addr_i(f_pc),
+      .data_i(32'h00000000),      // Not used for instruction memory
+      .read_en_i(1'b1),            // Always reading
+      .write_en_i(1'b0),           // Never writing to instruction memory
+      .funct3_i(FUNCT3_LW),        // Word access
+      .data_o(f_insn)
   );
 
   // Decode stage
@@ -155,10 +167,6 @@ module pd4 #(
   assign r_write_enable = regwren & (d_rd != 5'b00000);
   assign r_write_destination = d_rd;
 
-  // Temporary signals for actual register file outputs
-  logic [DWIDTH-1:0] rf_rs1data_raw;
-  logic [DWIDTH-1:0] rf_rs2data_raw;
-
   register_file #( 
       .DWIDTH(DWIDTH) 
   ) reg_file (
@@ -195,50 +203,21 @@ module pd4 #(
       .brtaken_o(e_br_taken)
   );
 
-  // UNIFIED MEMORY - handles both instruction fetch and data access
-  // Memory address muxing: use PC for instruction fetch, ALU result for load/store
-  assign mem_addr = (memren || memwren) ? e_alu_res : f_pc;
-  
-  // Memory data input (for stores)
-  assign mem_data_i = rf_rs2data_raw;
-  
-  // Memory read enable: always read (for instruction fetch or loads)
-  assign mem_read_en = 1'b1;
-  
-  // Memory write enable: only for stores
-  assign mem_write_en = memwren;
-  
-  // Memory funct3: use instruction's funct3 for loads/stores, word access for fetch
-  assign mem_funct3 = (memren || memwren) ? d_funct3 : FUNCT3_LW;
-
+  // DATA MEMORY - Separate memory for data access (loads/stores)
   memory #(
       .AWIDTH(AWIDTH),
       .DWIDTH(DWIDTH),
       .BASE_ADDR(32'h01000000)
-  ) unified_mem (
+  ) dmem (
       .clk(clk),
       .rst(reset),
-      .addr_i(mem_addr),
-      .data_i(mem_data_i),
-      .read_en_i(mem_read_en),
-      .write_en_i(mem_write_en),
-      .funct3_i(mem_funct3),
-      .data_o(mem_data_o)
+      .addr_i(e_alu_res),
+      .data_i(rf_rs2data_raw),
+      .read_en_i(memren),
+      .write_en_i(memwren),
+      .funct3_i(d_funct3),
+      .data_o(dmem_data_o)
   );
-
-  // Register the fetched instruction to break the combinational loop
-  always_ff @(posedge clk) begin
-    if (reset) begin
-      f_insn_reg <= mem_data_o; // Fetch first instruction on reset
-    end else if (!memren && !memwren) begin
-      // Only update instruction when not doing data memory access
-      f_insn_reg <= mem_data_o;
-    end
-    // Otherwise keep the current instruction during load/store operations
-  end
-
-  // Connect memory output to instruction fetch through register
-  assign f_insn = f_insn_reg;
 
   // Memory stage - connect to probes
   assign m_pc = e_pc;
@@ -246,7 +225,7 @@ module pd4 #(
   assign m_size_encoded = d_funct3[1:0];
   
   // For memory stage probe - only show data during actual memory operations
-  assign m_data = (memren || memwren) ? mem_data_o : 32'h00000000;
+  assign m_data = (memren || memwren) ? dmem_data_o : 32'h00000000;
 
   // Writeback stage - connect to probes
   assign w_pc = e_pc;
@@ -260,7 +239,7 @@ module pd4 #(
   ) writeback_stage (
       .pc_i(e_pc),
       .alu_res_i(e_alu_res),
-      .memory_data_i(mem_data_o),
+      .memory_data_i(dmem_data_o),
       .wbsel_i(wbsel),
       .brtaken_i(e_br_taken),
       .writeback_data_o(w_data),
