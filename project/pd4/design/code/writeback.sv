@@ -53,7 +53,7 @@
 
     // Next PC computation logic
     always_comb begin
-        if (brtaken_i) begin
+        if (brtaken_i || wbsel_i == 2'b10) begin
             next_pc_o = alu_res_i;  // Branch taken, next PC from ALU result
         end else begin
             next_pc_o = pc_i + 4;   // Sequential execution, next PC is PC + 4
