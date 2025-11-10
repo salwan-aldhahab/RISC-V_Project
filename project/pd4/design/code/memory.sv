@@ -122,8 +122,8 @@ module memory #(
                 end
             end else begin
                 data_o = '0;  // Return zero for completely out-of-bounds address
-                //$display("MEMORY ERROR: Address 0x%08h is outside valid memory range [0x%08h - 0x%08h]", 
-                         addr_i, BASE_ADDR, BASE_ADDR + MEM_BYTES - 1);
+                // $display("MEMORY ERROR: Address 0x%08h is outside valid memory range [0x%08h - 0x%08h]", 
+                //          addr_i, BASE_ADDR, BASE_ADDR + MEM_BYTES - 1);
             end
         end
     end
