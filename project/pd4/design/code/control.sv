@@ -179,7 +179,7 @@ module control #(
                 rs2sel_o = 1'b1;     // Don't need rs2
                 immsel_o = 1'b1;     // Jump offset is in immediate
                 pcsel_o = 1'b1;      // Take the jump
-                wbsel_o = 1'b10;     // Write back PC+4 (return address)
+                wbsel_o = 1'b00;     // Write back PC+4 (return address)
                 alusel_o = ALU_ADD;  // ALU not really used here
             end
             
