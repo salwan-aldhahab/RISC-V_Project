@@ -57,7 +57,8 @@ module memory #(
   output logic [DWIDTH-1:0] data_o
 );
 
-    localparam int MEM_BYTES = `LINE_COUNT * (DWIDTH/8);
+    // Increase memory size - adjust multiplier as needed (2x, 4x, etc.)
+    localparam int MEM_BYTES = `LINE_COUNT * (DWIDTH/8) * 4;  // 4x larger
 
     logic [DWIDTH-1:0] temp_memory [0:`LINE_COUNT - 1];
     // Byte-addressable memory
@@ -67,6 +68,12 @@ module memory #(
     int i;
  
     initial begin
+        // First, zero out the entire memory
+        for (i = 0; i < MEM_BYTES; i++) begin
+            main_memory[i] = 8'h00;
+        end
+        
+        // Then load the program into the beginning
         $readmemh(`MEM_PATH, temp_memory);
         for (i = 0; i < `LINE_COUNT; i++) begin
             main_memory[4*i]     = temp_memory[i][7:0];
@@ -75,6 +82,9 @@ module memory #(
             main_memory[4*i + 3] = temp_memory[i][31:24];
         end
         $display("MEMORY: Loaded %0d 32-bit words from %s", `LINE_COUNT, `MEM_PATH);
+        $display("MEMORY: Total memory size: %0d bytes (%0d KB)", MEM_BYTES, MEM_BYTES/1024);
+        $display("MEMORY: Program size: %0d bytes, Remaining: %0d bytes", 
+                 `LINE_COUNT * 4, MEM_BYTES - (`LINE_COUNT * 4));
     end
 
     // Read logic with size and sign extension support
