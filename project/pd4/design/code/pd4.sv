@@ -89,7 +89,7 @@ module pd4 #(
   fetch #(
       .AWIDTH(AWIDTH),
       .DWIDTH(DWIDTH),
-      .BASEADDR(32'h40000000)
+      .BASEADDR(32'h01000000)
   ) fetch_stage (
       .clk(clk),
       .rst(reset),
@@ -203,7 +203,7 @@ module pd4 #(
   memory #(
       .AWIDTH(AWIDTH),
       .DWIDTH(DWIDTH),
-      .BASE_ADDR(32'h01000000)  // Changed to same base as instruction memory
+      .BASE_ADDR(32'h40000000)  // Changed to same base as instruction memory
   ) dmem (
       .clk(clk),
       .rst(reset),
