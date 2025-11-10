@@ -83,37 +83,50 @@ module memory #(
         if (read_en_i) begin
             if ($isunknown(addr_i)) begin
                 data_o = '0;
-            end else if ((addr_i >= BASE_ADDR) && ((addr_i + 32'd3) <= (BASE_ADDR + MEM_BYTES - 1))) begin
+            end else if ((addr_i >= BASE_ADDR) && (addr_i < (BASE_ADDR + MEM_BYTES))) begin
+                // Additional check: ensure the full access fits within bounds
+                logic access_valid;
                 case (funct3_i)
-                    FUNCT3_LB: begin // Load Byte (sign-extended)
-                        data_o = {{24{main_memory[address][7]}}, main_memory[address]};
-                    end
-                    FUNCT3_LH: begin // Load Halfword (sign-extended)
-                        data_o = {{16{main_memory[address + 1][7]}}, 
-                                  main_memory[address + 1], 
-                                  main_memory[address]};
-                    end
-                    FUNCT3_LW: begin // Load Word
-                        data_o = {main_memory[address + 3],
-                                  main_memory[address + 2],
-                                  main_memory[address + 1],
-                                  main_memory[address]};
-                    end
-                    FUNCT3_LBU: begin // Load Byte Unsigned
-                        data_o = {24'b0, main_memory[address]};
-                    end
-                    FUNCT3_LHU: begin // Load Halfword Unsigned
-                        data_o = {16'b0, 
-                                  main_memory[address + 1], 
-                                  main_memory[address]};
-                    end
-                    default: begin // Default to word access
-                        data_o = {main_memory[address + 3],
-                                  main_memory[address + 2],
-                                  main_memory[address + 1],
-                                  main_memory[address]};
-                    end
+                    FUNCT3_LB, FUNCT3_LBU: access_valid = (address < MEM_BYTES);
+                    FUNCT3_LH, FUNCT3_LHU: access_valid = (address + 1 < MEM_BYTES);
+                    default: access_valid = (address + 3 < MEM_BYTES); // LW and default
                 endcase
+                
+                if (access_valid) begin
+                    case (funct3_i)
+                        FUNCT3_LB: begin // Load Byte (sign-extended)
+                            data_o = {{24{main_memory[address][7]}}, main_memory[address]};
+                        end
+                        FUNCT3_LH: begin // Load Halfword (sign-extended)
+                            data_o = {{16{main_memory[address + 1][7]}}, 
+                                      main_memory[address + 1], 
+                                      main_memory[address]};
+                        end
+                        FUNCT3_LW: begin // Load Word
+                            data_o = {main_memory[address + 3],
+                                      main_memory[address + 2],
+                                      main_memory[address + 1],
+                                      main_memory[address]};
+                        end
+                        FUNCT3_LBU: begin // Load Byte Unsigned
+                            data_o = {24'b0, main_memory[address]};
+                        end
+                        FUNCT3_LHU: begin // Load Halfword Unsigned
+                            data_o = {16'b0, 
+                                      main_memory[address + 1], 
+                                      main_memory[address]};
+                        end
+                        default: begin // Default to word access
+                            data_o = {main_memory[address + 3],
+                                      main_memory[address + 2],
+                                      main_memory[address + 1],
+                                      main_memory[address]};
+                        end
+                    endcase
+                end else begin
+                    data_o = 32'hDEAD_BEEF;
+                    $display("MEMORY: OOB read @0x%08h (mapped 0x%08h, size would exceed bounds)", addr_i, address);
+                end
             end else begin
                 data_o = 32'hDEAD_BEEF;
                 $display("MEMORY: OOB read @0x%08h (mapped 0x%08h)", addr_i, address);
@@ -124,32 +137,43 @@ module memory #(
     // Write logic with size support
     always_ff @(posedge clk) begin
         if (write_en_i) begin
-            if ((addr_i >= BASE_ADDR) && ((addr_i + 32'd3) <= (BASE_ADDR + MEM_BYTES - 1))) begin
+            if ((addr_i >= BASE_ADDR) && (addr_i < (BASE_ADDR + MEM_BYTES))) begin
+                logic write_valid;
                 case (funct3_i)
-                    FUNCT3_SB: begin // Store Byte
-                        main_memory[address] <= data_i[7:0];
-                        $display("MEMORY: Wrote byte 0x%02h to 0x%08h", data_i[7:0], addr_i);
-                    end
-                    FUNCT3_SH: begin // Store Halfword
-                        main_memory[address] <= data_i[7:0];
-                        main_memory[address + 1] <= data_i[15:8];
-                        $display("MEMORY: Wrote halfword 0x%04h to 0x%08h", data_i[15:0], addr_i);
-                    end
-                    FUNCT3_SW: begin // Store Word
-                        main_memory[address] <= data_i[7:0];
-                        main_memory[address + 1] <= data_i[15:8];
-                        main_memory[address + 2] <= data_i[23:16];
-                        main_memory[address + 3] <= data_i[31:24];
-                        $display("MEMORY: Wrote word 0x%08h to 0x%08h", data_i, addr_i);
-                    end
-                    default: begin // Default to word access
-                        main_memory[address] <= data_i[7:0];
-                        main_memory[address + 1] <= data_i[15:8];
-                        main_memory[address + 2] <= data_i[23:16];
-                        main_memory[address + 3] <= data_i[31:24];
-                        $display("MEMORY: Wrote word 0x%08h to 0x%08h", data_i, addr_i);
-                    end
+                    FUNCT3_SB: write_valid = (address < MEM_BYTES);
+                    FUNCT3_SH: write_valid = (address + 1 < MEM_BYTES);
+                    default: write_valid = (address + 3 < MEM_BYTES); // SW and default
                 endcase
+                
+                if (write_valid) begin
+                    case (funct3_i)
+                        FUNCT3_SB: begin // Store Byte
+                            main_memory[address] <= data_i[7:0];
+                            $display("MEMORY: Wrote byte 0x%02h to 0x%08h", data_i[7:0], addr_i);
+                        end
+                        FUNCT3_SH: begin // Store Halfword
+                            main_memory[address] <= data_i[7:0];
+                            main_memory[address + 1] <= data_i[15:8];
+                            $display("MEMORY: Wrote halfword 0x%04h to 0x%08h", data_i[15:0], addr_i);
+                        end
+                        FUNCT3_SW: begin // Store Word
+                            main_memory[address] <= data_i[7:0];
+                            main_memory[address + 1] <= data_i[15:8];
+                            main_memory[address + 2] <= data_i[23:16];
+                            main_memory[address + 3] <= data_i[31:24];
+                            $display("MEMORY: Wrote word 0x%08h to 0x%08h", data_i, addr_i);
+                        end
+                        default: begin // Default to word access
+                            main_memory[address] <= data_i[7:0];
+                            main_memory[address + 1] <= data_i[15:8];
+                            main_memory[address + 2] <= data_i[23:16];
+                            main_memory[address + 3] <= data_i[31:24];
+                            $display("MEMORY: Wrote word 0x%08h to 0x%08h", data_i, addr_i);
+                        end
+                    endcase
+                end else begin
+                    $display("MEMORY: OOB write @0x%08h (size would exceed bounds)", addr_i);
+                end
             end else begin
                 $display("MEMORY: OOB write @0x%08h", addr_i);
             end
