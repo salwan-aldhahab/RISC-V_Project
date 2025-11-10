@@ -230,8 +230,9 @@ module pd4 #(
   always_ff @(posedge clk) begin
     if (reset) begin
       f_insn_reg <= 32'h00000013; // NOP (addi x0, x0, 0)
-    end else if (!memren && !memwren) begin
-      // Only update instruction when not doing data memory access
+    end else begin
+      // Always update instruction from memory output
+      // The memory module handles the muxing between instruction fetch and data access
       f_insn_reg <= mem_data_o;
     end
   end
