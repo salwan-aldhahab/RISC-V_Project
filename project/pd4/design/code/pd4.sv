@@ -93,7 +93,7 @@ module pd4 #(
   ) fetch_stage (
       .clk(clk),
       .rst(reset),
-      .pcsel_i(pcsel),
+      .pcsel_i(pcsel || e_br_taken),
       .pctarget_i(next_pc),
       .pc_o(f_pc),            
       .insn_o()
