@@ -203,11 +203,11 @@ module pd4 #(
       .brtaken_o(e_br_taken)
   );
 
-  // DATA MEMORY - Separate memory for data access (loads/stores)
+  // DATA MEMORY - Same address range as instruction memory
   memory #(
       .AWIDTH(AWIDTH),
       .DWIDTH(DWIDTH),
-      .BASE_ADDR(32'h02000000)  // Data memory at 0x02000000
+      .BASE_ADDR(32'h01000000)  // Changed to same base as instruction memory
   ) dmem (
       .clk(clk),
       .rst(reset),
