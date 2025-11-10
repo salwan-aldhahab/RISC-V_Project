@@ -83,7 +83,7 @@ module memory #(
         if (read_en_i) begin
             if ($isunknown(addr_i)) begin
                 data_o = '0;
-            end else if ((addr_i >= BASE_ADDR) && ((addr_i + 32'd3) < (BASE_ADDR + MEM_BYTES))) begin
+            end else if ((addr_i >= BASE_ADDR) && ((addr_i + 32'd3) <= (BASE_ADDR + MEM_BYTES - 1))) begin
                 case (funct3_i)
                     FUNCT3_LB: begin // Load Byte (sign-extended)
                         data_o = {{24{main_memory[address][7]}}, main_memory[address]};
@@ -124,7 +124,7 @@ module memory #(
     // Write logic with size support
     always_ff @(posedge clk) begin
         if (write_en_i) begin
-            if ((addr_i >= BASE_ADDR) && ((addr_i + 32'd3) < (BASE_ADDR + MEM_BYTES))) begin
+            if ((addr_i >= BASE_ADDR) && ((addr_i + 32'd3) <= (BASE_ADDR + MEM_BYTES - 1))) begin
                 case (funct3_i)
                     FUNCT3_SB: begin // Store Byte
                         main_memory[address] <= data_i[7:0];
