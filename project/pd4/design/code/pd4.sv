@@ -224,8 +224,8 @@ module pd4 #(
   assign m_address = e_alu_res;
   assign m_size_encoded = d_funct3[1:0];
   
-  // For memory stage probe - only show data during actual memory operations
-  assign m_data = (memren || memwren) ? dmem_data_o : 32'h00000000;
+  // For memory stage probe - show data output from memory
+  assign m_data = dmem_data_o;
 
   // Writeback stage - connect to probes
   assign w_pc = e_pc;
