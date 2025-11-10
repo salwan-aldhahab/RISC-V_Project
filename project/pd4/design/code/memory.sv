@@ -52,28 +52,25 @@ module memory #(
   input logic [DWIDTH-1:0] data_i,
   input logic read_en_i,
   input logic write_en_i,
-  input logic [2:0] funct3_i,  // New input for access size
+  input logic [2:0] funct3_i,
   // outputs
   output logic [DWIDTH-1:0] data_o
 );
 
-    // Increase memory size - adjust multiplier as needed (2x, 4x, etc.)
-    localparam int MEM_BYTES = `LINE_COUNT * (DWIDTH/8) * 4;  // 4x larger
+    // Increase memory size significantly for stack operations
+    localparam int MEM_BYTES = `LINE_COUNT * (DWIDTH/8) * 256;  // Much larger (256x)
 
     logic [DWIDTH-1:0] temp_memory [0:`LINE_COUNT - 1];
-    // Byte-addressable memory
     logic [7:0] main_memory [0:MEM_BYTES - 1];
     logic [AWIDTH-1:0] address;
     assign address = addr_i - BASE_ADDR;
     int i;
  
     initial begin
-        // First, zero out the entire memory
         for (i = 0; i < MEM_BYTES; i++) begin
             main_memory[i] = 8'h00;
         end
         
-        // Then load the program into the beginning
         $readmemh(`MEM_PATH, temp_memory);
         for (i = 0; i < `LINE_COUNT; i++) begin
             main_memory[4*i]     = temp_memory[i][7:0];
@@ -91,7 +88,10 @@ module memory #(
     always_comb begin
         data_o = '0;
         if (read_en_i) begin
-            if ($isunknown(addr_i)) begin
+            // Ignore reads to address 0
+            if (addr_i == 32'h00000000) begin
+                data_o = '0;
+            end else if ($isunknown(addr_i)) begin
                 data_o = '0;
             end else if ((addr_i >= BASE_ADDR) && (addr_i < (BASE_ADDR + MEM_BYTES))) begin
                 // Check if the full access fits within bounds
@@ -131,7 +131,10 @@ module memory #(
     // Write logic with size support
     always_ff @(posedge clk) begin
         if (write_en_i) begin
-            if ((addr_i >= BASE_ADDR) && (addr_i < (BASE_ADDR + MEM_BYTES))) begin
+            // Silently ignore writes to address 0
+            if (addr_i == 32'h00000000) begin
+                // Do nothing - this is often used for initialization
+            end else if ((addr_i >= BASE_ADDR) && (addr_i < (BASE_ADDR + MEM_BYTES))) begin
                 if ((funct3_i == FUNCT3_SB) && (address < MEM_BYTES)) begin
                     main_memory[address] <= data_i[7:0];
                     $display("MEMORY: Wrote byte 0x%02h to 0x%08h", data_i[7:0], addr_i);
@@ -153,12 +156,12 @@ module memory #(
                     main_memory[address + 3] <= data_i[31:24];
                     $display("MEMORY: Wrote word 0x%08h to 0x%08h", data_i, addr_i);
                 end else begin
-                    $display("MEMORY: OOB write @0x%08h (size would exceed bounds)", addr_i);
-                end
-            end else begin
-                $display("MEMORY: OOB write @0x%08h", addr_i);
+                    $display("MEMORY: OOB write @0x%08h", addr_i);
+            end end
+        end end else begin
+    end         $display("MEMORY: OOB write @0x%08h", addr_i);
             end
-        end
+endmodule : memory
     end
  
 endmodule : memory
