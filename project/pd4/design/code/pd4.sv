@@ -107,15 +107,15 @@ module pd4 #(
   memory #(
       .AWIDTH(AWIDTH),
       .DWIDTH(DWIDTH),
-      .BASE_ADDR(32'h01000000)
+      .BASE_ADDR(32'h01000000)  // Instruction memory at 0x01000000
   ) imem (
       .clk(clk),
       .rst(reset),
       .addr_i(f_pc),
-      .data_i(32'h00000000),      // Not used for instruction memory
-      .read_en_i(1'b1),            // Always reading
-      .write_en_i(1'b0),           // Never writing to instruction memory
-      .funct3_i(FUNCT3_LW),        // Word access
+      .data_i(32'h00000000),
+      .read_en_i(1'b1),
+      .write_en_i(1'b0),
+      .funct3_i(FUNCT3_LW),
       .data_o(f_insn)
   );
 
@@ -207,7 +207,7 @@ module pd4 #(
   memory #(
       .AWIDTH(AWIDTH),
       .DWIDTH(DWIDTH),
-      .BASE_ADDR(32'h01000000)
+      .BASE_ADDR(32'h02000000)  // Data memory at 0x02000000
   ) dmem (
       .clk(clk),
       .rst(reset),
