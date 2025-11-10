@@ -72,7 +72,6 @@ module pd4 #(
   logic [DWIDTH-1:0] d_insn;
   logic [AWIDTH-1:0] next_pc;
   logic [DWIDTH-1:0] data_out;
-  logic pcsel_actual;
 
   // Control signals
   logic pcsel, immsel, regwren, rs1sel, rs2sel, memren, memwren;
@@ -86,9 +85,6 @@ module pd4 #(
   logic [DWIDTH-1:0] rf_rs1data_raw;
   logic [DWIDTH-1:0] rf_rs2data_raw;
 
-  // Determine if PC should be redirected (branch taken or unconditional jump)
-  assign pcsel_actual = (pcsel & e_br_taken) | (d_opcode == 7'b1101111) | (d_opcode == 7'b1100111);
-
   // Fetch stage with branch/jump support
   fetch #(
       .AWIDTH(AWIDTH),
@@ -97,7 +93,7 @@ module pd4 #(
   ) fetch_stage (
       .clk(clk),
       .rst(reset),
-      .pcsel_i(pcsel_actual),
+      .pcsel_i(pcsel),
       .pctarget_i(next_pc),
       .pc_o(f_pc),            
       .insn_o()
