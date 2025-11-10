@@ -114,12 +114,16 @@ module memory #(
                     // Default to word access for unknown funct3
                     data_o = {main_memory[address + 3], main_memory[address + 2], main_memory[address + 1], main_memory[address]};
                 end else begin
-                    data_o = 32'hDEAD_BEEF;
-                    $display("MEMORY: OOB read @0x%08h (mapped 0x%08h, size would exceed bounds)", addr_i, address);
+                    data_o = '0;  // Return zero for out-of-bounds access within valid address range
+                    $display("MEMORY ERROR: Access of size %0d bytes at 0x%08h would exceed memory bounds (last valid: 0x%08h)", 
+                             (funct3_i == FUNCT3_LB || funct3_i == FUNCT3_LBU) ? 1 : 
+                             (funct3_i == FUNCT3_LH || funct3_i == FUNCT3_LHU) ? 2 : 4,
+                             addr_i, BASE_ADDR + MEM_BYTES - 1);
                 end
             end else begin
-                data_o = 32'hDEAD_BEEF;
-                $display("MEMORY: OOB read @0x%08h (mapped 0x%08h)", addr_i, address);
+                data_o = '0;  // Return zero for completely out-of-bounds address
+                $display("MEMORY ERROR: Address 0x%08h is outside valid memory range [0x%08h - 0x%08h]", 
+                         addr_i, BASE_ADDR, BASE_ADDR + MEM_BYTES - 1);
             end
         end
     end
