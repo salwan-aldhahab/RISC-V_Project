@@ -157,11 +157,11 @@ module memory #(
                     $display("MEMORY: Wrote word 0x%08h to 0x%08h", data_i, addr_i);
                 end else begin
                     $display("MEMORY: OOB write @0x%08h", addr_i);
-            end end
-        end end else begin
-    end         $display("MEMORY: OOB write @0x%08h", addr_i);
+                end
+            end else begin
+                $display("MEMORY: OOB write @0x%08h", addr_i);
             end
-endmodule : memory
+        end
     end
  
 endmodule : memory
