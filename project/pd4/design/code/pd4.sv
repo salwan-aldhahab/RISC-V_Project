@@ -213,7 +213,7 @@ module pd4 #(
       .rst(reset),
       .addr_i(e_alu_res),
       .data_i(rf_rs2data_raw),
-      .read_en_i(memren),
+      .read_en_i(1'b1),
       .write_en_i(memwren),
       .funct3_i(d_funct3),
       .data_o(dmem_data_o)
