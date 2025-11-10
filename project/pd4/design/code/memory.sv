@@ -57,8 +57,8 @@ module memory #(
   output logic [DWIDTH-1:0] data_o
 );
 
-    // Increase memory size significantly for stack operations
-    localparam int MEM_BYTES = `LINE_COUNT * (DWIDTH/8) * 256;  // Much larger (256x)
+    // Increase memory size to 1MB to support full address range
+    localparam int MEM_BYTES = 1024 * 1024;  // 1MB total memory
 
     logic [DWIDTH-1:0] temp_memory [0:`LINE_COUNT - 1];
     logic [7:0] main_memory [0:MEM_BYTES - 1];
