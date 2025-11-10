@@ -201,6 +201,7 @@ module control #(
                 rs2sel_o = 1'b1;     // Don't need rs2
                 immsel_o = 1'b1;     // Use the immediate value
                 wbsel_o = 2'b00;     // Write back ALU result
+                memren_o = 1'b1;     // No memory read
                 alusel_o = ALU_LUI;  // Special LUI operation
             end
 
