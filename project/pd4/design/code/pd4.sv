@@ -86,6 +86,9 @@ module pd4 #(
   logic              mem_write_en;
   logic [2:0]        mem_funct3;
   logic [DWIDTH-1:0] mem_data_o;
+  
+  // Add a register for fetched instruction to break combinational loop
+  logic [DWIDTH-1:0] f_insn_reg;
 
   // Determine if PC should be redirected (branch taken or unconditional jump)
   assign pcsel_actual = (pcsel & e_br_taken) | (d_opcode == 7'b1101111) | (d_opcode == 7'b1100111);
@@ -223,8 +226,18 @@ module pd4 #(
       .data_o(mem_data_o)
   );
 
-  // Connect memory output to instruction fetch
-  assign f_insn = mem_read_en? mem_data_o : 32'h00000000;
+  // Register the fetched instruction to break the combinational loop
+  always_ff @(posedge clk) begin
+    if (reset) begin
+      f_insn_reg <= 32'h00000013; // NOP (addi x0, x0, 0)
+    end else if (!memren && !memwren) begin
+      // Only update instruction when not doing data memory access
+      f_insn_reg <= mem_data_o;
+    end
+  end
+
+  // Connect memory output to instruction fetch through register
+  assign f_insn = f_insn_reg;
 
   // Memory stage - connect to probes
   assign m_pc = e_pc;
