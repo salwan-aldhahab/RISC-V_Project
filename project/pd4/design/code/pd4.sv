@@ -89,7 +89,7 @@ module pd4 #(
   fetch #(
       .AWIDTH(AWIDTH),
       .DWIDTH(DWIDTH),
-      .BASEADDR(32'h01000000)
+      .BASEADDR(32'h40000000)
   ) fetch_stage (
       .clk(clk),
       .rst(reset),
