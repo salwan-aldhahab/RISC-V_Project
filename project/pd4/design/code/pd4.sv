@@ -207,7 +207,7 @@ module pd4 #(
   memory #(
       .AWIDTH(AWIDTH),
       .DWIDTH(DWIDTH),
-      .BASE_ADDR(32'h02000000)  // Changed to same base as instruction memory
+      .BASE_ADDR(32'h010ffffc)  // Changed to same base as instruction memory
   ) dmem (
       .clk(clk),
       .rst(reset),
