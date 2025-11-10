@@ -215,7 +215,7 @@ module pd4 #(
       .data_i(rf_rs2data_raw),
       .read_en_i(1'b1),
       .write_en_i(memwren),
-      .funct3_i(d_funct3),
+      .funct3_i(memwren ? d_funct3 : FUNCT3_LW),
       .data_o(dmem_data_o)
   );
 
