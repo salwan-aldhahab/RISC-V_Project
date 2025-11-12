@@ -110,7 +110,7 @@ module memory #(
                 data_o = '0;
             end else if ($isunknown(addr_i)) begin
                 data_o = '0;
-            end else if ((effective_addr >= BASE_ADDR) && (effective_addr < (BASE_ADDR + MEM_BYTES))) begin
+            end else if (address < MEM_BYTES) begin  // Changed from effective_addr check
                 // Check if the full access fits within bounds
                 if ((funct3_i == FUNCT3_LB || funct3_i == FUNCT3_LBU) && (address < MEM_BYTES)) begin
                     // Byte access
@@ -144,31 +144,31 @@ module memory #(
         if (write_en_i) begin
             if (addr_i == 32'h00000000) begin
                 // Do nothing
-            end else if ((effective_addr >= BASE_ADDR) && (effective_addr < (BASE_ADDR + MEM_BYTES))) begin
+            end else if (address < MEM_BYTES) begin  // Changed from effective_addr check
                 if ((funct3_i == FUNCT3_SB) && (address < MEM_BYTES)) begin
                     main_memory[address] <= data_i[7:0];
-                    $display("MEMORY: Wrote byte 0x%02h to 0x%08h", data_i[7:0], effective_addr);
+                    $display("MEMORY: Wrote byte 0x%02h to 0x%08h", data_i[7:0], addr_i);
                 end else if ((funct3_i == FUNCT3_SH) && (address + 1 < MEM_BYTES)) begin
                     main_memory[address] <= data_i[7:0];
                     main_memory[address + 1] <= data_i[15:8];
-                    $display("MEMORY: Wrote halfword 0x%04h to 0x%08h", data_i[15:0], effective_addr);
+                    $display("MEMORY: Wrote halfword 0x%04h to 0x%08h", data_i[15:0], addr_i);
                 end else if ((funct3_i == FUNCT3_SW) && (address + 3 < MEM_BYTES)) begin
                     main_memory[address] <= data_i[7:0];
                     main_memory[address + 1] <= data_i[15:8];
                     main_memory[address + 2] <= data_i[23:16];
                     main_memory[address + 3] <= data_i[31:24];
-                    $display("MEMORY: Wrote word 0x%08h to 0x%08h", data_i, effective_addr);
+                    $display("MEMORY: Wrote word 0x%08h to 0x%08h", data_i, addr_i);
                 end else if ((address + 3 < MEM_BYTES) && (funct3_i != FUNCT3_SB) && (funct3_i != FUNCT3_SH) && (funct3_i != FUNCT3_SW)) begin
                     main_memory[address] <= data_i[7:0];
                     main_memory[address + 1] <= data_i[15:8];
                     main_memory[address + 2] <= data_i[23:16];
                     main_memory[address + 3] <= data_i[31:24];
-                    $display("MEMORY: Wrote word 0x%08h to 0x%08h", data_i, effective_addr);
+                    $display("MEMORY: Wrote word 0x%08h to 0x%08h", data_i, addr_i);
                 end else begin
-                    $display("MEMORY: OOB write @0x%08h", effective_addr);
+                    $display("MEMORY: OOB write @0x%08h", addr_i);
                 end
             end else begin
-                $display("MEMORY: OOB write @0x%08h", effective_addr);
+                $display("MEMORY: OOB write @0x%08h", addr_i);
             end
         end
     end
