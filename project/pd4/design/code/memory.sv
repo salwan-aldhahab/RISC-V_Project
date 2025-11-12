@@ -65,11 +65,15 @@ module memory #(
     logic [AWIDTH-1:0] address;
     
     // Calculate offset into memory array
-    // Support both BASE_ADDR range and 0x40000000 range
+    // Support multiple address ranges
     always_comb begin
         if (addr_i >= 32'h40000000 && addr_i < 32'h40100000) begin
             // Map 0x40000000 - 0x400FFFFF range to start of memory
             address = addr_i - 32'h40000000;
+        end else if (addr_i >= 32'h3ff00000 && addr_i < 32'h40000000) begin
+            // Map stack pointer range (0x3ff00000 - 0x3fffffff) to memory
+            // This handles SP initialization near top of address space
+            address = addr_i - 32'h3ff00000;
         end else if (addr_i >= BASE_ADDR && addr_i < BASE_ADDR + MEM_BYTES) begin
             // Standard BASE_ADDR range (0x01000000 - 0x010FFFFF)
             address = addr_i - BASE_ADDR;
