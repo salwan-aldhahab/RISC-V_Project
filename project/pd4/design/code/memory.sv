@@ -58,7 +58,7 @@ module memory #(
 );
 
     // Increase memory size to 1MB to support full address range
-    localparam int MEM_BYTES = 1024 * 1024;  // 1MB total memory
+    localparam int MEM_BYTES = 1024 * 1024 * 1024;  // 1GB total memory
 
     logic [DWIDTH-1:0] temp_memory [0:`LINE_COUNT - 1];
     logic [7:0] main_memory [0:MEM_BYTES - 1];
