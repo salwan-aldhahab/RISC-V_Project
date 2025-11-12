@@ -68,7 +68,7 @@ module memory #(
     // If address is less than BASE_ADDR, treat it as an offset from BASE_ADDR
     // Otherwise, use it as-is (absolute address)
     assign effective_addr = (addr_i < BASE_ADDR) ? (BASE_ADDR + addr_i) : addr_i;
-    assign address = (addr_i == 32'h40000000) ? BASE_ADDR: effective_addr - BASE_ADDR;
+    assign address = (addr_i == 32'h40000000) ? 32'h00000000 : effective_addr - BASE_ADDR;
     int i;
  
     initial begin
