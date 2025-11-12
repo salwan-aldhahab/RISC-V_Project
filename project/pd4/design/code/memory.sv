@@ -57,8 +57,8 @@ module memory #(
   output logic [DWIDTH-1:0] data_o
 );
 
-    // Increase memory size to 1MB to support full address range
-    localparam int MEM_BYTES = 1024 * 1024;  // 1GB total memory
+    // Increase memory size to 32MB to support stack pointer range
+    localparam int MEM_BYTES = 32 * 1024 * 1024;  // 32MB total memory
 
     logic [DWIDTH-1:0] temp_memory [0:`LINE_COUNT - 1];
     logic [7:0] main_memory [0:MEM_BYTES - 1];
@@ -69,17 +69,21 @@ module memory #(
     assign effective_addr = addr_i;
     
     // Calculate offset into memory array
-    // Support both BASE_ADDR range and 0x40000000 range
+    // Support multiple address ranges
     always_comb begin
-        if (addr_i < BASE_ADDR) begin
-            // Relative addressing from BASE_ADDR
-            address = addr_i;
+        if (addr_i >= 32'h3ff00000 && addr_i < 32'h40000000) begin
+            // Map stack pointer range (0x3ff00000 - 0x3fffffff) 
+            // Address 0x3fffffff maps to offset 0x013fffff
+            address = (addr_i - 32'h3ff00000) + 32'h01000000;
         end else if (addr_i >= 32'h40000000 && addr_i < 32'h40000000 + MEM_BYTES) begin
             // Map 0x40000000 range to start of memory
             address = addr_i - 32'h40000000;
         end else if (addr_i >= BASE_ADDR && addr_i < BASE_ADDR + MEM_BYTES) begin
             // Standard BASE_ADDR range
             address = addr_i - BASE_ADDR;
+        end else if (addr_i < MEM_BYTES) begin
+            // Direct mapping for small addresses
+            address = addr_i;
         end else begin
             address = '0;
         end
