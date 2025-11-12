@@ -63,25 +63,24 @@ module memory #(
     logic [DWIDTH-1:0] temp_memory [0:`LINE_COUNT - 1];
     logic [7:0] main_memory [0:MEM_BYTES - 1];
     logic [AWIDTH-1:0] address;
+    logic [AWIDTH-1:0] effective_addr;  // Add this declaration
+    
+    // Compute effective address
+    assign effective_addr = addr_i;
     
     // Calculate offset into memory array
-    // Support multiple address ranges
+    // Support both BASE_ADDR range and 0x40000000 range
     always_comb begin
-        if (addr_i >= 32'h40000000 && addr_i < 32'h40100000) begin
-            // Map 0x40000000 - 0x400FFFFF range to start of memory
-            address = addr_i - 32'h40000000;
-        end else if (addr_i >= 32'h3ff00000 && addr_i < 32'h40000000) begin
-            // Map stack pointer range (0x3ff00000 - 0x3fffffff) to memory
-            // This handles SP initialization near top of address space
-            address = addr_i - 32'h3ff00000;
-        end else if (addr_i >= BASE_ADDR && addr_i < BASE_ADDR + MEM_BYTES) begin
-            // Standard BASE_ADDR range (0x01000000 - 0x010FFFFF)
-            address = addr_i - BASE_ADDR;
-        end else if (addr_i < 32'h01000000 && addr_i < MEM_BYTES) begin
-            // Small addresses treated as offsets
+        if (addr_i < BASE_ADDR) begin
+            // Relative addressing from BASE_ADDR
             address = addr_i;
+        end else if (addr_i >= 32'h40000000 && addr_i < 32'h40000000 + MEM_BYTES) begin
+            // Map 0x40000000 range to start of memory
+            address = addr_i - 32'h40000000;
+        end else if (addr_i >= BASE_ADDR && addr_i < BASE_ADDR + MEM_BYTES) begin
+            // Standard BASE_ADDR range
+            address = addr_i - BASE_ADDR;
         end else begin
-            // Out of bounds
             address = '0;
         end
     end
