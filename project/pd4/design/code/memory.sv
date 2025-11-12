@@ -67,16 +67,17 @@ module memory #(
     // Calculate offset into memory array
     // Support both BASE_ADDR range and 0x40000000 range
     always_comb begin
-        if (addr_i < BASE_ADDR) begin
-            // Relative addressing from BASE_ADDR
-            address = addr_i;
-        end else if (addr_i >= 32'h40000000 && addr_i < 32'h40000000 + MEM_BYTES) begin
-            // Map 0x40000000 range to start of memory
+        if (addr_i >= 32'h40000000 && addr_i < 32'h40100000) begin
+            // Map 0x40000000 - 0x400FFFFF range to start of memory
             address = addr_i - 32'h40000000;
         end else if (addr_i >= BASE_ADDR && addr_i < BASE_ADDR + MEM_BYTES) begin
-            // Standard BASE_ADDR range
+            // Standard BASE_ADDR range (0x01000000 - 0x010FFFFF)
             address = addr_i - BASE_ADDR;
+        end else if (addr_i < 32'h01000000 && addr_i < MEM_BYTES) begin
+            // Small addresses treated as offsets
+            address = addr_i;
         end else begin
+            // Out of bounds
             address = '0;
         end
     end
