@@ -63,12 +63,24 @@ module memory #(
     logic [DWIDTH-1:0] temp_memory [0:`LINE_COUNT - 1];
     logic [7:0] main_memory [0:MEM_BYTES - 1];
     logic [AWIDTH-1:0] address;
-    logic [AWIDTH-1:0] effective_addr;
     
-    // If address is less than BASE_ADDR, treat it as an offset from BASE_ADDR
-    // Otherwise, use it as-is (absolute address)
-    assign effective_addr = (addr_i < BASE_ADDR) ? (BASE_ADDR + addr_i) : addr_i;
-    assign address = (addr_i == 32'h40000000) ? 32'h00000000 : effective_addr - BASE_ADDR;
+    // Calculate offset into memory array
+    // Support both BASE_ADDR range and 0x40000000 range
+    always_comb begin
+        if (addr_i < BASE_ADDR) begin
+            // Relative addressing from BASE_ADDR
+            address = addr_i;
+        end else if (addr_i >= 32'h40000000 && addr_i < 32'h40000000 + MEM_BYTES) begin
+            // Map 0x40000000 range to start of memory
+            address = addr_i - 32'h40000000;
+        end else if (addr_i >= BASE_ADDR && addr_i < BASE_ADDR + MEM_BYTES) begin
+            // Standard BASE_ADDR range
+            address = addr_i - BASE_ADDR;
+        end else begin
+            address = '0;
+        end
+    end
+    
     int i;
  
     initial begin
