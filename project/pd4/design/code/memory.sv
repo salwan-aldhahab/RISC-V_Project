@@ -63,25 +63,30 @@ module memory #(
     logic [DWIDTH-1:0] temp_memory [0:`LINE_COUNT - 1];
     logic [7:0] main_memory [0:MEM_BYTES - 1];
     logic [AWIDTH-1:0] address;
+    logic address_valid;
     
     // Calculate offset into memory array
     // Support multiple address ranges
     always_comb begin
-        if (addr_i >= 32'h40000000 && addr_i < 32'h40100000) begin
+        address_valid = 1'b1;
+        
+        if (addr_i >= 32'h40000000 && addr_i < (32'h40000000 + MEM_BYTES)) begin
             // Map 0x40000000 - 0x400FFFFF range to start of memory
             address = addr_i - 32'h40000000;
         end else if (addr_i >= 32'h3ff00000 && addr_i < 32'h40000000) begin
             // Map stack pointer range (0x3ff00000 - 0x3fffffff) to memory
-            // This handles SP initialization near top of address space
-            address = addr_i - 32'h3ff00000;
-        end else if (addr_i >= BASE_ADDR && addr_i < BASE_ADDR + MEM_BYTES) begin
+            // Map to high portion of memory to avoid conflicts
+            address = (addr_i - 32'h3ff00000) + (MEM_BYTES / 2);
+            if (address >= MEM_BYTES) begin
+                address_valid = 1'b0;
+                address = '0;
+            end
+        end else if (addr_i >= BASE_ADDR && addr_i < (BASE_ADDR + MEM_BYTES)) begin
             // Standard BASE_ADDR range (0x01000000 - 0x010FFFFF)
             address = addr_i - BASE_ADDR;
-        end else if (addr_i < 32'h01000000 && addr_i < MEM_BYTES) begin
-            // Small addresses treated as offsets
-            address = addr_i;
         end else begin
-            // Out of bounds
+            // Out of bounds - mark as invalid
+            address_valid = 1'b0;
             address = '0;
         end
     end
@@ -109,13 +114,13 @@ module memory #(
     // Read logic with size and sign extension support
     always_comb begin
         data_o = '0;
-        if (read_en_i) begin
+        if (read_en_i && address_valid) begin
             // Ignore reads to address 0
             if (addr_i == 32'h00000000) begin
                 data_o = '0;
             end else if ($isunknown(addr_i)) begin
                 data_o = '0;
-            end else if (address < MEM_BYTES) begin  // Changed from effective_addr check
+            end else if (address < MEM_BYTES) begin
                 // Check if the full access fits within bounds
                 if ((funct3_i == FUNCT3_LB || funct3_i == FUNCT3_LBU) && (address < MEM_BYTES)) begin
                     // Byte access
@@ -135,21 +140,17 @@ module memory #(
                 end else if ((address + 3 < MEM_BYTES) && (funct3_i != FUNCT3_LB) && (funct3_i != FUNCT3_LBU) && (funct3_i != FUNCT3_LH) && (funct3_i != FUNCT3_LHU) && (funct3_i != FUNCT3_LW)) begin
                     // Default to word access for unknown funct3
                     data_o = {main_memory[address + 3], main_memory[address + 2], main_memory[address + 1], main_memory[address]};
-                end else begin
-                    data_o = '0;
                 end
-            end else begin
-                data_o = '0;
             end
         end
     end
     
     // Write logic with size support
     always_ff @(posedge clk) begin
-        if (write_en_i) begin
+        if (write_en_i && address_valid) begin
             if (addr_i == 32'h00000000) begin
                 // Do nothing
-            end else if (address < MEM_BYTES) begin  // Changed from effective_addr check
+            end else if (address < MEM_BYTES) begin
                 if ((funct3_i == FUNCT3_SB) && (address < MEM_BYTES)) begin
                     main_memory[address] <= data_i[7:0];
                     $display("MEMORY: Wrote byte 0x%02h to 0x%08h", data_i[7:0], addr_i);
@@ -170,11 +171,13 @@ module memory #(
                     main_memory[address + 3] <= data_i[31:24];
                     $display("MEMORY: Wrote word 0x%08h to 0x%08h", data_i, addr_i);
                 end else begin
-                    $display("MEMORY: OOB write @0x%08h", addr_i);
+                    $display("MEMORY: OOB write @0x%08h (offset: 0x%08h)", addr_i, address);
                 end
             end else begin
-                $display("MEMORY: OOB write @0x%08h", addr_i);
+                $display("MEMORY: OOB write @0x%08h (offset: 0x%08h)", addr_i, address);
             end
+        end else if (write_en_i && !address_valid) begin
+            $display("MEMORY: Invalid address write @0x%08h", addr_i);
         end
     end
  
