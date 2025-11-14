@@ -73,19 +73,19 @@ module pd4 #(
   logic [AWIDTH-1:0] next_pc;
   logic [DWIDTH-1:0] data_out;
 
-  // Control signals
+  // Control signals that determine datapath behavior
   logic pcsel, immsel, regwren, rs1sel, rs2sel, memren, memwren;
   logic [1:0] wbsel;
   logic [3:0] alusel;
 
-  // Data memory signals
+  // Data coming back from memory reads
   logic [DWIDTH-1:0] dmem_data_o;
 
-  // Temporary signals for actual register file outputs
+  // Raw outputs from the register file before any forwarding
   logic [DWIDTH-1:0] rf_rs1data_raw;
   logic [DWIDTH-1:0] rf_rs2data_raw;
 
-  // Fetch stage with branch/jump support
+  // Fetch stage - grabs instructions from memory
   fetch #(
       .AWIDTH(AWIDTH),
       .DWIDTH(DWIDTH),
@@ -99,11 +99,11 @@ module pd4 #(
       .insn_o()
   );
 
-  // INSTRUCTION MEMORY - Read-only memory for instruction fetch
+  // Instruction memory - stores the program we're running
   memory #(
       .AWIDTH(AWIDTH),
       .DWIDTH(DWIDTH),
-      .BASE_ADDR(32'h01000000)  // Instruction memory at 0x01000000
+      .BASE_ADDR(32'h01000000)
   ) imem (
       .clk(clk),
       .rst(reset),
@@ -115,7 +115,7 @@ module pd4 #(
       .data_o(f_insn)
   );
 
-  // Decode stage
+  // Decode stage - breaks instructions into their components
   decode #( 
       .AWIDTH(AWIDTH), 
       .DWIDTH(DWIDTH) 
@@ -136,7 +136,7 @@ module pd4 #(
       .shamt_o(d_shamt)
   );
 
-  // Control unit
+  // Control unit - figures out what each instruction needs to do
   control #( 
       .DWIDTH(DWIDTH) 
   ) control_unit (
@@ -155,12 +155,11 @@ module pd4 #(
       .alusel_o(alusel)
   );
 
-  // Register File - connect to probes
-  // Read addresses come from decode stage
+  // Read addresses tell us which registers to look at
   assign r_read_rs1 = d_rs1;
   assign r_read_rs2 = d_rs2;
-  // Write signals come from writeback stage
-  assign r_write_enable = regwren & (d_rd != 5'b00000);
+  // Write signals control updating registers with new values
+  assign r_write_enable = regwren;
   assign r_write_destination = d_rd;
 
   register_file #( 
@@ -177,10 +176,10 @@ module pd4 #(
       .rs2data_o(rf_rs2data_raw)
   );
 
-  // Execute stage - connect to probes
+  // Execute stage - where the actual computation happens
   assign e_pc = d_pc;
 
-  // Update probe signals directly from register file
+  // Connect register outputs directly to the probe signals
   assign r_read_rs1_data = rf_rs1data_raw;
   assign r_read_rs2_data = rf_rs2data_raw;
 
@@ -199,11 +198,11 @@ module pd4 #(
       .brtaken_o(e_br_taken)
   );
 
-  // DATA MEMORY - Same address range as instruction memory
+  // Data memory - where we read and write program data
   memory #(
       .AWIDTH(AWIDTH),
       .DWIDTH(DWIDTH),
-      .BASE_ADDR(32'h01000000)  // Changed to same base as instruction memory
+      .BASE_ADDR(32'h01000000)
   ) dmem (
       .clk(clk),
       .rst(reset),
@@ -215,20 +214,20 @@ module pd4 #(
       .data_o(dmem_data_o)
   );
 
-  // Memory stage - connect to probes
+  // Memory stage - handles results from memory operations
   assign m_pc = e_pc;
   assign m_address = e_alu_res;
   assign m_size_encoded = d_funct3[1:0];
   
-  // For memory stage probe - show data output from memory
+  // Show what data we got from memory
   assign m_data = dmem_data_o;
 
-  // Writeback stage - connect to probes
+  // Writeback stage - final step where results go back to registers
   assign w_pc = e_pc;
   assign w_enable = regwren;
   assign w_destination = d_rd;
   
-  // Writeback stage using writeback module
+  // Writeback logic that decides what value to write back
   writeback #(
       .DWIDTH(DWIDTH),
       .AWIDTH(AWIDTH)
@@ -242,13 +241,13 @@ module pd4 #(
       .next_pc_o(next_pc)
   );
 
-  // Connect writeback data to register file
+  // Send the writeback result to the register file
   assign r_write_data = w_data;
 
-  // Make data_out available for program termination logic
+  // Used to detect when the program should end
   assign data_out = d_insn;
 
-  // program termination logic
+  // Check if the program has finished running
   reg is_program = 0;
   always_ff @(posedge clk) begin
       if (data_out == 32'h00000073) $finish;
