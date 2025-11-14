@@ -99,26 +99,36 @@ module memory #(
                 data_o = '0;
             end else begin
                 // Fetch bytes with wrap-around
-                logic [7:0] b0, b1, b2, b3;
-                b0 = main_memory[address % MEM_BYTES];
-                b1 = main_memory[(address + 1) % MEM_BYTES];
-                b2 = main_memory[(address + 2) % MEM_BYTES];
-                b3 = main_memory[(address + 3) % MEM_BYTES];
+                logic [7:0] byte0, byte1, byte2, byte3;
+                byte0 = main_memory[address % MEM_BYTES];
+                byte1 = main_memory[(address + 1) % MEM_BYTES];
+                byte2 = main_memory[(address + 2) % MEM_BYTES];
+                byte3 = main_memory[(address + 3) % MEM_BYTES];
 
                 case (funct3_i)
                     // LB / LBU: byte
-                    FUNCT3_LB:  data_o = {{24{b0[7]}}, b0};          // sign-extend
-                    FUNCT3_LBU: data_o = {24'b0, b0};                // zero-extend
+                    FUNCT3_LB:  begin
+                        data_o = {{24{byte0[7]}}, byte0};          // sign-extend
+                    end
+                    FUNCT3_LBU: begin
+                        data_o = {24'byte0, byte0};                // zero-extend
+                    end
 
-                    // LH / LHU: halfword (b1 is high byte)
-                    FUNCT3_LH:  data_o = {{16{b1[7]}}, b1, b0};      // sign-extend
-                    FUNCT3_LHU: data_o = {16'b0, b1, b0};            // zero-extend
+                    // LH / LHU: halfword (byte1 is high byte)
+                    FUNCT3_LH:  begin
+                        data_o = {{16{byte1[7]}}, byte1, byte0};      // sign-extend
+                    end
+                    FUNCT3_LHU: begin
+                        data_o = {16'byte0, byte1, byte0};            // zero-extend
+                    end
 
                     // LW: word
-                    FUNCT3_LW:  data_o = {b3, b2, b1, b0};
+                    FUNCT3_LW:  begin
+                        data_o = {byte3, byte2, byte1, byte0};
+                    end
 
                     // Default: treat as word load
-                    default:    data_o = {b3, b2, b1, b0};
+                    default:    data_o = {byte3, byte2, byte1, byte0};
                 endcase
             end
         end
@@ -130,7 +140,7 @@ module memory #(
     always_ff @(posedge clk) begin
         if (write_en_i) begin
             if (addr_i == 32'h00000000) begin
-                // Ignore writes to address 0 as in your original code
+                // Ignore writes to address 0
             end else begin
                 case (funct3_i)
                     // SB: store byte
