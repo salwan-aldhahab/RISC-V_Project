@@ -85,8 +85,8 @@ module memory_tb;
             funct3_i = funct3;
             write_en_i = 0;
             read_en_i = 1;
-            @(posedge clk);
-            read_en_i = 0;
+            #1; // Wait for combinational logic to settle
+            // Keep read_en_i asserted while data is valid
         end
     endtask
 
@@ -100,41 +100,41 @@ module memory_tb;
         $display("\n--- Test 1: Word Write/Read ---");
         write_to_memory(BASE_ADDR, 32'hDEADBEEF, FUNCT3_SW);
         read_from_memory(BASE_ADDR, FUNCT3_LW);
-        #1; // Wait for combinational logic
         $display("Expected: 0xDEADBEEF, Got: 0x%08h", data_o);
         assert(data_o == 32'hDEADBEEF) else $error("Word read mismatch!");
+        read_en_i = 0; // Deassert after checking
 
         // Test 2: Halfword write and read
         $display("\n--- Test 2: Halfword Write/Read ---");
         write_to_memory(BASE_ADDR + 4, 32'h0000A5A5, FUNCT3_SH);
         read_from_memory(BASE_ADDR + 4, FUNCT3_LHU);
-        #1;
         $display("Expected: 0x0000A5A5, Got: 0x%08h", data_o);
         assert(data_o == 32'h0000A5A5) else $error("Halfword unsigned read mismatch!");
+        read_en_i = 0;
 
         // Test 3: Signed halfword read
         $display("\n--- Test 3: Signed Halfword Read ---");
         write_to_memory(BASE_ADDR + 8, 32'h0000FFFF, FUNCT3_SH);
         read_from_memory(BASE_ADDR + 8, FUNCT3_LH);
-        #1;
         $display("Expected: 0xFFFFFFFF, Got: 0x%08h", data_o);
         assert(data_o == 32'hFFFFFFFF) else $error("Signed halfword read mismatch!");
+        read_en_i = 0;
 
         // Test 4: Byte write and read
         $display("\n--- Test 4: Byte Write/Read ---");
         write_to_memory(BASE_ADDR + 12, 32'h000000AB, FUNCT3_SB);
         read_from_memory(BASE_ADDR + 12, FUNCT3_LBU);
-        #1;
         $display("Expected: 0x000000AB, Got: 0x%08h", data_o);
         assert(data_o == 32'h000000AB) else $error("Byte unsigned read mismatch!");
+        read_en_i = 0;
 
         // Test 5: Signed byte read
         $display("\n--- Test 5: Signed Byte Read ---");
         write_to_memory(BASE_ADDR + 16, 32'h000000FF, FUNCT3_SB);
         read_from_memory(BASE_ADDR + 16, FUNCT3_LB);
-        #1;
         $display("Expected: 0xFFFFFFFF, Got: 0x%08h", data_o);
         assert(data_o == 32'hFFFFFFFF) else $error("Signed byte read mismatch!");
+        read_en_i = 0;
 
         // Test 6: Multiple word writes
         $display("\n--- Test 6: Sequential Word Writes ---");
@@ -143,23 +143,23 @@ module memory_tb;
         write_to_memory(BASE_ADDR + 28, 32'hFEDCBA98, FUNCT3_SW);
         
         read_from_memory(BASE_ADDR + 20, FUNCT3_LW);
-        #1;
         $display("Address +20: Expected: 0x12345678, Got: 0x%08h", data_o);
+        read_en_i = 0;
         
         read_from_memory(BASE_ADDR + 24, FUNCT3_LW);
-        #1;
         $display("Address +24: Expected: 0x9ABCDEF0, Got: 0x%08h", data_o);
+        read_en_i = 0;
         
         read_from_memory(BASE_ADDR + 28, FUNCT3_LW);
-        #1;
         $display("Address +28: Expected: 0xFEDCBA98, Got: 0x%08h", data_o);
+        read_en_i = 0;
 
         // Test 7: Address wrapping test
         $display("\n--- Test 7: Address Wrapping ---");
         write_to_memory(32'h00000100, 32'hAAAAAAAA, FUNCT3_SW);
         read_from_memory(32'h00000100, FUNCT3_LW);
-        #1;
         $display("Low address write/read: 0x%08h", data_o);
+        read_en_i = 0;
 
         // Finish simulation
         #20;
