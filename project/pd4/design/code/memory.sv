@@ -111,7 +111,7 @@ module memory #(
                         data_o = {{24{byte0[7]}}, byte0};          // sign-extend
                     end
                     FUNCT3_LBU: begin
-                        data_o = {24'byte0, byte0};                // zero-extend
+                        data_o = {24'b0, byte0};                   // zero-extend
                     end
 
                     // LH / LHU: halfword (byte1 is high byte)
@@ -119,7 +119,7 @@ module memory #(
                         data_o = {{16{byte1[7]}}, byte1, byte0};      // sign-extend
                     end
                     FUNCT3_LHU: begin
-                        data_o = {16'byte0, byte1, byte0};            // zero-extend
+                        data_o = {16'b0, byte1, byte0};               // zero-extend
                     end
 
                     // LW: word
