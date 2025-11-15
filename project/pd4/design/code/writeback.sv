@@ -33,30 +33,30 @@
      * student below...
      */
     
-    // Write-back data selection logic
+    // Select which data to write back to the register file
     always_comb begin
         case (wbsel_i)
             2'b00: begin
-                writeback_data_o = alu_res_i;          // From ALU
+                writeback_data_o = alu_res_i;          // Use the result from the ALU
             end
             2'b01: begin
-                writeback_data_o = memory_data_i;     // From Memory
+                writeback_data_o = memory_data_i;     // Use data loaded from memory
             end
             2'b10: begin
-                writeback_data_o = pc_i + 4;          // From PC + 4
+                writeback_data_o = pc_i + 4;          // Use the return address (PC + 4) for jumps
             end
             default: begin
-                writeback_data_o = '0;               // Default case
+                writeback_data_o = '0;               // If something goes wrong, write zero
             end
         endcase
     end
 
-    // Next PC computation logic
+    // Figure out where the program should go next
     always_comb begin
         if (brtaken_i || wbsel_i == 2'b10) begin
-            next_pc_o = alu_res_i;  // Branch taken, next PC from ALU result
+            next_pc_o = alu_res_i;  // We're branching or jumping, so use the target address from the ALU
         end else begin
-            next_pc_o = pc_i + 4;   // Sequential execution, next PC is PC + 4
+            next_pc_o = pc_i + 4;   // Normal operation: just move to the next instruction
         end
     end
 
