@@ -1,12 +1,9 @@
-`timescale 1ns/1ps
-`include "constants.svh"
-
 module writeback_tb;
   // Parameters
   parameter int DWIDTH = 32;
   parameter int AWIDTH = 32;
 
-  // Local encodings for wbsel (match your RTL intent)
+  // Local encodings for wbsel
   localparam logic [1:0] WBSEL_ALU  = 2'b00;
   localparam logic [1:0] WBSEL_MEM  = 2'b01;
   localparam logic [1:0] WBSEL_PC4  = 2'b10;
