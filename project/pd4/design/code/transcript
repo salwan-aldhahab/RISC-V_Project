@@ -1,0 +1,120 @@
+vlog -sv -suppress 7061 "+define+MEM_DEPTH=1024" "+define+LINE_COUNT=127" "+define+MEM_PATH=\"mem_init.hex\"" constants.svh memory.sv memory_tb.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 17:09:03 on Nov 14,2025
+# vlog -reportprogress 300 -sv -suppress 7061 "+define+MEM_DEPTH=1024" "+define+LINE_COUNT=127" "+define+MEM_PATH="mem_init.hex"" constants.svh memory.sv memory_tb.sv 
+# -- Compiling package constants_svh_unit
+# -- Compiling package memory_sv_unit
+# -- Compiling module memory
+# -- Compiling package memory_tb_sv_unit
+# -- Compiling module memory_tb
+# 
+# Top level modules:
+# 	memory_tb
+# End time: 17:09:03 on Nov 14,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0, Suppressed Errors: 11
+vsim work.memory_tb
+# vsim work.memory_tb 
+# Start time: 17:09:21 on Nov 14,2025
+# Loading sv_std.std
+# Loading work.memory_tb_sv_unit
+# Loading work.memory_tb
+# Loading work.memory_sv_unit
+# Loading work.memory
+run -all
+# MEMORY: Loaded 127 32-bit words from mem_init.hex
+# MEMORY: Total memory size: 1024 bytes (1 KB)
+# MEMORY: Program size: 508 bytes, Remaining: 516 bytes
+# === Memory Testbench Started ===
+# 
+# --- Test 1: Word Write/Read ---
+# MEMORY: Wrote word 0xdeadbeef to 0x01000000
+# Expected: 0xDEADBEEF, Got: 0xdeadbeef
+# 
+# --- Test 2: Halfword Write/Read ---
+# MEMORY: Wrote halfword 0xa5a5 to 0x01000004
+# Expected: 0x0000A5A5, Got: 0x0000a5a5
+# 
+# --- Test 3: Signed Halfword Read ---
+# MEMORY: Wrote halfword 0xffff to 0x01000008
+# Expected: 0xFFFFFFFF, Got: 0xffffffff
+# 
+# --- Test 4: Byte Write/Read ---
+# MEMORY: Wrote byte 0xab to 0x0100000c
+# Expected: 0x000000AB, Got: 0x000000ab
+# 
+# --- Test 5: Signed Byte Read ---
+# MEMORY: Wrote byte 0xff to 0x01000010
+# Expected: 0xFFFFFFFF, Got: 0xffffffff
+# 
+# --- Test 6: Sequential Word Writes ---
+# MEMORY: Wrote word 0x12345678 to 0x01000014
+# MEMORY: Wrote word 0x9abcdef0 to 0x01000018
+# MEMORY: Wrote word 0xfedcba98 to 0x0100001c
+# Address +20: Expected: 0x12345678, Got: 0x12345678
+# Address +24: Expected: 0x9ABCDEF0, Got: 0x9abcdef0
+# Address +28: Expected: 0xFEDCBA98, Got: 0xfedcba98
+# 
+# --- Test 7: Address Wrapping ---
+# MEMORY: Wrote word 0xaaaaaaaa to 0x00000100
+# Low address write/read: 0xaaaaaaaa
+# 
+# === Memory Testbench Completed ===
+# ** Note: $finish    : memory_tb.sv(167)
+#    Time: 316 ps  Iteration: 0  Instance: /memory_tb
+# 1
+# Break in Module memory_tb at memory_tb.sv line 167
+vsim work.memory_tb
+# End time: 17:28:24 on Nov 14,2025, Elapsed time: 0:19:03
+# Errors: 0, Warnings: 0
+# vsim work.memory_tb 
+# Start time: 17:28:24 on Nov 14,2025
+# Loading sv_std.std
+# Loading work.memory_tb_sv_unit
+# Loading work.memory_tb
+# Loading work.memory_sv_unit
+# Loading work.memory
+add wave sim:/memory_tb/*
+# Load canceled
+run -all
+# MEMORY: Loaded 127 32-bit words from mem_init.hex
+# MEMORY: Total memory size: 1024 bytes (1 KB)
+# MEMORY: Program size: 508 bytes, Remaining: 516 bytes
+# === Memory Testbench Started ===
+# 
+# --- Test 1: Word Write/Read ---
+# MEMORY: Wrote word 0xdeadbeef to 0x01000000
+# Expected: 0xDEADBEEF, Got: 0xdeadbeef
+# 
+# --- Test 2: Halfword Write/Read ---
+# MEMORY: Wrote halfword 0xa5a5 to 0x01000004
+# Expected: 0x0000A5A5, Got: 0x0000a5a5
+# 
+# --- Test 3: Signed Halfword Read ---
+# MEMORY: Wrote halfword 0xffff to 0x01000008
+# Expected: 0xFFFFFFFF, Got: 0xffffffff
+# 
+# --- Test 4: Byte Write/Read ---
+# MEMORY: Wrote byte 0xab to 0x0100000c
+# Expected: 0x000000AB, Got: 0x000000ab
+# 
+# --- Test 5: Signed Byte Read ---
+# MEMORY: Wrote byte 0xff to 0x01000010
+# Expected: 0xFFFFFFFF, Got: 0xffffffff
+# 
+# --- Test 6: Sequential Word Writes ---
+# MEMORY: Wrote word 0x12345678 to 0x01000014
+# MEMORY: Wrote word 0x9abcdef0 to 0x01000018
+# MEMORY: Wrote word 0xfedcba98 to 0x0100001c
+# Address +20: Expected: 0x12345678, Got: 0x12345678
+# Address +24: Expected: 0x9ABCDEF0, Got: 0x9abcdef0
+# Address +28: Expected: 0xFEDCBA98, Got: 0xfedcba98
+# 
+# --- Test 7: Address Wrapping ---
+# MEMORY: Wrote word 0xaaaaaaaa to 0x00000100
+# Low address write/read: 0xaaaaaaaa
+# 
+# === Memory Testbench Completed ===
+# ** Note: $finish    : memory_tb.sv(167)
+#    Time: 316 ps  Iteration: 0  Instance: /memory_tb
+# 1
+# Break in Module memory_tb at memory_tb.sv line 167

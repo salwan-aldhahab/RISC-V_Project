@@ -1,0 +1,83 @@
+# vsim -suppress 3839 -c -do "/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/verif/scripts/run.macro" /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.top 
+# Start time: 16:30:01 on Nov 14,2025
+# Loading sv_std.std
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.top
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.clockgen
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.design_wrapper
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.pd4_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.pd4
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.fetch
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.memory_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.memory
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.decode_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.decode
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.igen_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.igen
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.control_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.control
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.register_file_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.register_file
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.execute_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.alu
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.branch_control_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.branch_control
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/work.writeback
+# do /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/verif/scripts/run.macro
+# MEMORY: Loaded 62 32-bit words from /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/verif/data/test3.x
+# MEMORY: Total memory size: 1048576 bytes (1024 KB)
+# MEMORY: Program size: 248 bytes, Remaining: 1048328 bytes
+# MEMORY: Loaded 62 32-bit words from /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/verif/data/test3.x
+# MEMORY: Total memory size: 1048576 bytes (1024 KB)
+# MEMORY: Program size: 248 bytes, Remaining: 1048328 bytes
+# MEMORY: Wrote word 0x00000000 to 0x010ffffc
+# MEMORY: Wrote word 0x00000000 to 0x010fffec
+# MEMORY: Wrote word 0x00000000 to 0x010fffe8
+# MEMORY: Wrote word 0x00000000 to 0x010fffec
+# MEMORY: Wrote word 0x00000000 to 0x010fffc0
+# MEMORY: Wrote word 0x00000001 to 0x010fffec
+# MEMORY: Wrote word 0x00000001 to 0x010fffc4
+# MEMORY: Wrote word 0x00000002 to 0x010fffec
+# MEMORY: Wrote word 0x00000002 to 0x010fffc8
+# MEMORY: Wrote word 0x00000003 to 0x010fffec
+# MEMORY: Wrote word 0x00000003 to 0x010fffcc
+# MEMORY: Wrote word 0x00000004 to 0x010fffec
+# MEMORY: Wrote word 0x00000004 to 0x010fffd0
+# MEMORY: Wrote word 0x00000005 to 0x010fffec
+# MEMORY: Wrote word 0x00000005 to 0x010fffd4
+# MEMORY: Wrote word 0x00000006 to 0x010fffec
+# MEMORY: Wrote word 0x00000006 to 0x010fffd8
+# MEMORY: Wrote word 0x00000007 to 0x010fffec
+# MEMORY: Wrote word 0x00000007 to 0x010fffdc
+# MEMORY: Wrote word 0x00000008 to 0x010fffec
+# MEMORY: Wrote word 0x00000008 to 0x010fffe0
+# MEMORY: Wrote word 0x00000009 to 0x010fffec
+# MEMORY: Wrote word 0x00000009 to 0x010fffe4
+# MEMORY: Wrote word 0x0000000a to 0x010fffec
+# MEMORY: Wrote word 0x00000000 to 0x010fffec
+# MEMORY: Wrote word 0x00000000 to 0x010fffe8
+# MEMORY: Wrote word 0x00000001 to 0x010fffec
+# MEMORY: Wrote word 0x00000001 to 0x010fffe8
+# MEMORY: Wrote word 0x00000002 to 0x010fffec
+# MEMORY: Wrote word 0x00000003 to 0x010fffe8
+# MEMORY: Wrote word 0x00000003 to 0x010fffec
+# MEMORY: Wrote word 0x00000006 to 0x010fffe8
+# MEMORY: Wrote word 0x00000004 to 0x010fffec
+# MEMORY: Wrote word 0x0000000a to 0x010fffe8
+# MEMORY: Wrote word 0x00000005 to 0x010fffec
+# MEMORY: Wrote word 0x0000000f to 0x010fffe8
+# MEMORY: Wrote word 0x00000006 to 0x010fffec
+# MEMORY: Wrote word 0x00000015 to 0x010fffe8
+# MEMORY: Wrote word 0x00000007 to 0x010fffec
+# MEMORY: Wrote word 0x0000001c to 0x010fffe8
+# MEMORY: Wrote word 0x00000008 to 0x010fffec
+# MEMORY: Wrote word 0x00000024 to 0x010fffe8
+# MEMORY: Wrote word 0x00000009 to 0x010fffec
+# MEMORY: Wrote word 0x0000002d to 0x010fffe8
+# MEMORY: Wrote word 0x0000000a to 0x010fffec
+# MEMORY: Wrote word 0x01000090 to 0x010fffbc
+# MEMORY: Wrote word 0x0000002d to 0x010fffac
+# Check passed
+# ** Note: $finish    : /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/verif/tests/pattern_check.h(48)
+#    Time: 604 ps  Iteration: 1  Region: /top/genblk3
+# End time: 16:30:03 on Nov 14,2025, Elapsed time: 0:00:02
+# Errors: 0, Warnings: 0

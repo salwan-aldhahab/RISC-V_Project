@@ -1,0 +1,145 @@
+m255
+K4
+z2
+!s11f vlog 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/cs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd4/design/code
+Xconstants_svh_unit
+Z1 DXx6 sv_std 3 std 0 22 VYECXdT12H8WgbUP_5Y6:3
+Z2 !s110 1763158143
+V410778QcMEY2[l=lzH??<2
+r1
+!s85 0
+!i10b 1
+!s100 ^DENhia92Y=^5YPcbna]g1
+I410778QcMEY2[l=lzH??<2
+!i103 1
+S1
+R0
+w1762716711
+8constants.svh
+Z3 Fconstants.svh
+!i122 1
+Z4 L0 10 0
+Z5 OV;L;2020.1;71
+31
+Z6 !s108 1763158143.000000
+!s107 memory_tb.sv|memory.sv|constants.svh|
+Z7 !s90 -reportprogress|300|-sv|-suppress|7061|+define+MEM_DEPTH=1024|+define+LINE_COUNT=127|+define+MEM_PATH="mem_init.hex"|constants.svh|memory.sv|memory_tb.sv|
+!i113 1
+Z8 o-suppress 7061 -sv
+Z9 !s92 -suppress 7061 -sv +define+MEM_DEPTH=1024 +define+LINE_COUNT=127 +define+MEM_PATH=\"mem_init.hex\"
+Z10 tCvgOpt 0
+vmemory
+R1
+DXx4 work 14 memory_sv_unit 0 22 WNMaoLWZLQDl6:@M`KU8@3
+R2
+Z11 VDg1SIo80bB@j0V0VzS_@n1
+r1
+!s85 0
+!i10b 1
+!s100 hTQS^BVMl;VYn]5FV9SgR0
+IL@z:f4>>ej?b]ZOSZ:ck21
+!s105 memory_sv_unit
+S1
+R0
+Z12 w1763151657
+Z13 8memory.sv
+Z14 Fmemory.sv
+!i122 1
+L0 23 159
+R5
+31
+R6
+Z15 !s107 memory_tb.sv|memory.sv|constants.svh|
+R7
+!i113 1
+R8
+R9
+R10
+Xmemory_sv_unit
+R1
+R2
+VWNMaoLWZLQDl6:@M`KU8@3
+r1
+!s85 0
+!i10b 1
+!s100 gb9:]njDVoUQO^H0aa87Y2
+IWNMaoLWZLQDl6:@M`KU8@3
+!i103 1
+S1
+R0
+R12
+R13
+R14
+R3
+!i122 1
+R4
+R5
+31
+R6
+R15
+R7
+!i113 1
+R8
+R9
+R10
+vmemory_tb
+R1
+DXx4 work 17 memory_tb_sv_unit 0 22 dBKMVojW20EIAjl^NhKnD3
+R2
+R11
+r1
+!s85 0
+!i10b 1
+!s100 @deF^Jm>g5nC`3=f`@[g[3
+I>=n0j?mMU>oSEV^2XFIHP2
+!s105 memory_tb_sv_unit
+S1
+R0
+Z16 w1763158119
+Z17 8memory_tb.sv
+Z18 Fmemory_tb.sv
+!i122 1
+L0 3 168
+R5
+31
+R6
+R15
+R7
+!i113 1
+R8
+R9
+R10
+Xmemory_tb_sv_unit
+R1
+R2
+VdBKMVojW20EIAjl^NhKnD3
+r1
+!s85 0
+!i10b 1
+!s100 B3P`]l^6DUTdCAj>?ZMEQ0
+IdBKMVojW20EIAjl^NhKnD3
+!i103 1
+S1
+R0
+R16
+R17
+R18
+R3
+!i122 1
+R4
+R5
+31
+R6
+R15
+R7
+!i113 1
+R8
+R9
+R10
