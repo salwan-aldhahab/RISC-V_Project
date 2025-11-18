@@ -12,7 +12,6 @@
  *
  * Outputs:
  * 1) DWIDTH wide write back data write_data_o
- * 2) AWIDTH wide next computed PC next_pc_o
  */
 
  module writeback #(
@@ -24,8 +23,7 @@
      input logic [DWIDTH-1:0] memory_data_i,
      input logic [1:0] wbsel_i,
      input logic brtaken_i,
-     output logic [DWIDTH-1:0] writeback_data_o,
-     output logic [AWIDTH-1:0] next_pc_o
+     output logic [DWIDTH-1:0] writeback_data_o
  );
 
     /*
