@@ -24,45 +24,45 @@ module pd5 #(
 // -- Probes Instantiation --
 
   // Fetch Stage Probes
-  logic [AWIDTH-1:0] f_pc;
-  logic [DWIDTH-1:0] f_insn;
+  logic [AWIDTH-1:0] probe_f_pc;
+  logic [DWIDTH-1:0] probe_f_insn;
 
   // Decode Stage Probes
-  logic [AWIDTH-1:0] d_pc;
-  logic [6:0]        d_opcode;
-  logic [4:0]        d_rd;
-  logic [2:0]        d_funct3;
-  logic [4:0]        d_rs1;
-  logic [4:0]        d_rs2;
-  logic [6:0]        d_funct7;
-  logic [31:0]       d_imm;
-  logic [4:0]        d_shamt;
+  logic [AWIDTH-1:0] probe_d_pc;
+  logic [6:0]        probe_d_opcode;
+  logic [4:0]        probe_d_rd;
+  logic [2:0]        probe_d_funct3;
+  logic [4:0]        probe_d_rs1;
+  logic [4:0]        probe_d_rs2;
+  logic [6:0]        probe_d_funct7;
+  logic [31:0]       probe_d_imm;
+  logic [4:0]        probe_d_shamt;
 
   // Register Stage Probes
-  logic              r_write_enable;
-  logic [4:0]        r_write_destination;
-  logic [DWIDTH-1:0] r_write_data;
-  logic [4:0]        r_read_rs1;
-  logic [4:0]        r_read_rs2;
-  logic [DWIDTH-1:0] r_read_rs1_data;
-  logic [DWIDTH-1:0] r_read_rs2_data;
+  logic              probe_r_write_enable;
+  logic [4:0]        probe_r_write_destination;
+  logic [DWIDTH-1:0] probe_r_write_data;
+  logic [4:0]        probe_r_read_rs1;
+  logic [4:0]        probe_r_read_rs2;
+  logic [DWIDTH-1:0] probe_r_read_rs1_data;
+  logic [DWIDTH-1:0] probe_r_read_rs2_data;
 
   // Execute Stage Probes
-  logic [AWIDTH-1:0] e_pc;
-  logic [DWIDTH-1:0] e_alu_res;
-  logic              e_br_taken;
+  logic [AWIDTH-1:0] probe_e_pc;
+  logic [DWIDTH-1:0] probe_e_alu_res;
+  logic              probe_e_br_taken;
 
   // Memory Stage Probes
-  logic [AWIDTH-1:0] m_pc;
-  logic [DWIDTH-1:0] m_address;
-  logic [1:0]        m_size_encoded;
-  logic [DWIDTH-1:0] m_data;
+  logic [AWIDTH-1:0] probe_m_pc;
+  logic [DWIDTH-1:0] probe_m_address;
+  logic [1:0]        probe_m_size_encoded;
+  logic [DWIDTH-1:0] probe_m_data;
 
   // Writeback Stage Probes
-  logic [AWIDTH-1:0] w_pc;
-  logic              w_enable;
-  logic [4:0]        w_destination;
-  logic [DWIDTH-1:0] w_data;
+  logic [AWIDTH-1:0] probe_w_pc;
+  logic              probe_w_enable;
+  logic [4:0]        probe_w_destination;
+  logic [DWIDTH-1:0] probe_w_data;
   
   // -- End Probes Instantiation --
 
@@ -93,7 +93,7 @@ module pd5 #(
       .rst(reset),
       .pcsel_i(pcsel || e_br_taken),
       .pctarget_i(next_pc),
-      .pc_o(f_pc),            
+      .pc_o(probe_f_pc),            
       .insn_o()
   );
 
@@ -105,12 +105,12 @@ module pd5 #(
   ) imem (
       .clk(clk),
       .rst(reset),
-      .addr_i(f_pc),
+      .addr_i(probe_f_pc),
       .data_i(32'h00000000),
       .read_en_i(1'b1),
       .write_en_i(1'b0),
       .funct3_i(FUNCT3_LW),
-      .data_o(f_insn)
+      .data_o(probe_f_insn)
   );
 
   // Decode stage - breaks instructions into their components
@@ -120,18 +120,18 @@ module pd5 #(
   ) decode_stage (
       .clk(clk),
       .rst(reset),
-      .insn_i(f_insn),
-      .pc_i(f_pc),
-      .pc_o(d_pc),
+      .insn_i(probe_f_insn),
+      .pc_i(probe_f_pc),
+      .pc_o(probe_d_pc),
       .insn_o(d_insn),
-      .opcode_o(d_opcode),
-      .rd_o(d_rd),
-      .rs1_o(d_rs1),
-      .rs2_o(d_rs2),
-      .funct7_o(d_funct7),
-      .funct3_o(d_funct3),
-      .imm_o(d_imm),
-      .shamt_o(d_shamt)
+      .opcode_o(probe_d_opcode),
+      .rd_o(probe_d_rd),
+      .rs1_o(probe_d_rs1),
+      .rs2_o(probe_d_rs2),
+      .funct7_o(probe_d_funct7),
+      .funct3_o(probe_d_funct3),
+      .imm_o(probe_d_imm),
+      .shamt_o(probe_d_shamt)
   );
 
   // Control unit - figures out what each instruction needs to do
@@ -139,9 +139,9 @@ module pd5 #(
       .DWIDTH(DWIDTH) 
   ) control_unit (
       .insn_i(d_insn),
-      .opcode_i(d_opcode),
-      .funct7_i(d_funct7),
-      .funct3_i(d_funct3),
+      .opcode_i(probe_d_opcode),
+      .funct7_i(probe_d_funct7),
+      .funct3_i(probe_d_funct3),
       .pcsel_o(pcsel),
       .immsel_o(immsel),
       .regwren_o(regwren),
@@ -154,46 +154,46 @@ module pd5 #(
   );
 
   // Read addresses tell us which registers to look at
-  assign r_read_rs1 = d_rs1;
-  assign r_read_rs2 = d_rs2;
+  assign probe_r_read_rs1 = probe_d_rs1;
+  assign probe_r_read_rs2 = probe_d_rs2;
   // Write signals control updating registers with new values
-  assign r_write_enable = regwren;
-  assign r_write_destination = d_rd;
+  assign probe_r_write_enable = regwren;
+  assign probe_r_write_destination = probe_d_rd;
 
   register_file #( 
       .DWIDTH(DWIDTH) 
   ) reg_file (
       .clk(clk),
       .rst(reset),
-      .rs1_i(r_read_rs1),
-      .rs2_i(r_read_rs2),
-      .rd_i(r_write_destination),
-      .datawb_i(r_write_data),
-      .regwren_i(r_write_enable),
+      .rs1_i(probe_r_read_rs1),
+      .rs2_i(probe_r_read_rs2),
+      .rd_i(probe_r_write_destination),
+      .datawb_i(probe_r_write_data),
+      .regwren_i(probe_r_write_enable),
       .rs1data_o(rf_rs1data_raw),
       .rs2data_o(rf_rs2data_raw)
   );
 
   // Execute stage - where the actual computation happens
-  assign e_pc = d_pc;
+  assign probe_e_pc = probe_d_pc;
 
   // Connect register outputs directly to the probe signals
-  assign r_read_rs1_data = rf_rs1data_raw;
-  assign r_read_rs2_data = rf_rs2data_raw;
+  assign probe_r_read_rs1_data = rf_rs1data_raw;
+  assign probe_r_read_rs2_data = rf_rs2data_raw;
 
   alu #( 
       .DWIDTH(DWIDTH), 
       .AWIDTH(AWIDTH) 
   ) alu_stage (
-      .pc_i(e_pc),
+      .pc_i(probe_e_pc),
       .rs1_i(rf_rs1data_raw),
       .rs2_i(rf_rs2data_raw),
-      .imm_i(d_imm),
-      .opcode_i(d_opcode),
-      .funct3_i(d_funct3),
-      .funct7_i(d_funct7),
-      .res_o(e_alu_res),
-      .brtaken_o(e_br_taken)
+      .imm_i(probe_d_imm),
+      .opcode_i(probe_d_opcode),
+      .funct3_i(probe_d_funct3),
+      .funct7_i(probe_d_funct7),
+      .res_o(probe_e_alu_res),
+      .brtaken_o(probe_e_br_taken)
   );
 
   // Data memory - where we read and write program data
@@ -204,43 +204,43 @@ module pd5 #(
   ) dmem (
       .clk(clk),
       .rst(reset),
-      .addr_i(e_alu_res),
+      .addr_i(probe_e_alu_res),
       .data_i(rf_rs2data_raw),
       .read_en_i(1'b1),
       .write_en_i(memwren),
-      .funct3_i(memwren ? d_funct3 : FUNCT3_LW),
+      .funct3_i(memwren ? probe_d_funct3 : FUNCT3_LW),
       .data_o(dmem_data_o)
   );
 
   // Memory stage - handles results from memory operations
-  assign m_pc = e_pc;
-  assign m_address = e_alu_res;
-  assign m_size_encoded = d_funct3[1:0];
+  assign probe_m_pc = probe_e_pc;
+  assign probe_m_address = probe_e_alu_res;
+  assign probe_m_size_encoded = probe_d_funct3[1:0];
   
   // Show what data we got from memory
-  assign m_data = dmem_data_o;
+  assign probe_m_data = dmem_data_o;
 
   // Writeback stage - final step where results go back to registers
-  assign w_pc = e_pc;
-  assign w_enable = regwren;
-  assign w_destination = d_rd;
+  assign probe_w_pc = probe_e_pc;
+  assign probe_w_enable = regwren;
+  assign probe_w_destination = probe_d_rd;
   
   // Writeback logic that decides what value to write back
   writeback #(
       .DWIDTH(DWIDTH),
       .AWIDTH(AWIDTH)
   ) writeback_stage (
-      .pc_i(e_pc),
-      .alu_res_i(e_alu_res),
+      .pc_i(probe_e_pc),
+      .alu_res_i(probe_e_alu_res),
       .memory_data_i(dmem_data_o),
       .wbsel_i(wbsel),
-      .brtaken_i(e_br_taken),
-      .writeback_data_o(w_data),
+      .brtaken_i(probe_e_br_taken),
+      .writeback_data_o(probe_w_data),
       .next_pc_o(next_pc)
   );
 
   // Send the writeback result to the register file
-  assign r_write_data = w_data;
+  assign probe_r_write_data = probe_w_data;
 
   // Used to detect when the program should end
   assign data_out = d_insn;
