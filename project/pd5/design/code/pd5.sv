@@ -8,6 +8,8 @@
  * 2) reset signal
  */
 
+`include "constants.svh"
+
 module pd5 #(
     parameter int AWIDTH = 32,
     parameter int DWIDTH = 32)(
