@@ -109,9 +109,7 @@ module decode #(
                 // rs2_o remains 0 (I-type uses immediate, not second register)
                 
                 rs2_o = 5'd0; // I-type instructions do not use rs2
-                funct7_o = 7'd0; // Default funct7 to 0 for non-shift I-type instructions
-                shamt_o = 5'd0;  // Default shift amount to 0 for non-shift I-type instructions
-                
+
                 // Special handling for shift instructions within I-type
                 if (opcode_internal == OPCODE_ITYPE && 
                    (funct3_o == FUNCT3_SLL || funct3_o == FUNCT3_SRL_SRA)) begin
