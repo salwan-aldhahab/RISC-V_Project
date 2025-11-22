@@ -123,7 +123,7 @@ module decode #(
             // S-Type: Store instructions
             // Format: imm[31:25] | rs2[24:20] | rs1[19:15] | funct3[14:12] | imm[11:7] | opcode[6:0]
             OPCODE_STORE: begin
-                // rd_o remains 0 (stores don't write to registers)
+                rd_o = 5'd0; // rd_o remains 0 (stores don't write to registers)
                 funct3_o = insn_i[14:12]; // Store size (byte, half-word, word)
                 rs1_o = insn_i[19:15];    // Base address register
                 rs2_o = insn_i[24:20];    // Source data register
