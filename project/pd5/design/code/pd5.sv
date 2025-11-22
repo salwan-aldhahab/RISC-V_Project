@@ -266,7 +266,7 @@ module pd5 #(
 
       .e_pc_i     (e_pc),
       .e_alu_res  (e_alu_res),
-      .e_rs2data_i  (e_rs2_val), // already forwarded value for stores
+      .e_rs2data_i(e_rs2_val), // already forwarded value for stores
       .e_rd_i     (e_rd),
       .e_funct3_i (e_funct3),
 
@@ -274,7 +274,7 @@ module pd5 #(
       .e_memren_i (e_memren),
       .e_memwren_i(e_memwren),
       .e_wbsel_i  (e_wbsel),
-      .e_br_taken_i(e_br_taken),
+      .e_br_taken (e_br_taken),
 
       .m_pc       (m_pc),
       .m_alu_res  (m_alu_res),
