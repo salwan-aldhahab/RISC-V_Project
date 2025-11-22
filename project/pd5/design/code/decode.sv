@@ -153,6 +153,8 @@ module decode #(
             OPCODE_JAL: begin
                 rd_o = insn_i[11:7];      // Destination register (stores return address)
                 // All other register and function fields remain 0
+                rs1_o = 5'd0;
+                rs2_o = 5'd0;
                 // Jump target calculated from PC + immediate (handled by imm_o)
             end
 
