@@ -145,6 +145,8 @@ module decode #(
             OPCODE_LUI, OPCODE_AUIPC: begin
                 rd_o = insn_i[11:7];      // Destination register
                 // All other register fields remain 0 (U-type only uses immediate and rd)
+                rs1_o = 5'd0;
+                rs2_o = 5'd0;
                 // Note: AUIPC implicitly uses PC, but no explicit rs1 encoding
             end
 
@@ -153,8 +155,6 @@ module decode #(
             OPCODE_JAL: begin
                 rd_o = insn_i[11:7];      // Destination register (stores return address)
                 // All other register and function fields remain 0
-                rs1_o = 5'd0;
-                rs2_o = 5'd0;
                 // Jump target calculated from PC + immediate (handled by imm_o)
             end
 
