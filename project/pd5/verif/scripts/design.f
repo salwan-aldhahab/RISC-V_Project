@@ -8,4 +8,6 @@ igen.sv
 register_file.sv
 writeback.sv
 execute.sv
+pipeline_registers.sv
+hazard_unit.sv
 pd5.sv
