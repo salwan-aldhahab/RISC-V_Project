@@ -137,11 +137,10 @@ module pipeline_registers #(
     always_ff @(posedge clk) begin
         if (reset) begin
             ifid_pc_reg   <= '0;
-            ifid_insn_reg <= 32'h00000013;         // NOP instruction (ADDI x0,x0,0)
+            ifid_insn_reg <= 32'h00000000;
         end else if (ifid_flush) begin
-            // Clear the stage and insert a NOP
             ifid_pc_reg   <= '0;
-            ifid_insn_reg <= 32'h00000013;
+            ifid_insn_reg <= 32'h00000000;
         end else if (ifid_wren) begin
             ifid_pc_reg   <= f_pc;
             ifid_insn_reg <= f_insn;
