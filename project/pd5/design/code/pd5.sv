@@ -266,7 +266,7 @@ module pd5 #(
 
       .e_pc_i     (e_pc),
       .e_alu_res  (e_alu_res),
-      .e_rs2data  (e_rs2_val), // already forwarded value for stores
+      .e_rs2data_i  (e_rs2_val), // already forwarded value for stores
       .e_rd_i     (e_rd),
       .e_funct3_i (e_funct3),
 
