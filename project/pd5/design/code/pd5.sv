@@ -205,7 +205,7 @@ module pd5 #(
       .data_o(probe_f_insn)
   );
 
-  probe_m_data = probe_f_insn;
+  assign probe_m_data = probe_f_insn;
   // --------------------------------------------------------------------
   // Pipeline registers: IF/ID, ID/EX, EX/MEM, MEM/WB
   // --------------------------------------------------------------------
