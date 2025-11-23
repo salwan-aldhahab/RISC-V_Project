@@ -205,7 +205,6 @@ module pd5 #(
       .data_o(probe_f_insn)
   );
 
-  assign probe_m_data = probe_f_insn;
   // --------------------------------------------------------------------
   // Pipeline registers: IF/ID, ID/EX, EX/MEM, MEM/WB
   // --------------------------------------------------------------------
@@ -512,7 +511,7 @@ module pd5 #(
   assign probe_m_pc           = m_pc;
   assign probe_m_address      = m_alu_res;
   assign probe_m_size_encoded = m_funct3[1:0];
-  //assign probe_m_data         = dmem_data_o;
+  assign probe_m_data         = m_rs2data;
 
   // --------------------------------------------------------------------
   // Writeback stage – final selection of data to write to registers
