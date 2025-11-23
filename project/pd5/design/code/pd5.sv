@@ -501,7 +501,7 @@ module pd5 #(
       .rst       (reset),
       .addr_i    (m_alu_res),
       .data_i    (m_rs2data),
-      .read_en_i (1'b0),
+      .read_en_i (m_memren),
       .write_en_i(m_memwren),
       .funct3_i  (m_funct3),
       .data_o    (dmem_data_o)
