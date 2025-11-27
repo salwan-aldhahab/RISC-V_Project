@@ -5,199 +5,122 @@
  *   This module keeps our pipeline running smoothly by detecting data hazards
  *   and deciding when we need to stall, flush, or forward data between stages.
  *   Think of it as the traffic controller for our processor pipeline.
- *
- * What it does:
- *   - Spots load-use hazards (when we need data that's still being fetched from memory)
- *   - Spots RAW hazards (when EX stage will write to a reg that ID needs)
- *   - Generates the necessary stall, bubble, and flush signals to handle hazards
- *   - Sets up forwarding paths so the ALU gets the freshest data available
- *
- * A note on register x0:
- *   We ignore writes to x0 since it's hardwired to zero in RISC-V - no hazards there!
- *
- * How forwarding works (the rs?_sel outputs):
- *   2'b00 : No forwarding needed - just use what's in the ID/EX register
- *   2'b01 : Grab the value from MEM stage (it's newer!)
- *   2'b10 : Grab the value from WB stage (still newer than what we have)
- *   2'b11 : Not used (reserved for future needs)
  */
 
 module hazard_unit (
     // -------------------------
-    // ID stage inputs
-    // These tell us which registers the instruction in decode needs
+    // ID stage inputs (instruction currently being decoded)
     // -------------------------
     input  logic [4:0] d_rs1,
     input  logic [4:0] d_rs2,
+    input  logic [4:0] d_rd,           // ADD: destination reg of ID stage instruction
+    input  logic       d_regwren,      // ADD: will ID stage write to a register?
 
     // -------------------------
     // EX stage inputs
-    // We need to know:
-    //   - Which registers this instruction is using (for forwarding)
-    //   - Which register it will write to (for hazard detection)
-    //   - Whether it's a load instruction (load-use hazard alert!)
-    //   - Whether it will write to a register (for RAW hazard detection)
     // -------------------------
     input  logic [4:0] e_rs1,
     input  logic [4:0] e_rs2,
     input  logic [4:0] e_rd,
-    input  logic       e_memren,   // is this a load instruction?
-    input  logic       e_regwren,  // will EX stage write to a register?
+    input  logic       e_memren,
+    input  logic       e_regwren,
 
     // -------------------------
     // MEM stage inputs
-    // Used to forward results that just came out of the ALU
     // -------------------------
     input  logic [4:0] m_rd,
     input  logic       m_regwren,
 
     // -------------------------
     // WB stage inputs
-    // Used to forward results that are about to be written back
     // -------------------------
     input  logic [4:0] w_rd,
     input  logic       w_regwren,
 
     // -------------------------
     // Branch control
-    // When a branch is taken, we need to flush the wrong-path instructions
     // -------------------------
     input  logic       e_br_taken,
 
     // -------------------------
     // Pipeline control outputs
-    // These signals tell other pipeline stages what to do
     // -------------------------
-    output logic       stall_if,       // tell IF stage to hold the PC
-    output logic       ifid_wren,      // allow IF/ID register to update
-    output logic       ifid_flush,     // turn IF/ID stage into a NOP
-    output logic       idex_flush,     // turn ID/EX stage into a bubble
+    output logic       stall_if,
+    output logic       ifid_wren,
+    output logic       ifid_flush,
+    output logic       idex_flush,
 
     // -------------------------
     // Forwarding control outputs
-    // These tell the EX stage where to get its operands from
     // -------------------------
-    output logic [1:0] rs1_sel,        // where should rs1 come from?
-    output logic [1:0] rs2_sel         // where should rs2 come from?
+    output logic [1:0] rs1_sel,
+    output logic [1:0] rs2_sel
 );
 
     // ===========================================================
-    // Detecting the dreaded load-use hazard
-    //
-    // This happens when:
-    //  - The instruction in EX stage is loading from memory
-    //  - It's going to write to a register (not x0)
-    //  - The very next instruction in ID needs that same register
-    //
-    // We can't forward here because the data hasn't arrived from
-    // memory yet! The only solution is to stall and wait.
+    // Load-use hazard detection (EX stage load -> ID stage use)
+    // Need to stall because data isn't available until after MEM
     // ===========================================================
     logic load_use_hazard;
 
     assign load_use_hazard =
         e_memren &&
         (e_rd != 5'd0) &&
-        ( (e_rd == d_rs1) || (e_rd == d_rs2) );
+        ((e_rd == d_rs1) || (e_rd == d_rs2));
 
     // ===========================================================
-    // Detecting RAW (Read After Write) hazard from EX stage
-    //
-    // Since our register file writes on rising edge and reads are
-    // combinational, we can't forward from EX to ID. We need to
-    // stall when:
-    //  - The instruction in EX will write to a register (not x0)
-    //  - The instruction in ID needs to read that same register
-    //
-    // After one stall cycle, the EX instruction moves to MEM,
-    // and we can forward from there.
+    // RAW hazard detection (EX stage ALU -> ID stage use)
+    // Since RF writes on posedge and reads are combinational,
+    // we need 1 stall cycle, then forward from MEM stage
     // ===========================================================
     logic raw_hazard_ex;
 
     assign raw_hazard_ex =
         e_regwren &&
+        !e_memren &&  // Don't double-count load-use
         (e_rd != 5'd0) &&
-        ( (e_rd == d_rs1) || (e_rd == d_rs2) );
+        ((e_rd == d_rs1) || (e_rd == d_rs2));
 
     // ===========================================================
     // Combined stall signal
-    // We need to stall for either load-use or RAW hazards
     // ===========================================================
     logic stall_hazard;
     assign stall_hazard = load_use_hazard | raw_hazard_ex;
 
     // ===========================================================
-    // Pipeline control: when to stall, when to flush
-    //
-    // Hazard response (load-use or RAW):
-    //   - Freeze the PC (stall_if) so we don't fetch a new instruction
-    //   - Keep IF/ID register unchanged (disable write)
-    //   - Insert a bubble in ID/EX (flush it to NOPs)
-    //
-    // Branch taken response:
-    //   - Don't stall - we need to start fetching from the new target
-    //   - Flush IF/ID (that instruction was on the wrong path)
-    //   - Flush ID/EX (that one too - already in the pipeline)
-    //
-    // If both happen at once (unusual but possible), the branch flush
-    // takes priority, but we OR the signals to be safe.
+    // Pipeline control signals
     // ===========================================================
+    
+    // Stall IF when hazard detected (unless branch flushes everything)
+    assign stall_if = stall_hazard && !e_br_taken;
 
-    // Only stall when we hit a hazard (and no branch is being taken)
-    assign stall_if       = stall_hazard && !e_br_taken;
+    // Disable IF/ID write when stalling (keep same instruction in ID)
+    assign ifid_wren = !stall_hazard | e_br_taken;
 
-    // Let IF/ID update unless we're stalling for a hazard
-    assign ifid_wren      = ~stall_hazard | e_br_taken;
+    // Flush IF/ID only on branch taken
+    assign ifid_flush = e_br_taken;
 
-    // Flush IF/ID only when a branch changes our path
-    assign ifid_flush     = e_br_taken;
-
-    // Insert bubble into ID/EX when we hit either hazard type or branch
-    assign idex_flush     = e_br_taken | stall_hazard;
+    // Insert bubble into ID/EX on hazard or branch
+    assign idex_flush = e_br_taken | stall_hazard;
 
     // ===========================================================
-    // Forwarding logic: getting the freshest data to the ALU
-    //
-    // For each source register the EX stage needs, we check if
-    // a newer value is available further down the pipeline.
-    //
-    // Priority order (most recent first):
-    //   1. MEM stage (just computed)     -> select 01
-    //   2. WB stage  (about to write)    -> select 10
-    //   3. ID/EX reg (what we already have) -> select 00
-    //
-    // We check MEM first because it's the most recent result.
+    // Forwarding logic (MEM and WB to EX)
     // ===========================================================
     always_comb begin
-        // Start by assuming no forwarding is needed
         rs1_sel = 2'b00;
         rs2_sel = 2'b00;
 
-        // ---------- Forwarding for rs1 ----------
-        // First priority: check if MEM stage has what we need
-        if (m_regwren &&
-            (m_rd != 5'd0) &&
-            (m_rd == e_rs1)) begin
-            rs1_sel = 2'b01;   // forward from MEM stage
-        end
-        // Second priority: check WB stage
-        else if (w_regwren &&
-                 (w_rd != 5'd0) &&
-                 (w_rd == e_rs1)) begin
-            rs1_sel = 2'b10;   // forward from WB stage
-        end
+        // RS1 forwarding - MEM has priority over WB
+        if (m_regwren && (m_rd != 5'd0) && (m_rd == e_rs1))
+            rs1_sel = 2'b01;
+        else if (w_regwren && (w_rd != 5'd0) && (w_rd == e_rs1))
+            rs1_sel = 2'b10;
 
-        // ---------- Forwarding for rs2 ----------
-        // Same deal - check MEM first, then WB
-        if (m_regwren &&
-            (m_rd != 5'd0) &&
-            (m_rd == e_rs2)) begin
-            rs2_sel = 2'b01;   // forward from MEM stage
-        end
-        else if (w_regwren &&
-                 (w_rd != 5'd0) &&
-                 (w_rd == e_rs2)) begin
-            rs2_sel = 2'b10;   // forward from WB stage
-        end
+        // RS2 forwarding - MEM has priority over WB
+        if (m_regwren && (m_rd != 5'd0) && (m_rd == e_rs2))
+            rs2_sel = 2'b01;
+        else if (w_regwren && (w_rd != 5'd0) && (w_rd == e_rs2))
+            rs2_sel = 2'b10;
     end
 
 endmodule : hazard_unit

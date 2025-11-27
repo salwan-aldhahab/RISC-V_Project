@@ -167,26 +167,14 @@ module pd5 #(
   // --------------------------------------------------------------------
 
   // PC selection into fetch:
-  //   - When stall_if is asserted, hold the current PC by selecting it as target
-  //   - Otherwise, use the next_pc from the EX-stage for branches/jumps
+  //   - Fetch module handles stall internally via stall_i
+  //   - Only use pcsel for branches/jumps
   logic              fetch_pcsel;
   logic [AWIDTH-1:0] fetch_pctarget;
 
-  always_comb begin
-      if (stall_if) begin
-          // During stall: force PC to stay at current value
-          fetch_pcsel   = 1'b1;
-          fetch_pctarget = probe_f_pc;
-      end else if (e_br_taken) begin
-          // Branch taken: jump to branch target
-          fetch_pcsel   = 1'b1;
-          fetch_pctarget = next_pc;
-      end else begin
-          // Normal operation: let fetch increment PC
-          fetch_pcsel   = 1'b0;
-          fetch_pctarget = next_pc;  // doesn't matter when pcsel=0
-      end
-  end
+  // Simplified: fetch handles stall, we only handle branch/jump
+  assign fetch_pcsel   = e_br_taken;
+  assign fetch_pctarget = next_pc;
 
   fetch #(
       .AWIDTH(AWIDTH),
@@ -195,10 +183,11 @@ module pd5 #(
   ) fetch_stage (
       .clk(clk),
       .rst(reset),
+      .stall_i(stall_if),
       .pcsel_i(fetch_pcsel),
       .pctarget_i(fetch_pctarget),
       .pc_o(probe_f_pc),
-      .insn_o() // instruction comes from imem below
+      .insn_o()
   );
 
   // Instruction memory – combinational read of instruction at PC
