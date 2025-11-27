@@ -8,10 +8,6 @@
  */
 
 module hazard_unit (
-    // ADD: clock for registering stall
-    input  logic       clk,
-    input  logic       reset,
-
     // -------------------------
     // ID stage inputs (instruction currently being decoded)
     // -------------------------
@@ -86,28 +82,10 @@ module hazard_unit (
         ((e_rd == d_rs1) || (e_rd == d_rs2));
 
     // ===========================================================
-    // Combined stall signal (combinational detection)
+    // Combined stall signal
     // ===========================================================
-    logic stall_hazard_comb;
-    assign stall_hazard_comb = load_use_hazard | raw_hazard_ex;
-
-    // ===========================================================
-    // Registered stall signal - delays stall by one cycle
-    // ===========================================================
-    logic stall_hazard_reg;
-    
-    always_ff @(posedge clk) begin
-        if (reset)
-            stall_hazard_reg <= 1'b0;
-        else if (e_br_taken)
-            stall_hazard_reg <= 1'b0;  // Clear on branch taken
-        else
-            stall_hazard_reg <= stall_hazard_comb;
-    end
-
-    // Use registered stall for pipeline control
     logic stall_hazard;
-    assign stall_hazard = stall_hazard_reg;
+    assign stall_hazard = load_use_hazard | raw_hazard_ex;
 
     // ===========================================================
     // Pipeline control signals

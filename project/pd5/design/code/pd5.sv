@@ -393,15 +393,9 @@ module pd5 #(
   // --------------------------------------------------------------------
 
   hazard_unit hazards (
-      // Clock and reset
-      .clk       (clk),
-      .reset     (reset),
-
       // ID stage
       .d_rs1     (probe_d_rs1),
       .d_rs2     (probe_d_rs2),
-      .d_rd      (probe_d_rd),        // Connect if used
-      .d_regwren (regwren),           // Connect if used
 
       // EX stage (from ID/EX pipeline)
       .e_rs1     (e_rs1),
