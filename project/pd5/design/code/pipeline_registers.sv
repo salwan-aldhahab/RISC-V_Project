@@ -56,6 +56,7 @@ module pipeline_registers #(
     input  logic               d_memwren,          // Memory write enable
     input  logic [1:0]         d_wbsel,            // Writeback select
     input  logic [3:0]         d_alusel,           // ALU operation select
+    input  logic               d_pcsel,            // PC select for branches/jumps
 
     output logic [AWIDTH-1:0]  e_pc,               // Program counter to execute
     output logic [DWIDTH-1:0]  e_rs1data,          // Source register 1 data
