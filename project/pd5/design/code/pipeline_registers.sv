@@ -73,6 +73,7 @@ module pipeline_registers #(
     output logic               e_memwren,          // Memory write enable
     output logic [1:0]         e_wbsel,            // Writeback select
     output logic [3:0]         e_alusel,           // ALU operation select
+    output logic               e_pcsel,            // PC select for branches/jumps
 
     // ================================================================
     // EX/MEM: Execute to Memory stage register
@@ -169,6 +170,7 @@ module pipeline_registers #(
     logic              idex_memwren_reg;           // Memory write enable
     logic [1:0]        idex_wbsel_reg;             // Writeback select
     logic [3:0]        idex_alusel_reg;            // ALU operation select
+    logic              idex_pcsel_reg;             // PC select for branches/jumps
 
     always_ff @(posedge clk) begin
         if (reset) begin
@@ -187,6 +189,7 @@ module pipeline_registers #(
             idex_memwren_reg  <= 1'b0;
             idex_wbsel_reg    <= 2'b00;
             idex_alusel_reg   <= 4'b0000;
+            idex_pcsel_reg    <= 1'b0;
         end else if (idex_flush) begin
             // Insert bubble: clear all control signals and data
             idex_pc_reg       <= '0;
@@ -204,6 +207,7 @@ module pipeline_registers #(
             idex_memwren_reg  <= 1'b0;
             idex_wbsel_reg    <= 2'b00;
             idex_alusel_reg   <= 4'b0000;
+            idex_pcsel_reg    <= 1'b0;
         end else if (idex_wren) begin
             idex_pc_reg       <= d_pc_i;
             idex_rs1data_reg  <= d_rs1data;
@@ -220,6 +224,7 @@ module pipeline_registers #(
             idex_memwren_reg  <= d_memwren;
             idex_wbsel_reg    <= d_wbsel;
             idex_alusel_reg   <= d_alusel;
+            idex_pcsel_reg    <= d_pcsel;
         end
     end
 
@@ -238,6 +243,7 @@ module pipeline_registers #(
     assign e_memwren  = idex_memwren_reg;
     assign e_wbsel    = idex_wbsel_reg;
     assign e_alusel   = idex_alusel_reg;
+    assign e_pcsel    = idex_pcsel_reg;
 
     // ================================================================
     // EX/MEM: Execute to Memory stage storage

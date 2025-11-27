@@ -121,6 +121,7 @@ module pd5 #(
   logic              e_memwren;
   logic [1:0]        e_wbsel;
   logic [3:0]        e_alusel;
+  logic              e_pcsel;            // Add this line
 
   // EX/MEM outputs (MEM stage inputs)
   logic [AWIDTH-1:0] m_pc;
@@ -169,11 +170,11 @@ module pd5 #(
   //   - When stall_if is asserted, hold the same PC value by feeding
   //     the current PC back as the target and forcing pcsel_i=1.
   //   - Otherwise, use the next_pc from the EX-stage writeback logic
-  //     whenever control says so (pcsel) or a branch is taken.
+  //     whenever control says so (e_pcsel) or a branch is taken.
   logic              fetch_pcsel;
   logic [AWIDTH-1:0] fetch_pctarget;
 
-  assign fetch_pcsel   = stall_if ? 1'b1 : (e_br_taken);
+  assign fetch_pcsel   = stall_if ? 1'b1 : (e_pcsel || e_br_taken);
   assign fetch_pctarget = stall_if ? probe_f_pc : next_pc;
 
   fetch #(
@@ -244,6 +245,7 @@ module pd5 #(
       .d_memwren (memwren),
       .d_wbsel   (wbsel),
       .d_alusel  (alusel),
+      .d_pcsel   (pcsel),             // Add this connection
 
       .e_pc      (e_pc),
       .e_rs1data (e_rs1data),
@@ -260,6 +262,7 @@ module pd5 #(
       .e_memwren (e_memwren),
       .e_wbsel   (e_wbsel),
       .e_alusel  (e_alusel),
+      .e_pcsel   (e_pcsel),           // Add this connection
 
       // EX/MEM: Execute -> Memory
       .exmem_wren (1'b1),
