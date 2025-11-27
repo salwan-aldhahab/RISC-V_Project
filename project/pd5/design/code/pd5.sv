@@ -402,6 +402,7 @@ module pd5 #(
       .e_rs2     (e_rs2),
       .e_rd      (e_rd),
       .e_memren  (e_memren),
+      .e_regwren (e_regwren),    // ADD THIS LINE
 
       // MEM stage (from EX/MEM pipeline)
       .m_rd      (m_rd),

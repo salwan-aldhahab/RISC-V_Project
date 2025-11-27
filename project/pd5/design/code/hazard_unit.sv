@@ -8,6 +8,7 @@
  *
  * What it does:
  *   - Spots load-use hazards (when we need data that's still being fetched from memory)
+ *   - Spots RAW hazards (when EX stage will write to a reg that ID needs)
  *   - Generates the necessary stall, bubble, and flush signals to handle hazards
  *   - Sets up forwarding paths so the ALU gets the freshest data available
  *
@@ -35,11 +36,13 @@ module hazard_unit (
     //   - Which registers this instruction is using (for forwarding)
     //   - Which register it will write to (for hazard detection)
     //   - Whether it's a load instruction (load-use hazard alert!)
+    //   - Whether it will write to a register (for RAW hazard detection)
     // -------------------------
     input  logic [4:0] e_rs1,
     input  logic [4:0] e_rs2,
     input  logic [4:0] e_rd,
     input  logic       e_memren,   // is this a load instruction?
+    input  logic       e_regwren,  // will EX stage write to a register?
 
     // -------------------------
     // MEM stage inputs
@@ -97,9 +100,35 @@ module hazard_unit (
         ( (e_rd == d_rs1) || (e_rd == d_rs2) );
 
     // ===========================================================
+    // Detecting RAW (Read After Write) hazard from EX stage
+    //
+    // Since our register file writes on rising edge and reads are
+    // combinational, we can't forward from EX to ID. We need to
+    // stall when:
+    //  - The instruction in EX will write to a register (not x0)
+    //  - The instruction in ID needs to read that same register
+    //
+    // After one stall cycle, the EX instruction moves to MEM,
+    // and we can forward from there.
+    // ===========================================================
+    logic raw_hazard_ex;
+
+    assign raw_hazard_ex =
+        e_regwren &&
+        (e_rd != 5'd0) &&
+        ( (e_rd == d_rs1) || (e_rd == d_rs2) );
+
+    // ===========================================================
+    // Combined stall signal
+    // We need to stall for either load-use or RAW hazards
+    // ===========================================================
+    logic stall_hazard;
+    assign stall_hazard = load_use_hazard | raw_hazard_ex;
+
+    // ===========================================================
     // Pipeline control: when to stall, when to flush
     //
-    // Load-use hazard response:
+    // Hazard response (load-use or RAW):
     //   - Freeze the PC (stall_if) so we don't fetch a new instruction
     //   - Keep IF/ID register unchanged (disable write)
     //   - Insert a bubble in ID/EX (flush it to NOPs)
@@ -113,17 +142,17 @@ module hazard_unit (
     // takes priority, but we OR the signals to be safe.
     // ===========================================================
 
-    // Only stall when we hit a load-use hazard
-    assign stall_if       = load_use_hazard;
+    // Only stall when we hit a hazard (and no branch is being taken)
+    assign stall_if       = stall_hazard && !e_br_taken;
 
-    // Let IF/ID update unless we're stalling for a load-use hazard
-    assign ifid_wren      = ~load_use_hazard;
+    // Let IF/ID update unless we're stalling for a hazard
+    assign ifid_wren      = ~stall_hazard | e_br_taken;
 
     // Flush IF/ID only when a branch changes our path
     assign ifid_flush     = e_br_taken;
 
-    // Insert bubble into ID/EX when we hit either hazard type
-    assign idex_flush     = e_br_taken | load_use_hazard;
+    // Insert bubble into ID/EX when we hit either hazard type or branch
+    assign idex_flush     = e_br_taken | stall_hazard;
 
     // ===========================================================
     // Forwarding logic: getting the freshest data to the ALU
