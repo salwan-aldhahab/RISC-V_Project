@@ -122,6 +122,10 @@ module pd5 #(
   logic [1:0]        e_wbsel;
   logic [3:0]        e_alusel;
 
+  // EX stage ALU outputs
+  logic [DWIDTH-1:0] e_alu_res;
+  logic              e_br_taken;
+
   // EX/MEM outputs (MEM stage inputs)
   logic [AWIDTH-1:0] m_pc;
   logic [DWIDTH-1:0] m_alu_res;
