@@ -10,6 +10,7 @@
  *   - Spots load-use hazards (when we need data that's still being fetched from memory)
  *   - Generates the necessary stall, bubble, and flush signals to handle hazards
  *   - Sets up forwarding paths so the ALU gets the freshest data available
+ *   - Handles MEM-stage forwarding for store instructions
  *
  * A note on register x0:
  *   We ignore writes to x0 since it's hardwired to zero in RISC-V - no hazards there!
@@ -21,7 +22,9 @@
  *   2'b11 : Not used (reserved for future needs)
  */
 
-module hazard_unit (
+module hazard_unit #(
+    parameter int DWIDTH = 32
+)(
     // -------------------------
     // ID stage inputs
     // These tell us which registers the instruction in decode needs
@@ -45,15 +48,26 @@ module hazard_unit (
     // MEM stage inputs
     // Used to forward results that just came out of the ALU
     // -------------------------
-    input  logic [4:0] m_rd,
-    input  logic       m_regwren,
+    input  logic [4:0]         m_rd,
+    input  logic               m_regwren,
+    input  logic [4:0]         m_rs2,              // Source register for store data
+    input  logic               m_memwren,          // Is MEM stage doing a store?
+    input  logic [DWIDTH-1:0]  m_alu_res,          // ALU result from MEM stage
+    input  logic [DWIDTH-1:0]  m_rs2data,          // Store data from MEM stage
 
     // -------------------------
     // WB stage inputs
     // Used to forward results that are about to be written back
     // -------------------------
-    input  logic [4:0] w_rd,
-    input  logic       w_regwren,
+    input  logic [4:0]         w_rd,
+    input  logic               w_regwren,
+    input  logic [DWIDTH-1:0]  w_data,             // Writeback data
+
+    // -------------------------
+    // EX stage data inputs for forwarding muxes
+    // -------------------------
+    input  logic [DWIDTH-1:0]  e_rs1data,          // RS1 data from ID/EX
+    input  logic [DWIDTH-1:0]  e_rs2data,          // RS2 data from ID/EX
 
     // -------------------------
     // Branch control
@@ -75,7 +89,15 @@ module hazard_unit (
     // These tell the EX stage where to get its operands from
     // -------------------------
     output logic [1:0] rs1_sel,        // where should rs1 come from?
-    output logic [1:0] rs2_sel         // where should rs2 come from?
+    output logic [1:0] rs2_sel,        // where should rs2 come from?
+
+    // -------------------------
+    // Forwarded data outputs
+    // These are the actual forwarded values for EX and MEM stages
+    // -------------------------
+    output logic [DWIDTH-1:0] e_rs1_fwd,           // Forwarded RS1 for EX stage
+    output logic [DWIDTH-1:0] e_rs2_fwd,           // Forwarded RS2 for EX stage
+    output logic [DWIDTH-1:0] m_store_data_fwd     // Forwarded store data for MEM stage
 );
 
     // ===========================================================
@@ -168,6 +190,49 @@ module hazard_unit (
                  (w_rd != 5'd0) &&
                  (w_rd == e_rs2)) begin
             rs2_sel = 2'b10;   // forward from WB stage
+        end
+    end
+
+    // ===========================================================
+    // EX stage forwarding muxes
+    // Select the appropriate data source based on rs1_sel/rs2_sel
+    // ===========================================================
+    always_comb begin
+        // RS1 forwarding mux
+        case (rs1_sel)
+            2'b01:   e_rs1_fwd = m_alu_res;    // Forward from MEM stage
+            2'b10:   e_rs1_fwd = w_data;       // Forward from WB stage
+            default: e_rs1_fwd = e_rs1data;   // No forwarding - use ID/EX value
+        endcase
+
+        // RS2 forwarding mux
+        case (rs2_sel)
+            2'b01:   e_rs2_fwd = m_alu_res;    // Forward from MEM stage
+            2'b10:   e_rs2_fwd = w_data;       // Forward from WB stage
+            default: e_rs2_fwd = e_rs2data;   // No forwarding - use ID/EX value
+        endcase
+    end
+
+    // ===========================================================
+    // MEM stage store data forwarding
+    //
+    // When a store instruction is in MEM stage and needs data from
+    // an instruction that's currently in WB stage, we must forward
+    // the WB result to the memory write data path.
+    //
+    // This handles sequences like:
+    //   ADD x5, x1, x2    ; Result in WB stage
+    //   SW  x5, 0(x10)    ; Store in MEM stage needs x5
+    // ===========================================================
+    always_comb begin
+        m_store_data_fwd = m_rs2data;  // Default: use pipelined value
+
+        // Forward from WB if the store's source register matches WB's destination
+        if (m_memwren &&
+            w_regwren &&
+            (w_rd != 5'd0) &&
+            (w_rd == m_rs2)) begin
+            m_store_data_fwd = w_data;
         end
     end
 

@@ -90,6 +90,7 @@ module pipeline_registers #(
     input  logic               e_memwren_i,        // Memory write enable
     input  logic [1:0]         e_wbsel_i,          // Writeback select
     input  logic               e_br_taken,         // Branch taken signal
+    input  logic [4:0]         e_rs2_i,            // Source register 2 address for store forwarding
 
     output logic [AWIDTH-1:0]  m_pc,               // Program counter to memory
     output logic [DWIDTH-1:0]  m_alu_res,          // ALU result
@@ -102,6 +103,7 @@ module pipeline_registers #(
     output logic               m_memwren,          // Memory write enable
     output logic [1:0]         m_wbsel,            // Writeback select
     output logic               m_br_taken,         // Branch taken signal
+    output logic [4:0]         m_rs2,              // Source register 2 address for store forwarding
 
     // ================================================================
     // MEM/WB: Memory to Writeback stage register
@@ -253,6 +255,7 @@ module pipeline_registers #(
     logic              exmem_memwren_reg;          // Memory write enable
     logic [1:0]        exmem_wbsel_reg;            // Writeback select
     logic              exmem_br_taken_reg;         // Branch taken signal
+    logic [4:0]        exmem_rs2_reg;              // Source register 2 address
 
     always_ff @(posedge clk) begin
         if (reset) begin
@@ -266,6 +269,7 @@ module pipeline_registers #(
             exmem_memwren_reg  <= 1'b0;
             exmem_wbsel_reg    <= 2'b00;
             exmem_br_taken_reg <= 1'b0;
+            exmem_rs2_reg      <= '0;  // in reset
         end else if (exmem_wren) begin
             exmem_pc_reg       <= e_pc_i;
             exmem_alu_res_reg  <= e_alu_res;
@@ -277,6 +281,7 @@ module pipeline_registers #(
             exmem_memwren_reg  <= e_memwren_i;
             exmem_wbsel_reg    <= e_wbsel_i;
             exmem_br_taken_reg <= e_br_taken;
+            exmem_rs2_reg      <= e_rs2_i;  // in write enable
         end
     end
 
@@ -290,6 +295,7 @@ module pipeline_registers #(
     assign m_memwren  = exmem_memwren_reg;
     assign m_wbsel    = exmem_wbsel_reg;
     assign m_br_taken = exmem_br_taken_reg;
+    assign m_rs2      = exmem_rs2_reg;
 
     // ================================================================
     // MEM/WB: Memory to Writeback stage storage

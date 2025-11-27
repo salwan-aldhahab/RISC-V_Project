@@ -127,6 +127,7 @@ module pd5 #(
   logic [DWIDTH-1:0] m_alu_res;
   logic [DWIDTH-1:0] m_rs2data;
   logic [4:0]        m_rd;
+  logic [4:0]        m_rs2;              // Source register 2 address for store forwarding
   logic [2:0]        m_funct3;
   logic              m_regwren;
   logic              m_memren;
@@ -157,9 +158,8 @@ module pd5 #(
   logic [DWIDTH-1:0] e_rs1_val;
   logic [DWIDTH-1:0] e_rs2_val;
 
-  // ALU outputs (EX stage)
-  logic [DWIDTH-1:0] e_alu_res;
-  logic              e_br_taken;
+  // Forwarded store data for MEM stage
+  logic [DWIDTH-1:0] m_store_data_fwd;
 
   // --------------------------------------------------------------------
   // Fetch stage – program counter update and instruction fetch
@@ -286,6 +286,7 @@ module pd5 #(
       .m_memwren  (m_memwren),
       .m_wbsel    (m_wbsel),
       .m_br_taken (m_br_taken),
+      .m_rs2      (m_rs2),              // Add this line
 
       // MEM/WB: Memory -> Writeback
       .memwb_wren (1'b1),
@@ -389,7 +390,9 @@ module pd5 #(
   // Hazard unit – stalls, flushes, and forwarding control
   // --------------------------------------------------------------------
 
-  hazard_unit hazards (
+  hazard_unit #(
+      .DWIDTH(DWIDTH)
+  ) hazards (
       // ID stage
       .d_rs1     (probe_d_rs1),
       .d_rs2     (probe_d_rs2),
@@ -403,10 +406,19 @@ module pd5 #(
       // MEM stage (from EX/MEM pipeline)
       .m_rd      (m_rd),
       .m_regwren (m_regwren),
+      .m_rs2     (m_rs2),
+      .m_memwren (m_memwren),
+      .m_alu_res (m_alu_res),
+      .m_rs2data (m_rs2data),
 
       // WB stage (from MEM/WB pipeline)
       .w_rd      (w_rd),
       .w_regwren (w_regwren),
+      .w_data    (probe_w_data),
+
+      // EX stage data inputs for forwarding
+      .e_rs1data (e_rs1data),
+      .e_rs2data (e_rs2data),
 
       // Branch taken from EX stage
       .e_br_taken(e_br_taken),
@@ -417,9 +429,14 @@ module pd5 #(
       .ifid_flush(ifid_flush),
       .idex_flush(idex_flush),
 
-      // Forwarding select outputs
+      // Forwarding select outputs (kept for debugging/probing)
       .rs1_sel   (rs1_sel),
-      .rs2_sel   (rs2_sel)
+      .rs2_sel   (rs2_sel),
+
+      // Forwarded data outputs
+      .e_rs1_fwd      (e_rs1_val),
+      .e_rs2_fwd      (e_rs2_val),
+      .m_store_data_fwd(m_store_data_fwd)
   );
 
   // --------------------------------------------------------------------
@@ -429,26 +446,8 @@ module pd5 #(
   // EX-stage PC probe
   assign probe_e_pc = e_pc;
 
-  // Forwarding muxes for ALU operands
-  always_comb begin
-      // Default: use values from ID/EX pipeline
-      e_rs1_val = e_rs1data;
-      e_rs2_val = e_rs2data;
-
-      // rs1 forwarding
-      case (rs1_sel)
-          2'b01: e_rs1_val = m_alu_res;    // from MEM (EX/MEM)
-          2'b10: e_rs1_val = probe_w_data; // from WB (MEM/WB)
-          default: /* 2'b00 or 2'b11 */ ;
-      endcase
-
-      // rs2 forwarding
-      case (rs2_sel)
-          2'b01: e_rs2_val = m_alu_res;    // from MEM (EX/MEM)
-          2'b10: e_rs2_val = probe_w_data; // from WB (MEM/WB)
-          default: /* 2'b00 or 2'b11 */ ;
-      endcase
-  end
+  // Forwarding is now handled inside hazard_unit
+  // e_rs1_val and e_rs2_val come directly from hazard_unit outputs
 
   alu #(
       .DWIDTH(DWIDTH),
@@ -500,7 +499,7 @@ module pd5 #(
       .clk       (clk),
       .rst       (reset),
       .addr_i    (m_alu_res),
-      .data_i    (m_rs2data),
+      .data_i    (m_store_data_fwd),   // Use forwarded store data
       .read_en_i (m_memren),
       .write_en_i(m_memwren),
       .funct3_i  (m_funct3),
@@ -511,7 +510,7 @@ module pd5 #(
   assign probe_m_pc           = m_pc;
   assign probe_m_address      = m_alu_res;
   assign probe_m_size_encoded = m_funct3[1:0];
-  assign probe_m_data         = m_rs2data;
+  assign probe_m_data         = m_store_data_fwd;  // Use forwarded store data for probe
 
   // --------------------------------------------------------------------
   // Writeback stage – final selection of data to write to registers
