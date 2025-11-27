@@ -530,7 +530,7 @@ module pd5 #(
       .memory_data_i (w_mem_data),
       .wbsel_i       (w_wbsel),
       .brtaken_i     (w_br_taken),
-      .writeback_data_o(probe_w_data),
+      .writeback_data_o(dmem_data_o),
       .next_pc_o     () // not used – PC is handled by writeback_pc
   );
 
