@@ -173,7 +173,7 @@ module pd5 #(
   logic              fetch_pcsel;
   logic [AWIDTH-1:0] fetch_pctarget;
 
-  assign fetch_pcsel   = stall_if ? 1'b1 : (pcsel || e_br_taken);
+  assign fetch_pcsel   = stall_if ? 1'b1 : (e_br_taken);
   assign fetch_pctarget = stall_if ? probe_f_pc : next_pc;
 
   fetch #(
