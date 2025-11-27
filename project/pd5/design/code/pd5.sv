@@ -167,15 +167,26 @@ module pd5 #(
   // --------------------------------------------------------------------
 
   // PC selection into fetch:
-  //   - When stall_if is asserted, hold the same PC value by feeding
-  //     the current PC back as the target and forcing pcsel_i=1.
-  //   - Otherwise, use the next_pc from the EX-stage writeback logic
-  //     whenever control says so (e_pcsel) or a branch is taken.
+  //   - When stall_if is asserted, hold the current PC by selecting it as target
+  //   - Otherwise, use the next_pc from the EX-stage for branches/jumps
   logic              fetch_pcsel;
   logic [AWIDTH-1:0] fetch_pctarget;
 
-  assign fetch_pcsel   = stall_if ? 1'b1 : (e_pcsel || e_br_taken);
-  assign fetch_pctarget = stall_if ? probe_f_pc : next_pc;
+  always_comb begin
+      if (stall_if) begin
+          // During stall: force PC to stay at current value
+          fetch_pcsel   = 1'b1;
+          fetch_pctarget = probe_f_pc;
+      end else if (e_br_taken) begin
+          // Branch taken: jump to branch target
+          fetch_pcsel   = 1'b1;
+          fetch_pctarget = next_pc;
+      end else begin
+          // Normal operation: let fetch increment PC
+          fetch_pcsel   = 1'b0;
+          fetch_pctarget = next_pc;  // doesn't matter when pcsel=0
+      end
+  end
 
   fetch #(
       .AWIDTH(AWIDTH),
