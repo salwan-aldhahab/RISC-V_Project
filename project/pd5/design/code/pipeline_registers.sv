@@ -143,7 +143,7 @@ module pipeline_registers #(
             ifid_pc_reg   <= '0;
             ifid_insn_reg <= 32'h00000000;
         end else if (ifid_flush) begin
-            ifid_pc_reg   <= '0;
+            ifid_pc_reg   <= f_pc;
             ifid_insn_reg <= 32'h00000000;
         end else if (ifid_wren) begin
             ifid_pc_reg   <= f_pc;
