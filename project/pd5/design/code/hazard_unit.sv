@@ -61,6 +61,12 @@ module hazard_unit (
     // When a branch is taken, we need to flush the wrong-path instructions
     // -------------------------
     input  logic       e_br_taken,
+    
+    // -------------------------
+    // Jump detection
+    // Unconditional jumps (JAL/JALR) always need to flush
+    // -------------------------
+    input  logic [6:0] e_opcode,       // opcode from EX stage to detect jumps
 
     // -------------------------
     // Pipeline control outputs
@@ -127,6 +133,22 @@ module hazard_unit (
     assign stall_hazard = load_use_hazard | wd_hazard;
 
     // ===========================================================
+    // Detecting jump instructions
+    //
+    // JAL (opcode 1101111) and JALR (opcode 1100111) are unconditional
+    // jumps that always redirect the PC. We need to flush the pipeline
+    // to discard the incorrectly fetched instructions.
+    // ===========================================================
+    logic is_jump;
+    
+    assign is_jump = (e_opcode == 7'b1101111) ||  // JAL
+                     (e_opcode == 7'b1100111);    // JALR
+
+    // Combined control flow change signal
+    logic control_flow_change;
+    assign control_flow_change = e_br_taken | is_jump;
+
+    // ===========================================================
     // Pipeline control: when to stall, when to flush
     //
     // Load-use hazard or WD hazard response:
@@ -134,7 +156,7 @@ module hazard_unit (
     //   - Keep IF/ID register unchanged (disable write)
     //   - Insert a bubble in ID/EX (flush it to NOPs)
     //
-    // Branch taken response:
+    // Branch taken or Jump response:
     //   - Don't stall - we need to start fetching from the new target
     //   - Flush IF/ID (that instruction was on the wrong path)
     //   - Flush ID/EX (that one too - already in the pipeline)
@@ -149,11 +171,11 @@ module hazard_unit (
     // Let IF/ID update unless we're stalling for a hazard
     assign ifid_wren      = ~stall_hazard;
 
-    // Flush IF/ID only when a branch changes our path
-    assign ifid_flush     = e_br_taken;
+    // Flush IF/ID when a branch is taken OR a jump is executed
+    assign ifid_flush     = control_flow_change;
 
-    // Insert bubble into ID/EX when we hit either hazard type
-    assign idex_flush     = e_br_taken | stall_hazard;
+    // Insert bubble into ID/EX when we hit either hazard type or control flow change
+    assign idex_flush     = control_flow_change | stall_hazard;
 
     // ===========================================================
     // Forwarding logic: getting the freshest data to the ALU

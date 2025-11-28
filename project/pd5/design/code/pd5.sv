@@ -405,6 +405,7 @@ module pd5 #(
       .e_rs2     (e_rs2),
       .e_rd      (e_rd),
       .e_memren  (e_memren),
+      .e_opcode  (e_opcode),          // Add: pass opcode for jump detection
 
       // MEM stage (from EX/MEM pipeline)
       .m_rd      (m_rd),
@@ -425,7 +426,10 @@ module pd5 #(
 
       // Forwarding select outputs
       .rs1_sel   (rs1_sel),
-      .rs2_sel   (rs2_sel)
+      .rs2_sel   (rs2_sel),
+      
+      // WM forwarding (unused - handled in pd5.sv)
+      .wm_fwd_sel()
   );
 
   // --------------------------------------------------------------------
