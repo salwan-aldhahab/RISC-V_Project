@@ -73,19 +73,20 @@ module hazard_unit (
     // Since RF writes on posedge and reads are combinational,
     // we need 1 stall cycle, then forward from MEM stage
     // ===========================================================
-    logic raw_hazard_ex;
+    // logic raw_hazard_ex;
 
-    assign raw_hazard_ex =
-        e_regwren &&
-        !e_memren &&  // Don't double-count load-use
-        (e_rd != 5'd0) &&
-        ((e_rd == d_rs1) || (e_rd == d_rs2));
+    // assign raw_hazard_ex =
+    //     e_regwren &&
+    //     !e_memren &&  // Don't double-count load-use
+    //     (e_rd != 5'd0) &&
+    //     ((e_rd == d_rs1) || (e_rd == d_rs2));
 
     // ===========================================================
-    // Combined stall signal
+    // Combined stall signal - only load-use needs stall
+    // (RF reads on negedge, so WB→ID forwarding happens automatically)
     // ===========================================================
     logic stall_hazard;
-    assign stall_hazard = load_use_hazard | raw_hazard_ex;
+    assign stall_hazard = load_use_hazard;  // Remove raw_hazard_ex
 
     // ===========================================================
     // Pipeline control signals
