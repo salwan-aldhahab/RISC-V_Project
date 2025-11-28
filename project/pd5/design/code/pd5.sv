@@ -134,6 +134,7 @@ module pd5 #(
   logic              m_memwren;
   logic [1:0]        m_wbsel;
   logic              m_br_taken;
+  logic [4:0]        m_rs2;           // Add: rs2 address for WM forwarding
 
   // MEM/WB outputs (WB stage inputs)
   logic [AWIDTH-1:0] w_pc;
@@ -269,7 +270,8 @@ module pd5 #(
 
       .e_pc_i     (e_pc),
       .e_alu_res  (e_alu_res),
-      .e_rs2data_i(e_rs2_val), // already forwarded value for stores
+      .e_rs2data_i(e_rs2_val),
+      .e_rs2_i    (e_rs2),            // Add: pass rs2 address for WM forwarding
       .e_rd_i     (e_rd),
       .e_funct3_i (e_funct3),
 
@@ -494,6 +496,24 @@ module pd5 #(
   );
 
   // --------------------------------------------------------------------
+  // WM Forwarding: Forward from WB to MEM for store data
+  // --------------------------------------------------------------------
+  // When a store instruction in MEM needs data that's being written
+  // back in WB stage, we forward it directly.
+  
+  logic              wm_fwd_sel;
+  logic [DWIDTH-1:0] m_store_data;    // Final store data after WM forwarding
+  
+  // Detect WM forwarding condition
+  assign wm_fwd_sel = m_memwren &&           // MEM stage has a store
+                      w_regwren &&           // WB stage is writing
+                      (w_rd != 5'd0) &&      // Not writing to x0
+                      (w_rd == m_rs2);       // WB destination matches store's rs2
+
+  // WM forwarding mux
+  assign m_store_data = wm_fwd_sel ? probe_w_data : m_rs2data;
+
+  // --------------------------------------------------------------------
   // Memory stage – data memory access
   // --------------------------------------------------------------------
 
@@ -505,7 +525,7 @@ module pd5 #(
       .clk       (clk),
       .rst       (reset),
       .addr_i    (m_alu_res),
-      .data_i    (m_rs2data),
+      .data_i    (m_store_data),     // Use forwarded store data
       .read_en_i (m_memren),
       .write_en_i(m_memwren),
       .funct3_i  (m_funct3),
@@ -516,7 +536,7 @@ module pd5 #(
   assign probe_m_pc           = m_pc;
   assign probe_m_address      = m_alu_res;
   assign probe_m_size_encoded = m_funct3[1:0];
-  assign probe_m_data         = m_rs2data;
+  assign probe_m_data         = m_store_data;  // Use forwarded data for probe
 
   // --------------------------------------------------------------------
   // Writeback stage – final selection of data to write to registers

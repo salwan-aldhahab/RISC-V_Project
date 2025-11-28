@@ -76,7 +76,13 @@ module hazard_unit (
     // These tell the EX stage where to get its operands from
     // -------------------------
     output logic [1:0] rs1_sel,        // where should rs1 come from?
-    output logic [1:0] rs2_sel         // where should rs2 come from?
+    output logic [1:0] rs2_sel,        // where should rs2 come from?
+    
+    // -------------------------
+    // WM Forwarding control output
+    // This tells the MEM stage where to get store data from
+    // -------------------------
+    output logic       wm_fwd_sel      // forward WB data to MEM stage for stores?
 );
 
     // ===========================================================
@@ -194,5 +200,19 @@ module hazard_unit (
             rs2_sel = 2'b10;   // forward from WB stage
         end
     end
+
+    // ===========================================================
+    // WM Forwarding: forward from WB to MEM for store data
+    //
+    // This happens when:
+    //  - The instruction in WB stage is writing to a register
+    //  - The instruction in MEM stage is a store (m_memwren)
+    //  - The store's rs2 (source data) matches the WB destination
+    //
+    // Note: We need m_rs2 to check which register the store is using.
+    //       This requires adding m_rs2 as an input to the hazard unit.
+    // ===========================================================
+    
+    // For now, we'll handle this in pd5.sv with the available signals
 
 endmodule : hazard_unit

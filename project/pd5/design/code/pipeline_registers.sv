@@ -84,6 +84,7 @@ module pipeline_registers #(
     input  logic [AWIDTH-1:0]  e_pc_i,             // Program counter from execute
     input  logic [DWIDTH-1:0]  e_alu_res,          // ALU result
     input  logic [DWIDTH-1:0]  e_rs2data_i,        // Data for store operations
+    input  logic [4:0]         e_rs2_i,            // Add: rs2 address for WM forwarding
     input  logic [4:0]         e_rd_i,             // Destination register address
     input  logic [2:0]         e_funct3_i,         // Function 3 field
 
@@ -96,6 +97,7 @@ module pipeline_registers #(
     output logic [AWIDTH-1:0]  m_pc,               // Program counter to memory
     output logic [DWIDTH-1:0]  m_alu_res,          // ALU result
     output logic [DWIDTH-1:0]  m_rs2data,          // Data for store operations
+    output logic [4:0]         m_rs2,              // Add: rs2 address for WM forwarding
     output logic [4:0]         m_rd,               // Destination register address
     output logic [2:0]         m_funct3,           // Function 3 field
 
@@ -252,8 +254,8 @@ module pipeline_registers #(
     logic [AWIDTH-1:0] exmem_pc_reg;               // Program counter register
     logic [DWIDTH-1:0] exmem_alu_res_reg;          // ALU result
     logic [DWIDTH-1:0] exmem_rs2data_reg;          // Source register 2 data for stores
+    logic [4:0]        exmem_rs2_reg;              // Add: rs2 address for WM forwarding
     logic [4:0]        exmem_rd_reg;               // Destination register address
-    logic [2:0]        exmem_funct3_reg;           // Function 3 field
 
     logic              exmem_regwren_reg;          // Register write enable
     logic              exmem_memren_reg;           // Memory read enable
@@ -266,6 +268,7 @@ module pipeline_registers #(
             exmem_pc_reg       <= '0;
             exmem_alu_res_reg  <= '0;
             exmem_rs2data_reg  <= '0;
+            exmem_rs2_reg      <= '0;              // Add reset
             exmem_rd_reg       <= '0;
             exmem_funct3_reg   <= '0;
             exmem_regwren_reg  <= 1'b0;
@@ -277,6 +280,7 @@ module pipeline_registers #(
             exmem_pc_reg       <= e_pc_i;
             exmem_alu_res_reg  <= e_alu_res;
             exmem_rs2data_reg  <= e_rs2data_i;
+            exmem_rs2_reg      <= e_rs2_i;        // Add assignment
             exmem_rd_reg       <= e_rd_i;
             exmem_funct3_reg   <= e_funct3_i;
             exmem_regwren_reg  <= e_regwren_i;
@@ -290,6 +294,7 @@ module pipeline_registers #(
     assign m_pc       = exmem_pc_reg;
     assign m_alu_res  = exmem_alu_res_reg;
     assign m_rs2data  = exmem_rs2data_reg;
+    assign m_rs2      = exmem_rs2_reg;            // Add output assignment
     assign m_rd       = exmem_rd_reg;
     assign m_funct3   = exmem_funct3_reg;
     assign m_regwren  = exmem_regwren_reg;
