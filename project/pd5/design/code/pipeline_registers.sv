@@ -195,7 +195,7 @@ module pipeline_registers #(
             idex_pcsel_reg    <= 1'b0;
         end else if (idex_flush) begin
             // Insert bubble: clear all control signals and data
-            idex_pc_reg       <= '0;
+            idex_pc_reg       <= d_pc_i;
             idex_rs1data_reg  <= '0;
             idex_rs2data_reg  <= '0;
             idex_imm_reg      <= '0;
@@ -204,7 +204,7 @@ module pipeline_registers #(
             idex_rd_reg       <= '0;
             idex_funct3_reg   <= '0;
             idex_funct7_reg   <= '0;
-            idex_opcode_reg   <= d_opcode;
+            idex_opcode_reg   <= '0;
             idex_regwren_reg  <= 1'b0;
             idex_memren_reg   <= 1'b0;
             idex_memwren_reg  <= 1'b0;
