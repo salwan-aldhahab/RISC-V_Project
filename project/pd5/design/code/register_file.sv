@@ -57,18 +57,20 @@
 
     // Reading registers - latched on falling edge for same-cycle forwarding
     logic [DWIDTH-1:0] rs1data_reg, rs2data_reg;
-    logic rst_delayed;
     
-    // Track if we just came out of reset
-    always_ff @(negedge clk) begin
-        rst_delayed <= rst;
-        rs1data_reg <= (rs1_i != 0) ? registers[rs1_i] : '0;
-        rs2data_reg <= (rs2_i != 0) ? registers[rs2_i] : '0;
+    always_ff @(negedge clk or posedge rst) begin
+        if (rst) begin
+            // Initialize read outputs based on reset register values
+            rs1data_reg <= (rs1_i == 5'd2) ? stack_pointer : '0;
+            rs2data_reg <= (rs2_i == 5'd2) ? stack_pointer : '0;
+        end else begin
+            rs1data_reg <= (rs1_i != 0) ? registers[rs1_i] : '0;
+            rs2data_reg <= (rs2_i != 0) ? registers[rs2_i] : '0;
+        end
     end
     
-    // Bypass: if reset just happened, read directly from registers
-    assign rs1data_o = rst_delayed ? ((rs1_i != 0) ? registers[rs1_i] : '0) : rs1data_reg;
-    assign rs2data_o = rst_delayed ? ((rs2_i != 0) ? registers[rs2_i] : '0) : rs2data_reg;
+    assign rs1data_o = rs1data_reg;
+    assign rs2data_o = rs2data_reg;
 
     // Writing happens every clock tick
     always_ff @(posedge clk) begin
