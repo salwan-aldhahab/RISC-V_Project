@@ -204,7 +204,7 @@ module pipeline_registers #(
             idex_rd_reg       <= '0;
             idex_funct3_reg   <= '0;
             idex_funct7_reg   <= '0;
-            idex_opcode_reg   <= '0;
+            idex_opcode_reg   <= d_opcode;
             idex_regwren_reg  <= 1'b0;
             idex_memren_reg   <= 1'b0;
             idex_memwren_reg  <= 1'b0;
