@@ -55,22 +55,9 @@
     // Our 32 register storage think of them as numbered boxes 0-31
     logic [DWIDTH-1:0] registers [31:0];
 
-    // Reading registers - latched on falling edge for same-cycle forwarding
-    logic [DWIDTH-1:0] rs1data_reg, rs2data_reg;
-    
-    always_ff @(negedge clk or posedge rst) begin
-        if (rst) begin
-            // Initialize read outputs based on reset register values
-            rs1data_reg <= (rs1_i == 5'd2) ? stack_pointer : '0;
-            rs2data_reg <= (rs2_i == 5'd2) ? stack_pointer : '0;
-        end else begin
-            rs1data_reg <= (rs1_i != 0) ? registers[rs1_i] : '0;
-            rs2data_reg <= (rs2_i != 0) ? registers[rs2_i] : '0;
-        end
-    end
-    
-    assign rs1data_o = rs1data_reg;
-    assign rs2data_o = rs2data_reg;
+    // Reading: x0 always gives zero, others give their actual value
+    assign rs1data_o = (rs1_i != 0) ? registers[rs1_i] : '0;
+    assign rs2data_o = (rs2_i != 0) ? registers[rs2_i] : '0;
 
     // Writing happens every clock tick
     always_ff @(posedge clk) begin
