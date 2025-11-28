@@ -254,8 +254,9 @@ module pipeline_registers #(
     logic [AWIDTH-1:0] exmem_pc_reg;               // Program counter register
     logic [DWIDTH-1:0] exmem_alu_res_reg;          // ALU result
     logic [DWIDTH-1:0] exmem_rs2data_reg;          // Source register 2 data for stores
-    logic [4:0]        exmem_rs2_reg;              // Add: rs2 address for WM forwarding
+    logic [4:0]        exmem_rs2_reg;              // rs2 address for WM forwarding
     logic [4:0]        exmem_rd_reg;               // Destination register address
+    logic [2:0]        exmem_funct3_reg;           // Function 3 field
 
     logic              exmem_regwren_reg;          // Register write enable
     logic              exmem_memren_reg;           // Memory read enable
