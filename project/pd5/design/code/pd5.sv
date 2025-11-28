@@ -284,6 +284,7 @@ module pd5 #(
       .m_pc       (m_pc),
       .m_alu_res  (m_alu_res),
       .m_rs2data  (m_rs2data),
+      .m_rs2      (m_rs2),             // Add: connect m_rs2 for WM forwarding
       .m_rd       (m_rd),
       .m_funct3   (m_funct3),
       .m_regwren  (m_regwren),
