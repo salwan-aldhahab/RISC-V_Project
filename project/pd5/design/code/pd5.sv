@@ -507,7 +507,6 @@ module pd5 #(
   
   // Detect WM forwarding condition
   assign wm_fwd_sel = m_memwren &&           // MEM stage has a store
-                      w_regwren &&           // WB stage is writing
                       (w_rd != 5'd0) &&      // Not writing to x0
                       (w_rd == m_rs2);       // WB destination matches store's rs2
 
