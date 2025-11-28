@@ -8,6 +8,7 @@
  *
  * What it does:
  *   - Spots load-use hazards (when we need data that's still being fetched from memory)
+ *   - Spots WB-to-Decode hazards (when decode needs data being written back)
  *   - Generates the necessary stall, bubble, and flush signals to handle hazards
  *   - Sets up forwarding paths so the ALU gets the freshest data available
  *
@@ -97,9 +98,32 @@ module hazard_unit (
         ( (e_rd == d_rs1) || (e_rd == d_rs2) );
 
     // ===========================================================
+    // Detecting WB-to-Decode (WD) hazard
+    //
+    // This happens when:
+    //  - The instruction in WB stage is writing to a register
+    //  - It's writing to a register (not x0)
+    //  - The instruction in ID stage needs that same register
+    //
+    // If the register file doesn't support internal forwarding
+    // (write-before-read in the same cycle), we need to stall
+    // so the write completes before the decode stage reads.
+    // ===========================================================
+    logic wd_hazard;
+
+    assign wd_hazard =
+        w_regwren &&
+        (w_rd != 5'd0) &&
+        ( (w_rd == d_rs1) || (w_rd == d_rs2) );
+
+    // Combined stall signal for any hazard requiring a stall
+    logic stall_hazard;
+    assign stall_hazard = load_use_hazard | wd_hazard;
+
+    // ===========================================================
     // Pipeline control: when to stall, when to flush
     //
-    // Load-use hazard response:
+    // Load-use hazard or WD hazard response:
     //   - Freeze the PC (stall_if) so we don't fetch a new instruction
     //   - Keep IF/ID register unchanged (disable write)
     //   - Insert a bubble in ID/EX (flush it to NOPs)
@@ -113,17 +137,17 @@ module hazard_unit (
     // takes priority, but we OR the signals to be safe.
     // ===========================================================
 
-    // Only stall when we hit a load-use hazard
-    assign stall_if       = load_use_hazard;
+    // Stall when we hit a load-use hazard or WD hazard
+    assign stall_if       = stall_hazard;
 
-    // Let IF/ID update unless we're stalling for a load-use hazard
-    assign ifid_wren      = ~load_use_hazard;
+    // Let IF/ID update unless we're stalling for a hazard
+    assign ifid_wren      = ~stall_hazard;
 
     // Flush IF/ID only when a branch changes our path
     assign ifid_flush     = e_br_taken;
 
     // Insert bubble into ID/EX when we hit either hazard type
-    assign idex_flush     = e_br_taken | load_use_hazard;
+    assign idex_flush     = e_br_taken | stall_hazard;
 
     // ===========================================================
     // Forwarding logic: getting the freshest data to the ALU
