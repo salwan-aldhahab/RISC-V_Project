@@ -120,7 +120,7 @@ module hazard_unit (
     assign wd_hazard =
         w_regwren &&
         (w_rd != 5'd0) &&
-        ((w_rd == d_rs2));
+        ((w_rd == d_rs2) || (w_rd == d_rs1));
 
     // Combined stall signal for any hazard requiring a stall
     logic stall_hazard;
