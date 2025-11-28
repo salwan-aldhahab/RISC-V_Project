@@ -144,7 +144,7 @@ module pipeline_registers #(
             ifid_insn_reg <= 32'h00000000;
         end else if (ifid_flush) begin
             ifid_pc_reg   <= d_pc_i;
-            ifid_insn_reg <= 32'h00000000;
+            ifid_insn_reg <= 32'h00000013;  // NOP instruction
         end else if (ifid_wren) begin
             ifid_pc_reg   <= f_pc;
             ifid_insn_reg <= f_insn;
