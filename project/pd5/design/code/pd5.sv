@@ -433,23 +433,25 @@ module pd5 #(
   assign probe_e_pc = e_pc;
 
   // Forwarding muxes for ALU operands
+  // MX bypass: rs?_sel = 2'b01 -> forward from MEM stage (m_alu_res)
+  // WX bypass: rs?_sel = 2'b10 -> forward from WB stage (probe_w_data)
   always_comb begin
-      // Default: use values from ID/EX pipeline
+      // Default: use values from ID/EX pipeline register
       e_rs1_val = e_rs1data;
       e_rs2_val = e_rs2data;
 
       // rs1 forwarding
       case (rs1_sel)
-          2'b01: e_rs1_val = m_alu_res;    // from MEM (EX/MEM)
-          2'b10: e_rs1_val = probe_w_data; // from WB (MEM/WB)
-          default: /* 2'b00 or 2'b11 */ ;
+          2'b01: e_rs1_val = m_alu_res;    // MX bypass: from MEM stage (EX/MEM)
+          2'b10: e_rs1_val = probe_w_data; // WX bypass: from WB stage (MEM/WB)
+          default: /* 2'b00 */ e_rs1_val = e_rs1data;
       endcase
 
       // rs2 forwarding
       case (rs2_sel)
-          2'b01: e_rs2_val = m_alu_res;    // from MEM (EX/MEM)
-          2'b10: e_rs2_val = probe_w_data; // from WB (MEM/WB)
-          default: /* 2'b00 or 2'b11 */ ;
+          2'b01: e_rs2_val = m_alu_res;    // MX bypass: from MEM stage (EX/MEM)
+          2'b10: e_rs2_val = probe_w_data; // WX bypass: from WB stage (MEM/WB)
+          default: /* 2'b00 */ e_rs2_val = e_rs2data;
       endcase
   end
 
