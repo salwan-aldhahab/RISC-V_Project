@@ -131,6 +131,14 @@ module hazard_unit (
     // Combined stall signal for any hazard requiring a stall
     logic stall_hazard;
     assign stall_hazard = load_use_hazard | wd_hazard;
+    // ===========================================================
+    // ===========================================================
+    logic stall_d_rs1_w_rd_at_wx_fwd_hazard;
+    assign stall_d_rs1_w_rd_at_wx_fwd_hazard =
+        rs1_sel == 2'b10 &&
+        (w_rd != 5'd0) &&
+        (w_rd == d_rs1);
+
 
     // ===========================================================
     // Detecting jump instructions
@@ -175,7 +183,7 @@ module hazard_unit (
     assign ifid_flush     = control_flow_change;
 
     // Insert bubble into ID/EX when we hit either hazard type or control flow change
-    assign idex_flush     = control_flow_change | stall_hazard;
+    assign idex_flush     = control_flow_change | stall_hazard | stall_d_rs1_w_rd_at_wx_fwd_hazard;
 
     // ===========================================================
     // Forwarding logic: getting the freshest data to the ALU
