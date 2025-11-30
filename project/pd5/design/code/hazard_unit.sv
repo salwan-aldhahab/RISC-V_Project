@@ -107,7 +107,7 @@ module hazard_unit (
     assign load_use_hazard =
         e_memren &&
         (e_rd != 5'd0) &&
-        ( (e_rd == d_rs1) || (e_rd == d_rs2) );
+        ( (e_rd == d_rs1) || (e_rd == d_rs2));
 
     // ===========================================================
     // Detecting WB-to-Decode (WD) hazard
@@ -156,34 +156,16 @@ module hazard_unit (
     logic control_flow_change;
     assign control_flow_change = e_br_taken | is_jump;
 
-    // ===========================================================
-    // Pipeline control: when to stall, when to flush
-    //
-    // Load-use hazard or WD hazard response:
-    //   - Freeze the PC (stall_if) so we don't fetch a new instruction
-    //   - Keep IF/ID register unchanged (disable write)
-    //   - Insert a bubble in ID/EX (flush it to NOPs)
-    //
-    // Branch taken or Jump response:
-    //   - Don't stall - we need to start fetching from the new target
-    //   - Flush IF/ID (that instruction was on the wrong path)
-    //   - Flush ID/EX (that one too - already in the pipeline)
-    //
-    // If both happen at once (unusual but possible), the branch flush
-    // takes priority, but we OR the signals to be safe.
-    // ===========================================================
+    logic hazard_mask;
+    assign hazard_mask = stall_hazard & ~control_flow_change;
 
-    // Stall when we hit a load-use hazard or WD hazard
-    assign stall_if       = stall_hazard;
-
-    // Let IF/ID update unless we're stalling for a hazard
-    assign ifid_wren      = ~stall_hazard;
-
-    // Flush IF/ID when a branch is taken OR a jump is executed
+    // Stall only when there’s no taken branch/jump
+    assign stall_if       = hazard_mask;
+    assign ifid_wren      = ~hazard_mask;
     assign ifid_flush     = control_flow_change;
 
-    // Insert bubble into ID/EX when we hit either hazard type or control flow change
-    assign idex_flush     = e_br_taken? 1'b0 : control_flow_change | stall_hazard;
+    // Only bubble ID/EX for hazards when no branch/jump flush is occurring
+    assign idex_flush     = control_flow_change | hazard_mask;
 
     // ===========================================================
     // Forwarding logic: getting the freshest data to the ALU
