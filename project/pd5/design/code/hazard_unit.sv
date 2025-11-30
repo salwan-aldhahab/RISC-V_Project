@@ -183,7 +183,7 @@ module hazard_unit (
     assign ifid_flush     = control_flow_change;
 
     // Insert bubble into ID/EX when we hit either hazard type or control flow change
-    assign idex_flush     = e_br_taken? 1'b0 : control_flow_change | stall_hazard;
+    assign idex_flush     = control_flow_change | stall_hazard;
 
     // ===========================================================
     // Forwarding logic: getting the freshest data to the ALU
