@@ -154,7 +154,7 @@ module hazard_unit (
 
     // Combined control flow change signal
     logic control_flow_change;
-    assign control_flow_change = e_br_taken | is_jump;
+    assign control_flow_change = is_jump;
 
     // ===========================================================
     // Pipeline control: when to stall, when to flush
