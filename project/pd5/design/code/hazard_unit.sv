@@ -163,7 +163,7 @@ module hazard_unit #(
 
     // Combined control flow change signal
     logic control_flow_change;
-    assign control_flow_change = e_br_taken | is_jump;
+    assign control_flow_change = is_jump;
 
     // ===========================================================
     // Pipeline control: when to stall, when to flush
@@ -192,7 +192,17 @@ module hazard_unit #(
     assign ifid_flush     = control_flow_change;
 
     // Insert bubble into ID/EX when we hit either hazard type or control flow change
-    assign idex_flush     = control_flow_change | stall_hazard;
+    always_comb begin
+        if (load_use_hazard) begin
+            idex_flush = 1'b0;
+        end else if (control_flow_change) begin
+            idex_flush = 1'b1;  // Flush for branch/jump
+        end else if (stall_hazard) begin
+            idex_flush = 1'b1;  // Flush for hazard
+        end else begin
+            idex_flush = 1'b0;  // No flush
+        end
+    end
 
     // ===========================================================
     // Forwarding logic: getting the freshest data to the ALU
