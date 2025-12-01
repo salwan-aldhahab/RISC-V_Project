@@ -396,6 +396,8 @@ module pd5 #(
   // --------------------------------------------------------------------
 
   hazard_unit hazards (
+      // IF stage
+      .f_insn    (probe_f_insn),
       // ID stage
       .d_rs1     (probe_d_rs1),
       .d_rs2     (probe_d_rs2),

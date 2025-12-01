@@ -22,7 +22,16 @@
  *   2'b11 : Not used (reserved for future needs)
  */
 
-module hazard_unit (
+`include "constants.svh"
+
+module hazard_unit #(
+    parameter int DWIDTH=32
+)(
+    // -------------------------
+    // Fetch stage inputs
+    // -------------------------
+    input logic [DWIDTH-1:0] f_insn,
+
     // -------------------------
     // ID stage inputs
     // These tell us which registers the instruction in decode needs
@@ -149,8 +158,8 @@ module hazard_unit (
     // ===========================================================
     logic is_jump;
     
-    assign is_jump = (e_opcode == 7'b1101111) ||  // JAL
-                     (e_opcode == 7'b1100111);    // JALR
+    assign is_jump = (e_opcode == OPCODE_JAL) ||  // JAL
+                     (e_opcode == OPCODE_JALR);    // JALR
 
     // Combined control flow change signal
     logic control_flow_change;
@@ -183,7 +192,10 @@ module hazard_unit (
     assign ifid_flush     = control_flow_change;
 
     // Insert bubble into ID/EX when we hit either hazard type or control flow change
-    assign idex_flush     = control_flow_change | stall_hazard;
+    assign idex_flush     = (f_insn[6:0] == OPCODE_BRANCH) 
+                            || (f_insn[6:0] == OPCODE_JALR) 
+                            || (f_insn[6:0] == OPCODE_JAL)? 
+                            1'b0 : control_flow_change | stall_hazard;
 
     // ===========================================================
     // Forwarding logic: getting the freshest data to the ALU
