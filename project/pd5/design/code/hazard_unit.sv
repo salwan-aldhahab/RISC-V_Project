@@ -192,9 +192,7 @@ module hazard_unit #(
     assign ifid_flush     = control_flow_change;
 
     // Insert bubble into ID/EX when we hit either hazard type or control flow change
-    assign idex_flush     = (f_insn[6:0] == OPCODE_BRANCH) 
-                            || (f_insn[6:0] == OPCODE_JALR) 
-                            || (f_insn[6:0] == OPCODE_JAL)? 
+    assign idex_flush     = (f_insn[6:0] == OPCODE_BRANCH) ? 
                             1'b0 : control_flow_change | stall_hazard;
 
     // ===========================================================
