@@ -195,7 +195,7 @@ module hazard_unit #(
     always_comb begin
         if (load_use_hazard) begin
             idex_flush = 1'b0;
-        end if (e_opcode == OPCODE_BRANCH) begin
+        end else if (e_opcode == OPCODE_BRANCH) begin
             idex_flush = 1'b0;
         end else if (control_flow_change) begin
             idex_flush = 1'b1;  // Flush for branch/jump
