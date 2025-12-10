@@ -1,269 +1,128 @@
-/*
- * Module: hazard_unit
- *
- * Description:
- *   This module keeps our pipeline running smoothly by detecting data hazards
- *   and deciding when we need to stall, flush, or forward data between stages.
- *   Think of it as the traffic controller for our processor pipeline.
- *
- * What it does:
- *   - Spots load-use hazards (when we need data that's still being fetched from memory)
- *   - Spots WB-to-Decode hazards (when decode needs data being written back)
- *   - Generates the necessary stall, bubble, and flush signals to handle hazards
- *   - Sets up forwarding paths so the ALU gets the freshest data available
- *
- * A note on register x0:
- *   We ignore writes to x0 since it's hardwired to zero in RISC-V - no hazards there!
- *
- * How forwarding works (the rs?_sel outputs):
- *   2'b00 : No forwarding needed - just use what's in the ID/EX register
- *   2'b01 : Grab the value from MEM stage (it's newer!)
- *   2'b10 : Grab the value from WB stage (still newer than what we have)
- *   2'b11 : Not used (reserved for future needs)
- */
-
-`include "constants.svh"
-
-module hazard_unit #(
-    parameter int DWIDTH=32
-)(
-    // -------------------------
-    // Fetch stage inputs
-    // -------------------------
-    input logic [DWIDTH-1:0] f_insn,
+module hazard_unit (
 
     // -------------------------
     // ID stage inputs
-    // These tell us which registers the instruction in decode needs
     // -------------------------
     input  logic [4:0] d_rs1,
     input  logic [4:0] d_rs2,
 
     // -------------------------
     // EX stage inputs
-    // We need to know:
-    //   - Which registers this instruction is using (for forwarding)
-    //   - Which register it will write to (for hazard detection)
-    //   - Whether it's a load instruction (load-use hazard alert!)
     // -------------------------
     input  logic [4:0] e_rs1,
     input  logic [4:0] e_rs2,
     input  logic [4:0] e_rd,
-    input  logic       e_memren,   // is this a load instruction?
+    input  logic       e_memren,
 
     // -------------------------
     // MEM stage inputs
-    // Used to forward results that just came out of the ALU
     // -------------------------
     input  logic [4:0] m_rd,
     input  logic       m_regwren,
 
     // -------------------------
     // WB stage inputs
-    // Used to forward results that are about to be written back
     // -------------------------
     input  logic [4:0] w_rd,
     input  logic       w_regwren,
 
     // -------------------------
-    // Branch control
-    // When a branch is taken, we need to flush the wrong-path instructions
+    // Branch / jump control
     // -------------------------
     input  logic       e_br_taken,
-    
-    // -------------------------
-    // Jump detection
-    // Unconditional jumps (JAL/JALR) always need to flush
-    // -------------------------
-    input  logic [6:0] e_opcode,       // opcode from EX stage to detect jumps
+    input  logic [6:0] e_opcode,
 
     // -------------------------
     // Pipeline control outputs
-    // These signals tell other pipeline stages what to do
     // -------------------------
-    output logic       stall_if,       // tell IF stage to hold the PC
-    output logic       ifid_wren,      // allow IF/ID register to update
-    output logic       ifid_flush,     // turn IF/ID stage into a NOP
-    output logic       idex_flush,     // turn ID/EX stage into a bubble
+    output logic       stall_if,
+    output logic       ifid_wren,
+    output logic       ifid_flush,
+    output logic       idex_flush,
 
     // -------------------------
     // Forwarding control outputs
-    // These tell the EX stage where to get its operands from
     // -------------------------
-    output logic [1:0] rs1_sel,        // where should rs1 come from?
-    output logic [1:0] rs2_sel,        // where should rs2 come from?
-    
+    output logic [1:0] rs1_sel,
+    output logic [1:0] rs2_sel,
+
     // -------------------------
-    // WM Forwarding control output
-    // This tells the MEM stage where to get store data from
+    // WM forwarding output
     // -------------------------
-    output logic       wm_fwd_sel      // forward WB data to MEM stage for stores?
+    output logic       wm_fwd_sel
 );
 
     // ===========================================================
-    // Detecting the dreaded load-use hazard
-    //
-    // This happens when:
-    //  - The instruction in EX stage is loading from memory
-    //  - It's going to write to a register (not x0)
-    //  - The very next instruction in ID needs that same register
-    //
-    // We can't forward here because the data hasn't arrived from
-    // memory yet! The only solution is to stall and wait.
+    // Load-use hazard detection
     // ===========================================================
     logic load_use_hazard;
 
     assign load_use_hazard =
         e_memren &&
         (e_rd != 5'd0) &&
-        ( (e_rd == d_rs1) || (e_rd == d_rs2) );
+        ((e_rd == d_rs1) || (e_rd == d_rs2));
 
     // ===========================================================
-    // Detecting WB-to-Decode (WD) hazard
-    //
-    // This happens when:
-    //  - The instruction in WB stage is writing to a register
-    //  - It's writing to a register (not x0)
-    //  - The instruction in ID stage needs that same register
-    //
-    // If the register file doesn't support internal forwarding
-    // (write-before-read in the same cycle), we need to stall
-    // so the write completes before the decode stage reads.
+    // WB-to-Decode hazard detection (FIXED)
     // ===========================================================
     logic wd_hazard;
 
     assign wd_hazard =
         w_regwren &&
         (w_rd != 5'd0) &&
-        ((w_rd == d_rs2));
+        ((w_rd == d_rs1) || (w_rd == d_rs2));
 
-        // ===========================================================
-    // ===========================================================
-    logic stall_d_rs1_w_rd_at_wx_fwd_hazard;
-    assign stall_d_rs1_w_rd_at_wx_fwd_hazard =
-        rs1_sel == 2'b10 &&
-        (w_rd != 5'd0) &&
-        (w_rd == d_rs1);
-    
-    // Combined stall signal for any hazard requiring a stall
+    // Combined stall signal
     logic stall_hazard;
-    assign stall_hazard = load_use_hazard | wd_hazard | stall_d_rs1_w_rd_at_wx_fwd_hazard;
+    assign stall_hazard = load_use_hazard | wd_hazard;
 
     // ===========================================================
-    // Detecting jump instructions
-    //
-    // JAL (opcode 1101111) and JALR (opcode 1100111) are unconditional
-    // jumps that always redirect the PC. We need to flush the pipeline
-    // to discard the incorrectly fetched instructions.
+    // Jump detection
     // ===========================================================
     logic is_jump;
-    
-    assign is_jump = (e_opcode == OPCODE_JAL) ||  // JAL
-                     (e_opcode == OPCODE_JALR);    // JALR
 
-    // Combined control flow change signal
+    assign is_jump =
+        (e_opcode == 7'b1101111) ||   // JAL
+        (e_opcode == 7'b1100111);     // JALR
+
     logic control_flow_change;
-    assign control_flow_change = is_jump;
+    assign control_flow_change = e_br_taken | is_jump;
 
     // ===========================================================
-    // Pipeline control: when to stall, when to flush
-    //
-    // Load-use hazard or WD hazard response:
-    //   - Freeze the PC (stall_if) so we don't fetch a new instruction
-    //   - Keep IF/ID register unchanged (disable write)
-    //   - Insert a bubble in ID/EX (flush it to NOPs)
-    //
-    // Branch taken or Jump response:
-    //   - Don't stall - we need to start fetching from the new target
-    //   - Flush IF/ID (that instruction was on the wrong path)
-    //   - Flush ID/EX (that one too - already in the pipeline)
-    //
-    // If both happen at once (unusual but possible), the branch flush
-    // takes priority, but we OR the signals to be safe.
+    // Pipeline control (FIXED priority)
     // ===========================================================
+    assign stall_if   = stall_hazard;
+    assign ifid_wren  = ~stall_hazard;
 
-    // Stall when we hit a load-use hazard or WD hazard
-    assign stall_if       = stall_hazard;
+    // Flush only if not stalling
+    assign ifid_flush = control_flow_change & ~stall_hazard;
 
-    // Let IF/ID update unless we're stalling for a hazard
-    assign ifid_wren      = ~stall_hazard;
-
-    // Flush IF/ID when a branch is taken OR a jump is executed
-    assign ifid_flush     = control_flow_change;
-
-    // Insert bubble into ID/EX when we hit either hazard type or control flow change
-    always_comb begin
-        if (load_use_hazard) begin
-            idex_flush = 1'b0;
-        end else if (e_opcode == OPCODE_BRANCH) begin
-            idex_flush = 1'b0;
-        end else if (control_flow_change) begin
-            idex_flush = 1'b1;  // Flush for branch/jump
-        end else if (stall_hazard) begin
-            idex_flush = 1'b1;  // Flush for hazard
-        end else begin
-            idex_flush = 1'b0;  // No flush
-        end
-    end
+    // Bubble on hazard or control flow change
+    assign idex_flush = control_flow_change | stall_hazard;
 
     // ===========================================================
-    // Forwarding logic: getting the freshest data to the ALU
-    //
-    // For each source register the EX stage needs, we check if
-    // a newer value is available further down the pipeline.
-    //
-    // Priority order (most recent first):
-    //   1. MEM stage (just computed)     -> select 01
-    //   2. WB stage  (about to write)    -> select 10
-    //   3. ID/EX reg (what we already have) -> select 00
-    //
-    // We check MEM first because it's the most recent result.
+    // Forwarding logic (EX stage)
     // ===========================================================
     always_comb begin
-        // Start by assuming no forwarding is needed
         rs1_sel = 2'b00;
         rs2_sel = 2'b00;
 
-        // ---------- Forwarding for rs1 ----------
-        // First priority: check if MEM stage has what we need
-        if (m_regwren &&
-            (m_rd != 5'd0) &&
-            (m_rd == e_rs1)) begin
-            rs1_sel = 2'b01;   // forward from MEM stage
-        end
-        // Second priority: check WB stage
-        else if (w_regwren &&
-                 (w_rd != 5'd0) &&
-                 (w_rd == e_rs1)) begin
-            rs1_sel = 2'b10;   // forward from WB stage
-        end
+        // rs1 forwarding
+        if (m_regwren && (m_rd != 0) && (m_rd == e_rs1))
+            rs1_sel = 2'b01;
+        else if (w_regwren && (w_rd != 0) && (w_rd == e_rs1))
+            rs1_sel = 2'b10;
 
-        // ---------- Forwarding for rs2 ----------
-        // Same deal - check MEM first, then WB
-        if (m_regwren &&
-            (m_rd != 5'd0) &&
-            (m_rd == e_rs2)) begin
-            rs2_sel = 2'b01;   // forward from MEM stage
-        end
-        else if (w_regwren &&
-                 (w_rd != 5'd0) &&
-                 (w_rd == e_rs2)) begin
-            rs2_sel = 2'b10;   // forward from WB stage
-        end
+        // rs2 forwarding
+        if (m_regwren && (m_rd != 0) && (m_rd == e_rs2))
+            rs2_sel = 2'b01;
+        else if (w_regwren && (w_rd != 0) && (w_rd == e_rs2))
+            rs2_sel = 2'b10;
     end
 
     // ===========================================================
-    // WM Forwarding: forward from WB to MEM for store data
-    //
-    // This happens when:
-    //  - The instruction in WB stage is writing to a register
-    //  - The instruction in MEM stage is a store (m_memwren)
-    //  - The store's rs2 (source data) matches the WB destination
-    //
-    // Note: We need m_rs2 to check which register the store is using.
-    //       This requires adding m_rs2 as an input to the hazard unit.
+    // WM forwarding (disabled here explicitly)
     // ===========================================================
-    
-    // For now, we'll handle this in pd5.sv with the available signals
+    assign wm_fwd_sel = 1'b0;
 
 endmodule : hazard_unit
