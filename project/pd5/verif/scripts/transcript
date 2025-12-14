@@ -1,0 +1,44 @@
+# vsim -suppress 3839 -c -do "/eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/verif/scripts/run.macro" /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.top 
+# Start time: 20:35:42 on Dec 10,2025
+# Loading sv_std.std
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.top
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.clockgen
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.design_wrapper
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.pd5_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.pd5
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.fetch
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.memory_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.memory
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.pipeline_registers
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.decode_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.decode
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.igen_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.igen
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.control_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.control
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.register_file_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.register_file
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.hazard_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.execute_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.alu
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.branch_control_sv_unit
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.branch_control
+# Loading /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/work.writeback
+# do /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/verif/scripts/run.macro
+# MEMORY: Loaded 39 32-bit words from /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/verif/data/SimpleAdd.x
+# MEMORY: Total memory size: 1048576 bytes (1024 KB)
+# MEMORY: Program size: 156 bytes, Remaining: 1048420 bytes
+# MEMORY: Loaded 39 32-bit words from /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/verif/data/SimpleAdd.x
+# MEMORY: Total memory size: 1048576 bytes (1024 KB)
+# MEMORY: Program size: 156 bytes, Remaining: 1048420 bytes
+# MEMORY: Wrote word 0x00000000 to 0x010ffffc
+# MEMORY: Wrote word 0x00000003 to 0x010fffec
+# MEMORY: Wrote word 0x00000002 to 0x010fffe8
+# MEMORY: Wrote word 0x00000000 to 0x010fffe4
+# MEMORY: Wrote word 0x00000005 to 0x010fffe4
+# MEMORY: Wrote word 0x01000034 to 0x010fffdc
+# MEMORY: Wrote word 0x00000005 to 0x010fffcc
+# ** Note: $finish    : /eecs/home/salwan99/Desktop/EECS4201/RISC-V_Project/project/pd5/design/code/pd5.sv(581)
+#    Time: 127 ps  Iteration: 1  Instance: /top/dut/core
+# End time: 20:35:44 on Dec 10,2025, Elapsed time: 0:00:02
+# Errors: 0, Warnings: 0

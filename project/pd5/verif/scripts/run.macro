@@ -1,0 +1,3 @@
+vcd file "SimpleAdd.vcd"
+vcd add -r /top/* 
+run -all
