@@ -8,12 +8,8 @@
  *   - Execute to Memory (EX/MEM)
  *   - Memory to Writeback (MEM/WB)
  *
- *   - IF/ID and ID/EX stages support flushing to handle branch mispredictions
- *     and hazard bubbles.
+ *   - IF/ID and ID/EX stages support flushing.
  *   - All stages support stalling through write enable signals.
- *
- *   This module should be connected to decode, control, register file, execute,
- *   memory, and writeback modules in your top-level design.
  */
 
 module pipeline_registers #(
@@ -205,7 +201,7 @@ module pipeline_registers #(
             idex_funct3_reg   <= '0;
             idex_funct7_reg   <= '0;
             idex_opcode_reg   <= '0;
-            idex_regwren_reg  <= d_regwren;  // Keep regwren from decode stage
+            idex_regwren_reg  <= d_regwren;
             idex_memren_reg   <= 1'b0;
             idex_memwren_reg  <= 1'b0;
             idex_wbsel_reg    <= 2'b00;
@@ -269,7 +265,7 @@ module pipeline_registers #(
             exmem_pc_reg       <= '0;
             exmem_alu_res_reg  <= '0;
             exmem_rs2data_reg  <= '0;
-            exmem_rs2_reg      <= '0;              // Add reset
+            exmem_rs2_reg      <= '0;
             exmem_rd_reg       <= '0;
             exmem_funct3_reg   <= '0;
             exmem_regwren_reg  <= 1'b0;
@@ -281,7 +277,7 @@ module pipeline_registers #(
             exmem_pc_reg       <= e_pc_i;
             exmem_alu_res_reg  <= e_alu_res;
             exmem_rs2data_reg  <= e_rs2data_i;
-            exmem_rs2_reg      <= e_rs2_i;        // Add assignment
+            exmem_rs2_reg      <= e_rs2_i;
             exmem_rd_reg       <= e_rd_i;
             exmem_funct3_reg   <= e_funct3_i;
             exmem_regwren_reg  <= e_regwren_i;
@@ -295,7 +291,7 @@ module pipeline_registers #(
     assign m_pc       = exmem_pc_reg;
     assign m_alu_res  = exmem_alu_res_reg;
     assign m_rs2data  = exmem_rs2data_reg;
-    assign m_rs2      = exmem_rs2_reg;            // Add output assignment
+    assign m_rs2      = exmem_rs2_reg;
     assign m_rd       = exmem_rd_reg;
     assign m_funct3   = exmem_funct3_reg;
     assign m_regwren  = exmem_regwren_reg;

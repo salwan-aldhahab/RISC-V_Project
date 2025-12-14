@@ -63,7 +63,7 @@ module hazard_unit (
         ((e_rd == d_rs1) || (e_rd == d_rs2));
 
     // ===========================================================
-    // WB-to-Decode hazard detection (FIXED)
+    // WB-to-Decode hazard detection
     // ===========================================================
     logic wd_hazard;
 
@@ -89,7 +89,7 @@ module hazard_unit (
     assign control_flow_change = e_br_taken | is_jump;
 
     // ===========================================================
-    // Pipeline control (FIXED priority)
+    // Pipeline control
     // ===========================================================
     assign stall_if   = stall_hazard;
     assign ifid_wren  = ~stall_hazard;
